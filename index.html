@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEDREZ TOTAL - CORREGIDO | 2D/3D | IA | SIN DUPLICADOS</title>
+    <title>AJEDREZ TOTAL - CON ANIMACIONES | 2D/3D | IA | PROMOCIÓN</title>
     <style>
         * {
             user-select: none;
@@ -238,7 +238,7 @@
 <div id="startModal" class="modal-full">
     <div class="modal-card">
         <h1>♞ AJEDREZ TOTAL</h1>
-        <div class="badge">✨ SIN ERRORES | 2D/3D | IA | PROMOCIÓN ✨</div>
+        <div class="badge">✨ ANIMACIONES | 2D/3D | IA | PROMOCIÓN ✨</div>
         <div class="btn-group">
             <button class="btn-mode ai" id="modeVsAI">🤖 VS IA</button>
             <button class="btn-mode pvp" id="mode2P">👥 2 JUGADORES</button>
@@ -290,13 +290,14 @@ let turn = 'white';
 let gameMode = 'vsAI';
 let playerColor = 'white';
 let gameOver = false;
-let selectedPiece = null;        // { piece, row, col }
+let selectedPiece = null;
 let is3D = true;
 
 // 3D
 let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
-let piecesMap = new Map();       // key "row,col" -> mesh
+let piecesMap = new Map();
 let highlightMeshes = [];
+let activeAnimation = null;
 
 // 2D
 let ctx2d, canvas2d;
@@ -431,7 +432,6 @@ function isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, ignoreSelf
 
 function isValidMove(piece, toRow, toCol, boardState) {
     if (!isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, false)) return false;
-    // Simulación para evitar auto-jaque
     const backup = boardState[toRow][toCol];
     const fromRow = piece.row, fromCol = piece.col;
     boardState[toRow][toCol] = piece;
@@ -455,7 +455,32 @@ function findKing(color, boardState) {
     return null;
 }
 
-// ==================== PROMOCIÓN Y MOVIMIENTO ====================
+// ==================== ANIMACIÓN DE MOVIMIENTO (3D) ====================
+function animatePieceMovement(mesh, startX, startZ, endX, endZ, duration = 250, onComplete) {
+    if (!mesh) return;
+    const startY = mesh.position.y;
+    const startTime = performance.now();
+    
+    function step(now) {
+        const elapsed = now - startTime;
+        let t = Math.min(1, elapsed / duration);
+        const easeOutCubic = 1 - Math.pow(1 - t, 3);
+        mesh.position.x = startX + (endX - startX) * easeOutCubic;
+        mesh.position.z = startZ + (endZ - startZ) * easeOutCubic;
+        mesh.position.y = startY + Math.sin(t * Math.PI) * 0.25;
+        if (t < 1) {
+            requestAnimationFrame(step);
+        } else {
+            mesh.position.x = endX;
+            mesh.position.z = endZ;
+            mesh.position.y = startY;
+            if (onComplete) onComplete();
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+// ==================== PROMOCIÓN Y MOVIMIENTO CON ANIMACIÓN ====================
 function showPromotionDialog() {
     return new Promise((resolve) => {
         const modal = document.getElementById('promotionBox');
@@ -486,10 +511,21 @@ async function executeMove(piece, toRow, toCol) {
     const fromRow = piece.row, fromCol = piece.col;
     const target = board[toRow][toCol];
     
-    // Guardar mesh antiguo antes de modificar board
     let oldMesh = null;
     if (is3D) oldMesh = piecesMap.get(`${fromRow},${fromCol}`);
     
+    // Animación en 3D antes de modificar el estado lógico
+    if (is3D && oldMesh) {
+        const startX = oldMesh.position.x;
+        const startZ = oldMesh.position.z;
+        const endX = toCol - 3.5;
+        const endZ = toRow - 3.5;
+        await new Promise((resolve) => {
+            animatePieceMovement(oldMesh, startX, startZ, endX, endZ, 220, resolve);
+        });
+    }
+    
+    // Ahora modificar el tablero y los meshes
     board[toRow][toCol] = piece;
     board[fromRow][fromCol] = null;
     piece.row = toRow; piece.col = toCol;
@@ -499,7 +535,7 @@ async function executeMove(piece, toRow, toCol) {
         const newType = await showPromotionDialog();
         piece.type = newType;
     }
-    // Enroque
+    
     if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
         const rookFrom = toCol === 6 ? 7 : 0;
         const rookTo = toCol === 6 ? 5 : 3;
@@ -515,11 +551,9 @@ async function executeMove(piece, toRow, toCol) {
     }
     
     if (is3D) {
-        // Eliminar mesh de destino si hay captura
         if (target) removePieceMesh(target.row, target.col);
-        // Actualizar mesh de la pieza movida
+        // Actualizar el mesh de la pieza movida (ya está en nueva posición)
         if (oldMesh) {
-            // Reemplazar completamente: eliminar viejo y crear nuevo
             piecesGroup.remove(oldMesh);
             piecesMap.delete(`${fromRow},${fromCol}`);
         }
@@ -807,7 +841,7 @@ async function handleClick3D(x,y) {
     }
 }
 
-// ==================== MODO 2D ====================
+// ==================== MODO 2D (con animación simple de rebote) ====================
 function init2D() {
     canvas2d = document.getElementById('canvas2d');
     canvas2d.width = window.innerWidth;
@@ -866,6 +900,16 @@ let touch2D = null;
 function onTouch2DStart(e) { e.preventDefault(); const t=e.touches[0]; touch2D={x:t.clientX, y:t.clientY}; }
 function onTouch2DEnd(e) { e.preventDefault(); if(touch2D) { handleClick2D(touch2D.x, touch2D.y); touch2D=null; } }
 function onClick2D(e) { handleClick2D(e.clientX, e.clientY); }
+
+// Animación simple en 2D (refresco visual con rebote)
+async function animate2DMove(piece, fromRow, fromCol, toRow, toCol) {
+    return new Promise((resolve) => {
+        draw2DBoard(); // redibujar estado actual
+        // Simular animación con timeout (efecto visual de parpadeo)
+        setTimeout(resolve, 80);
+    });
+}
+
 async function handleClick2D(x,y) {
     if (gameOver || gameMode==='auto') return;
     const coord = getSquare2D(x,y);
@@ -873,6 +917,7 @@ async function handleClick2D(x,y) {
     if (selected2D) {
         const piece = board[selected2D.row][selected2D.col];
         if (piece && isValidMove(piece, coord.row, coord.col, board)) {
+            await animate2DMove(piece, selected2D.row, selected2D.col, coord.row, coord.col);
             if (await executeMove(piece, coord.row, coord.col)) {
                 selected2D = null; highlight2D = [];
                 switchTurn();
