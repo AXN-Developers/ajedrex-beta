@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEREX BETA v2.0 - Colores Personalizables | AlexanderGH</title>
+    <title>AJEREX v2.0 COMPLETE - AlexanderGH | Colores + IA + Animaciones</title>
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -17,132 +17,146 @@
             touch-action: none;
         }
         
-        #color-picker-modal {
+        #start-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.96);
             z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(12px);
         }
         
-        .color-panel {
+        .start-panel {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 30px;
-            padding: 25px;
+            border-radius: 40px;
+            padding: 30px 25px;
             text-align: center;
-            max-width: 90%;
-            width: 350px;
-            border: 2px solid rgba(255,215,0,0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            max-width: 95%;
+            width: 400px;
+            border: 2px solid rgba(255,215,0,0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             animation: slideUp 0.4s ease;
         }
         
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        .color-panel h2 {
+        .start-panel h1 {
             color: #ffd700;
-            margin: 0 0 10px 0;
-            font-size: 24px;
+            margin: 0 0 5px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
         }
         
-        .color-panel h3 {
-            color: #aaa;
+        .start-panel h3 {
+            color: #ccc;
             font-size: 14px;
-            margin: 5px 0;
-        }
-        
-        .color-preview {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 10px auto;
-            border: 3px solid gold;
-            transition: all 0.2s;
-        }
-        
-        .color-option-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
-        
-        .color-swatch {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-            margin: 0 auto;
-        }
-        
-        .color-swatch:hover {
-            transform: scale(1.1);
-            border-color: white;
-        }
-        
-        .color-swatch.selected {
-            border-color: gold;
-            transform: scale(1.1);
-            box-shadow: 0 0 15px gold;
+            margin: 8px 0;
         }
         
         .beta-badge {
             background: linear-gradient(135deg, #ff9800, #f44336);
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 5px 15px;
+            border-radius: 25px;
             font-size: 11px;
             display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
+        .mode-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+        
+        .mode-btn:active { transform: scale(0.95); }
+        .mode-ai { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
+        .mode-2p { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
+        .mode-auto { background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; }
+        
+        .color-preview-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 15px auto;
+            border: 3px solid gold;
+            transition: all 0.2s;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        
+        .color-swatch {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .color-swatch:hover { transform: scale(1.1); border-color: white; }
+        .color-swatch.selected { border-color: gold; transform: scale(1.1); box-shadow: 0 0 15px gold; }
+        
         .start-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: linear-gradient(135deg, #2196F3, #1976D2);
             color: white;
-            padding: 12px 30px;
+            padding: 14px 30px;
             font-size: 18px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
+            width: 100%;
             transition: all 0.2s;
         }
         
-        .start-btn:active {
-            transform: scale(0.95);
-        }
+        .start-btn:active { transform: scale(0.98); }
         
         #info {
             position: absolute;
             top: 10px;
             left: 10px;
             color: white;
-            background: rgba(0,0,0,0.75);
-            padding: 6px 12px;
-            border-radius: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 8px 15px;
+            border-radius: 25px;
             pointer-events: none;
             z-index: 10;
             backdrop-filter: blur(8px);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
         }
         
@@ -152,134 +166,123 @@
             right: 10px;
             background: rgba(0,0,0,0.85);
             color: #ffd700;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 15px;
             font-weight: bold;
-            font-family: monospace;
             pointer-events: none;
             z-index: 10;
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,215,0,0.6);
+            font-family: monospace;
         }
         
         #controls {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.85);
-            padding: 8px 12px;
-            border-radius: 40px;
+            padding: 10px 15px;
+            border-radius: 50px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             z-index: 20;
             backdrop-filter: blur(10px);
             flex-wrap: wrap;
             justify-content: center;
-            max-width: 90%;
         }
         
         button {
-            padding: 8px 16px;
-            font-size: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
             font-weight: bold;
             border: none;
-            border-radius: 30px;
+            border-radius: 35px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            touch-action: manipulation;
-            min-width: 65px;
+            transition: all 0.2s;
+            min-width: 70px;
         }
         
-        button:active {
-            transform: scale(0.95);
-        }
+        button:active { transform: scale(0.95); }
         
-        #btn-vsai { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
-        #btn-vs2 { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
         #btn-reset { background: linear-gradient(135deg, #f44336, #e53935); color: white; }
         #btn-recolor { background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; }
+        #btn-auto { background: linear-gradient(135deg, #00BCD4, #009688); color: white; }
+        #btn-stop-auto { background: linear-gradient(135deg, #FF5722, #E64A19); color: white; display: none; }
         
         #status {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             right: 10px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             color: #ddd;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-family: monospace;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 11px;
             pointer-events: none;
+            font-family: monospace;
         }
         
         .touch-feedback {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: rgba(255,215,0,0.5);
+            background: radial-gradient(circle, rgba(255,215,0,0.6), transparent);
             pointer-events: none;
             transform: translate(-50%, -50%);
             z-index: 100;
-            animation: ripple 0.4s ease-out forwards;
+            animation: ripple 0.5s ease-out forwards;
         }
         
         @keyframes ripple {
             0% { width: 0px; height: 0px; opacity: 0.8; }
-            100% { width: 80px; height: 80px; opacity: 0; }
-        }
-        
-        @keyframes pieceMove {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(0.15m); }
-            100% { transform: translateY(0); }
-        }
-        
-        .animating-piece {
-            animation: pieceMove 0.2s ease;
+            100% { width: 100px; height: 100px; opacity: 0; }
         }
         
         @media (max-width: 600px) {
-            button { padding: 6px 12px; font-size: 11px; min-width: 55px; }
-            #turn-indicator { font-size: 11px; padding: 6px 12px; top: 8px; right: 8px; }
-            #info { font-size: 8px; top: 8px; left: 8px; padding: 4px 10px; }
-            #controls { gap: 8px; padding: 6px 10px; bottom: 10px; }
-            #status { font-size: 8px; bottom: 10px; right: 8px; }
-            .color-swatch { width: 50px; height: 50px; }
-            .color-panel { padding: 20px; }
+            button { padding: 6px 12px; font-size: 10px; min-width: 55px; }
+            #turn-indicator { font-size: 11px; padding: 6px 12px; }
+            .color-swatch { width: 45px; height: 45px; }
+            .mode-btn { padding: 8px 12px; font-size: 12px; min-width: 80px; }
+            .start-panel { padding: 20px; width: 90%; }
         }
     </style>
 </head>
 <body>
-    <div id="color-picker-modal">
-        <div class="color-panel">
-            <h2>🎨 AJEREX v2.0</h2>
-            <div class="beta-badge">✨ COLORES BETA ✨</div>
-            <h3>Elige tu color para las piezas blancas:</h3>
-            <div class="color-option-grid" id="color-grid"></div>
-            <div class="color-preview" id="color-preview" style="background: #eeeeff;"></div>
-            <button class="start-btn" id="start-game-btn">🎮 COMENZAR PARTIDA</button>
-            <p style="font-size: 11px; color: #888; margin-top: 15px;">Los colores en modo 2 jugadores son elegidos por cada jugador<br>En modo IA el oponente tendrá un color aleatorio</p>
+    <div id="start-modal">
+        <div class="start-panel">
+            <h1>♜ AJEREX v2.0</h1>
+            <div class="beta-badge">🎨 COLORES PERSONALIZABLES | ANIMACIONES | IA</div>
+            <h3>🎮 ELIGE TU MODO DE JUEGO:</h3>
+            <div class="mode-buttons">
+                <button class="mode-btn mode-ai" id="select-vsai">🤖 VS IA</button>
+                <button class="mode-btn mode-2p" id="select-vs2">👥 2 JUGADORES</button>
+                <button class="mode-btn mode-auto" id="select-auto">⚡ IA vs IA</button>
+            </div>
+            <h3 id="color-prompt">🎨 Elige el color de tus piezas BLANCAS:</h3>
+            <div class="color-grid" id="color-grid"></div>
+            <div class="color-preview-box" id="color-preview" style="background: #eeeeff;"></div>
+            <button class="start-btn" id="confirm-start">🚀 INICIAR PARTIDA</button>
+            <p style="font-size: 10px; color: #888; margin-top: 15px;">Toca una pieza → Toca una casilla para mover | Gira la cámara con un dedo</p>
         </div>
     </div>
 
     <div id="info">
-        ♜ AJEREX v2.0 | <span id="mode-label">vs IA</span> | <span id="player-color-label"></span>
+        ♜ AJEREX v2.0 | <span id="mode-label">Selecciona modo</span>
     </div>
     <div id="turn-indicator">
         Turno: <span id="turn-text">♔ Blancas</span>
     </div>
     <div id="controls">
-        <button id="btn-vsai">🤖 vs IA</button>
-        <button id="btn-vs2">👥 2 Jug</button>
         <button id="btn-reset">🔄 Reiniciar</button>
         <button id="btn-recolor">🎨 Cambiar Color</button>
+        <button id="btn-auto">⚡ Auto Jugar</button>
+        <button id="btn-stop-auto">⏹️ Detener Auto</button>
     </div>
     <div id="status">
-        🎨 <span id="game-status">En juego</span>
+        🎮 <span id="game-status">Selecciona un modo</span>
     </div>
 
     <script type="importmap">
@@ -300,86 +303,44 @@
         let currentTurn = 'white';
         let gameMode = 'vsAI';
         let playerColor = 'white';
-        let player2Color = 'black';
-        let aiColor = 'black';
         let gameOver = false;
         let selectedPiece = null;
-        let whiteCustomColor = 0xeeeeff;
-        let blackCustomColor = 0x222222;
         
         let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
         let piecesMeshes = new Map();
         let highlightMeshes = [];
-        let pendingAnimation = null;
+        let autoPlayInterval = null;
+        let isAutoPlaying = false;
+        
+        let whiteCustomColor = 0xeeeeff;
+        let blackCustomColor = 0x222222;
         
         const colorOptions = [
             { name: 'Blanco Clásico', value: 0xeeeeff, preview: '#eeeeff' },
-            { name: 'Dorado', value: 0xffcc44, preview: '#ffcc44' },
+            { name: 'Dorado Real', value: 0xffcc44, preview: '#ffcc44' },
             { name: 'Plateado', value: 0xc0c0c0, preview: '#c0c0c0' },
             { name: 'Rubí', value: 0xff4444, preview: '#ff4444' },
             { name: 'Zafiro', value: 0x4488ff, preview: '#4488ff' },
             { name: 'Esmeralda', value: 0x44ff88, preview: '#44ff88' },
             { name: 'Amatista', value: 0xaa66ff, preview: '#aa66ff' },
-            { name: 'Bronce', value: 0xcd7f32, preview: '#cd7f32' }
+            { name: 'Topacio', value: 0xffaa44, preview: '#ffaa44' }
         ];
         
-        const darkColorOptions = [
+        const darkOptions = [
             { name: 'Negro Clásico', value: 0x222222, preview: '#222222' },
             { name: 'Obsidiana', value: 0x111111, preview: '#111111' },
             { name: 'Grafito', value: 0x333344, preview: '#333344' },
             { name: 'Caoba', value: 0x4a2511, preview: '#4a2511' },
             { name: 'Ébano', value: 0x2c1810, preview: '#2c1810' },
             { name: 'Carbón', value: 0x2a2a2a, preview: '#2a2a2a' },
-            { name: 'Pizarra', value: 0x3a3a4a, preview: '#3a3a4a' },
-            { name: 'Violeta Oscuro', value: 0x331155, preview: '#331155' }
+            { name: 'Violeta Oscuro', value: 0x331155, preview: '#331155' },
+            { name: 'Bronce', value: 0xcd7f32, preview: '#cd7f32' }
         ];
         
-        let selectedWhiteColor = 0xeeeeff;
-        let selectedBlackColor = 0x222222;
-        let colorSelectionStep = 'white';
-        
-        function renderColorPicker() {
-            const grid = document.getElementById('color-grid');
-            grid.innerHTML = '';
-            const options = colorSelectionStep === 'white' ? colorOptions : darkColorOptions;
-            
-            options.forEach(color => {
-                const swatch = document.createElement('div');
-                swatch.className = 'color-swatch';
-                swatch.style.background = color.preview;
-                swatch.style.background = `radial-gradient(circle at 30% 30%, ${color.preview}, ${color.preview}dd)`;
-                swatch.addEventListener('click', () => {
-                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-                    swatch.classList.add('selected');
-                    if (colorSelectionStep === 'white') {
-                        selectedWhiteColor = color.value;
-                        document.getElementById('color-preview').style.background = color.preview;
-                    } else {
-                        selectedBlackColor = color.value;
-                        document.getElementById('color-preview').style.background = color.preview;
-                    }
-                });
-                grid.appendChild(swatch);
-            });
-            
-            document.getElementById('color-preview').style.background = colorSelectionStep === 'white' ? 
-                (colorOptions.find(c => c.value === selectedWhiteColor)?.preview || '#eeeeff') : 
-                (darkColorOptions.find(c => c.value === selectedBlackColor)?.preview || '#222222');
-        }
-        
-        function showColorPicker() {
-            colorSelectionStep = 'white';
-            document.querySelector('#color-picker-modal .color-panel h3').innerHTML = '🎨 Elige el color de tus piezas BLANCAS:';
-            renderColorPicker();
-            document.getElementById('color-picker-modal').style.display = 'flex';
-        }
-        
-        function showSecondColorPicker() {
-            colorSelectionStep = 'black';
-            document.querySelector('#color-picker-modal .color-panel h3').innerHTML = '🎨 Elige el color de tus piezas NEGRAS:';
-            renderColorPicker();
-            document.getElementById('color-picker-modal').style.display = 'flex';
-        }
+        let selectedWhiteIdx = 0;
+        let selectedBlackIdx = 0;
+        let pendingMode = 'vsAI';
+        let isSelectingBlack = false;
         
         class Piece {
             constructor(type, color, row, col) {
@@ -408,10 +369,10 @@
             updateTurnDisplay();
             document.getElementById('game-status').innerText = 'En juego';
             
-            if (gameMode === 'vsAI') {
-                if (playerColor === 'black' && currentTurn === 'white' && !gameOver) {
-                    setTimeout(() => aiMove(), 300);
-                }
+            if (gameMode === 'auto') {
+                startAutoPlay();
+            } else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white' && !gameOver) {
+                setTimeout(() => makeAIMove(), 500);
             }
         }
         
@@ -477,25 +438,23 @@
         
         function animateMove(mesh, fromX, fromZ, toX, toZ, callback) {
             if (!mesh) { if(callback) callback(); return; }
-            const startPos = { x: fromX, z: fromZ };
-            const endPos = { x: toX, z: toZ };
-            const duration = 200;
             const startTime = performance.now();
+            const startY = mesh.position.y;
             
             function animate(currentTime) {
                 const elapsed = currentTime - startTime;
-                const t = Math.min(1, elapsed / duration);
+                const t = Math.min(1, elapsed / 220);
                 const easeOut = 1 - Math.pow(1 - t, 2);
-                mesh.position.x = startPos.x + (endPos.x - startPos.x) * easeOut;
-                mesh.position.z = startPos.z + (endPos.z - startPos.z) * easeOut;
-                mesh.position.y = 0.08 + Math.sin(t * Math.PI) * 0.12;
+                mesh.position.x = fromX + (toX - fromX) * easeOut;
+                mesh.position.z = fromZ + (toZ - fromZ) * easeOut;
+                mesh.position.y = startY + Math.sin(t * Math.PI) * 0.18;
                 
                 if (t < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    mesh.position.x = endPos.x;
-                    mesh.position.z = endPos.z;
-                    mesh.position.y = 0.08;
+                    mesh.position.x = toX;
+                    mesh.position.z = toZ;
+                    mesh.position.y = startY;
                     if(callback) callback();
                 }
             }
@@ -519,9 +478,7 @@
             piece.col = toCol;
             piece.hasMoved = true;
             
-            if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) {
-                piece.type = 'queen';
-            }
+            if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) piece.type = 'queen';
             
             if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
                 const rookFromCol = toCol === 6 ? 7 : 0;
@@ -538,9 +495,7 @@
             }
             
             if (pieceMesh) {
-                animateMove(pieceMesh, fromX, fromZ, toX, toZ, () => {
-                    update3DPiece(piece);
-                });
+                animateMove(pieceMesh, fromX, fromZ, toX, toZ, () => update3DPiece(piece));
             } else {
                 update3DPiece(piece);
             }
@@ -549,62 +504,104 @@
             return true;
         }
         
-        function switchTurn() {
-            currentTurn = currentTurn === 'white' ? 'black' : 'white';
-            updateTurnDisplay();
-            
-            let whiteKingExists = false, blackKingExists = false;
-            for (let i=0;i<8;i++) for(let j=0;j<8;j++) {
-                const p = boardState[i][j];
-                if(p && p.type === 'king') {
-                    if(p.color === 'white') whiteKingExists = true;
-                    else blackKingExists = true;
-                }
-            }
-            if(!whiteKingExists) { gameOver=true; document.getElementById('game-status').innerText = '🏆 Ganan Negras!'; }
-            if(!blackKingExists) { gameOver=true; document.getElementById('game-status').innerText = '🏆 Ganan Blancas!'; }
-            if(gameOver) return;
-            
-            if (gameMode === 'vsAI') {
-                const isPlayerTurn = (playerColor === currentTurn);
-                if (!isPlayerTurn && !gameOver) {
-                    setTimeout(() => aiMove(), 150);
-                }
-            }
-        }
-        
-        function aiMove() {
-            if (gameOver) return;
-            const aiColorToUse = aiColor;
-            if (currentTurn !== aiColorToUse) return;
-            
+        function getAllMoves(color) {
             let moves = [];
-            for (let i=0;i<8;i++) {
-                for(let j=0;j<8;j++) {
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
                     const piece = boardState[i][j];
-                    if(piece && piece.color === aiColorToUse) {
-                        for(let ti=0;ti<8;ti++) {
-                            for(let tj=0;tj<8;tj++) {
-                                if(isValidMove(piece, ti, tj, boardState)) {
-                                    moves.push({piece, toRow: ti, toCol: tj});
+                    if (piece && piece.color === color) {
+                        for (let ti = 0; ti < 8; ti++) {
+                            for (let tj = 0; tj < 8; tj++) {
+                                if (isValidMove(piece, ti, tj, boardState)) {
+                                    moves.push({ piece, toRow: ti, toCol: tj });
                                 }
                             }
                         }
                     }
                 }
             }
+            return moves;
+        }
+        
+        function makeAIMove() {
+            if (gameOver) return false;
+            const aiColor = gameMode === 'vsAI' ? (playerColor === 'white' ? 'black' : 'white') : currentTurn;
+            if (currentTurn !== aiColor) return false;
+            
+            const moves = getAllMoves(aiColor);
             if (moves.length === 0) {
                 gameOver = true;
-                document.getElementById('game-status').innerText = '🏆 ' + (aiColorToUse === 'black' ? 'Blancas ganan' : 'Negras ganan');
-                return;
+                document.getElementById('game-status').innerText = `🏆 Ganan ${aiColor === 'white' ? 'Negras' : 'Blancas'}!`;
+                if (autoPlayInterval) clearInterval(autoPlayInterval);
+                return false;
             }
+            
             const randomMove = moves[Math.floor(Math.random() * moves.length)];
             if (movePiece(randomMove.piece, randomMove.toRow, randomMove.toCol)) {
                 clearHighlights();
                 selectedPiece = null;
                 switchTurn();
-            } else {
-                aiMove();
+                return true;
+            }
+            return false;
+        }
+        
+        function startAutoPlay() {
+            if (autoPlayInterval) clearInterval(autoPlayInterval);
+            isAutoPlaying = true;
+            document.getElementById('btn-auto').style.display = 'none';
+            document.getElementById('btn-stop-auto').style.display = 'block';
+            autoPlayInterval = setInterval(() => {
+                if (!gameOver && currentTurn) {
+                    makeAIMove();
+                } else if (gameOver) {
+                    stopAutoPlay();
+                }
+            }, 550);
+        }
+        
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+            isAutoPlaying = false;
+            document.getElementById('btn-auto').style.display = 'block';
+            document.getElementById('btn-stop-auto').style.display = 'none';
+        }
+        
+        function switchTurn() {
+            currentTurn = currentTurn === 'white' ? 'black' : 'white';
+            updateTurnDisplay();
+            
+            let whiteKingExists = false, blackKingExists = false;
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    const p = boardState[i][j];
+                    if (p && p.type === 'king') {
+                        if (p.color === 'white') whiteKingExists = true;
+                        else blackKingExists = true;
+                    }
+                }
+            }
+            
+            if (!whiteKingExists) {
+                gameOver = true;
+                document.getElementById('game-status').innerText = '🏆 Ganan Negras!';
+                if (autoPlayInterval) clearInterval(autoPlayInterval);
+            }
+            if (!blackKingExists) {
+                gameOver = true;
+                document.getElementById('game-status').innerText = '🏆 Ganan Blancas!';
+                if (autoPlayInterval) clearInterval(autoPlayInterval);
+            }
+            if (gameOver) return;
+            
+            if (gameMode === 'vsAI') {
+                const isPlayerTurn = (playerColor === currentTurn);
+                if (!isPlayerTurn && !gameOver) setTimeout(() => makeAIMove(), 200);
+            } else if (gameMode === 'auto' && !gameOver && !isAutoPlaying) {
+                startAutoPlay();
             }
         }
         
@@ -613,8 +610,8 @@
             const mainColor = piece.color === 'white' ? whiteCustomColor : blackCustomColor;
             const goldColor = 0xffcc44;
             
+            const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.85, roughness: 0.2, emissive: piece.color === 'white' ? 0x442200 : 0x000000, emissiveIntensity: 0.1 });
             const baseGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.12, 32);
-            const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.8, roughness: 0.25, emissive: piece.color === 'white' ? 0x222200 : 0x000000, emissiveIntensity: 0.1 });
             const base = new THREE.Mesh(baseGeo, baseMat);
             base.position.y = 0.06;
             base.castShadow = true;
@@ -626,145 +623,114 @@
             body.castShadow = true;
             group.add(body);
             
+            const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.95, emissive: 0x442200, emissiveIntensity: 0.15 });
+            
             switch(piece.type) {
                 case 'king':
                     const topPart = new THREE.CylinderGeometry(0.28, 0.3, 0.35, 32);
                     const topMesh = new THREE.Mesh(topPart, baseMat);
                     topMesh.position.y = 0.52;
                     group.add(topMesh);
-                    const crossH = new THREE.BoxGeometry(0.28, 0.08, 0.08);
-                    const crossV = new THREE.BoxGeometry(0.08, 0.28, 0.08);
-                    const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.95 });
-                    const barH = new THREE.Mesh(crossH, goldMat);
-                    const barV = new THREE.Mesh(crossV, goldMat);
+                    const barH = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.08), goldMat);
+                    const barV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.28, 0.08), goldMat);
                     barH.position.y = 0.78;
                     barV.position.y = 0.78;
                     group.add(barH);
                     group.add(barV);
-                    const topBall = new THREE.SphereGeometry(0.09, 16);
-                    const ballMesh = new THREE.Mesh(topBall, goldMat);
-                    ballMesh.position.y = 0.92;
+                    const ballMesh = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16), goldMat);
+                    ballMesh.position.y = 0.93;
                     group.add(ballMesh);
                     break;
-                    
                 case 'queen':
                     const queenBody = new THREE.CylinderGeometry(0.28, 0.32, 0.42, 32);
                     const queenMesh = new THREE.Mesh(queenBody, baseMat);
                     queenMesh.position.y = 0.52;
                     group.add(queenMesh);
-                    for(let i = 0; i < 6; i++) {
-                        const angle = (i / 6) * Math.PI * 2;
-                        const spikeGeo = new THREE.ConeGeometry(0.07, 0.2, 6);
-                        const spikeMat = new THREE.MeshStandardMaterial({ color: goldColor });
-                        const spike = new THREE.Mesh(spikeGeo, spikeMat);
-                        spike.position.x = Math.cos(angle) * 0.26;
-                        spike.position.z = Math.sin(angle) * 0.26;
-                        spike.position.y = 0.78;
+                    for(let i = 0; i < 8; i++) {
+                        const angle = (i / 8) * Math.PI * 2;
+                        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 6), goldMat);
+                        spike.position.set(Math.cos(angle) * 0.27, 0.79, Math.sin(angle) * 0.27);
                         group.add(spike);
                     }
-                    const gem = new THREE.SphereGeometry(0.1, 16);
-                    const gemMat = new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.85 });
-                    const gemMesh = new THREE.Mesh(gem, gemMat);
-                    gemMesh.position.y = 0.88;
+                    const gemMesh = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16), new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.85, emissive: 0xff44aa, emissiveIntensity: 0.2 }));
+                    gemMesh.position.y = 0.89;
                     group.add(gemMesh);
                     break;
-                    
                 case 'knight':
-                    const neckGeo = new THREE.CylinderGeometry(0.2, 0.26, 0.38, 12);
-                    const neck = new THREE.Mesh(neckGeo, baseMat);
+                    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 0.38, 12), baseMat);
                     neck.position.set(0.15, 0.48, 0);
                     neck.rotation.z = -0.35;
-                    neck.rotation.x = 0.1;
                     group.add(neck);
-                    const headGeo = new THREE.BoxGeometry(0.3, 0.3, 0.24);
-                    const head = new THREE.Mesh(headGeo, baseMat);
+                    const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.24), baseMat);
                     head.position.set(0.35, 0.68, 0);
                     head.rotation.z = -0.15;
                     group.add(head);
-                    const earGeo = new THREE.ConeGeometry(0.09, 0.16, 6);
-                    const ear = new THREE.Mesh(earGeo, baseMat);
+                    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.16, 6), baseMat);
                     ear.position.set(0.42, 0.84, 0.1);
                     group.add(ear);
-                    const maneGeo = new THREE.CylinderGeometry(0.13, 0.11, 0.22, 6);
-                    const maneMat = new THREE.MeshStandardMaterial({ color: piece.color === 'white' ? 0xccaa77 : 0x444444 });
-                    const mane = new THREE.Mesh(maneGeo, maneMat);
+                    const mane = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.22, 6), new THREE.MeshStandardMaterial({ color: piece.color === 'white' ? 0xccaa77 : 0x555555 }));
                     mane.position.set(0.22, 0.72, -0.14);
                     mane.rotation.x = 0.4;
                     group.add(mane);
-                    const eyeGeo = new THREE.SphereGeometry(0.05, 16);
-                    const eyeMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-                    const eye = new THREE.Mesh(eyeGeo, eyeMat);
+                    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16), new THREE.MeshStandardMaterial({ color: 0x000000 }));
                     eye.position.set(0.46, 0.74, 0.13);
                     group.add(eye);
                     break;
-                    
                 case 'bishop':
-                    const mitreGeo = new THREE.ConeGeometry(0.3, 0.48, 8);
-                    const mitre = new THREE.Mesh(mitreGeo, baseMat);
+                    const mitre = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.48, 8), baseMat);
                     mitre.position.y = 0.62;
                     group.add(mitre);
-                    const ringGeo = new THREE.TorusGeometry(0.28, 0.04, 16, 48);
-                    const ringMat = new THREE.MeshStandardMaterial({ color: goldColor });
-                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.045, 16, 48), goldMat);
                     ring.rotation.x = Math.PI / 2;
                     ring.position.y = 0.42;
                     group.add(ring);
-                    const topBallBishop = new THREE.SphereGeometry(0.08, 16);
-                    const ballBishop = new THREE.Mesh(topBallBishop, new THREE.MeshStandardMaterial({ color: goldColor }));
-                    ballBishop.position.y = 0.88;
+                    const ballBishop = new THREE.Mesh(new THREE.SphereGeometry(0.085, 16), goldMat);
+                    ballBishop.position.y = 0.89;
                     group.add(ballBishop);
                     break;
-                    
                 case 'rook':
-                    const towerGeo = new THREE.CylinderGeometry(0.32, 0.36, 0.52, 8);
-                    const tower = new THREE.Mesh(towerGeo, baseMat);
+                    const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.52, 8), baseMat);
                     tower.position.y = 0.42;
                     group.add(tower);
                     for(let i = 0; i < 4; i++) {
                         const angle = (i / 4) * Math.PI * 2;
-                        const battlementGeo = new THREE.BoxGeometry(0.14, 0.16, 0.14);
-                        const battlement = new THREE.Mesh(battlementGeo, new THREE.MeshStandardMaterial({ color: mainColor }));
-                        battlement.position.x = Math.cos(angle) * 0.34;
-                        battlement.position.z = Math.sin(angle) * 0.34;
-                        battlement.position.y = 0.72;
+                        const battlement = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.16, 0.14), baseMat);
+                        battlement.position.set(Math.cos(angle) * 0.34, 0.73, Math.sin(angle) * 0.34);
                         group.add(battlement);
                     }
+                    const topRing = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.04, 16, 48), goldMat);
+                    topRing.rotation.x = Math.PI / 2;
+                    topRing.position.y = 0.71;
+                    group.add(topRing);
                     break;
-                    
                 case 'pawn':
-                    const pawnNeck = new THREE.CylinderGeometry(0.22, 0.28, 0.22, 16);
-                    const pawnNeckMesh = new THREE.Mesh(pawnNeck, baseMat);
-                    pawnNeckMesh.position.y = 0.42;
-                    group.add(pawnNeckMesh);
-                    const pawnHead = new THREE.SphereGeometry(0.19, 32);
-                    const pawnHeadMesh = new THREE.Mesh(pawnHead, baseMat);
-                    pawnHeadMesh.position.y = 0.64;
-                    group.add(pawnHeadMesh);
-                    const pawnRing = new THREE.TorusGeometry(0.27, 0.04, 16, 48);
-                    const pawnRingMesh = new THREE.Mesh(pawnRing, new THREE.MeshStandardMaterial({ color: goldColor }));
-                    pawnRingMesh.rotation.x = Math.PI / 2;
-                    pawnRingMesh.position.y = 0.36;
-                    group.add(pawnRingMesh);
+                    const pawnNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.22, 16), baseMat);
+                    pawnNeck.position.y = 0.42;
+                    group.add(pawnNeck);
+                    const pawnHead = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32), baseMat);
+                    pawnHead.position.y = 0.65;
+                    group.add(pawnHead);
+                    const pawnRing = new THREE.Mesh(new THREE.TorusGeometry(0.27, 0.045, 16, 48), goldMat);
+                    pawnRing.rotation.x = Math.PI / 2;
+                    pawnRing.position.y = 0.36;
+                    group.add(pawnRing);
                     break;
             }
-            
             return group;
         }
         
         function init3D() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x0a0a2a);
-            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.006);
+            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.005);
             
-            const aspect = window.innerWidth / window.innerHeight;
-            camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(5.5, 7.5, 7.5);
-            camera.lookAt(0, 0, 0);
             
             renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             document.body.appendChild(renderer.domElement);
             
             labelRenderer = new CSS2DRenderer();
@@ -779,51 +745,47 @@
             orbitControls.enableDamping = true;
             orbitControls.dampingFactor = 0.06;
             orbitControls.enableZoom = true;
-            orbitControls.zoomSpeed = 0.8;
-            orbitControls.rotateSpeed = 0.8;
+            orbitControls.zoomSpeed = 0.9;
+            orbitControls.rotateSpeed = 0.9;
             orbitControls.touchRotate = true;
             orbitControls.touchZoom = true;
             orbitControls.target.set(0, 0.5, 0);
             
             const ambient = new THREE.AmbientLight(0x404060);
             scene.add(ambient);
-            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.2);
+            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.3);
             mainLight.position.set(5, 12, 6);
             mainLight.castShadow = true;
             mainLight.shadow.mapSize.width = 1024;
             mainLight.shadow.mapSize.height = 1024;
             scene.add(mainLight);
-            const fillLight = new THREE.PointLight(0xccaa88, 0.5);
+            const fillLight = new THREE.PointLight(0xccaa88, 0.6);
             fillLight.position.set(-3, 5, 4);
             scene.add(fillLight);
-            const backLight = new THREE.PointLight(0x88aaff, 0.4);
+            const backLight = new THREE.PointLight(0x88aaff, 0.5);
             backLight.position.set(0, 4, -6);
             scene.add(backLight);
-            const rimLight = new THREE.PointLight(0xffaa66, 0.3);
-            rimLight.position.set(3, 3, -4);
+            const rimLight = new THREE.PointLight(0xffaa66, 0.4);
+            rimLight.position.set(3, 4, -5);
             scene.add(rimLight);
             
             const boardGroup = new THREE.Group();
             for (let i = 0; i < 8; i++) {
                 for (let j = 0; j < 8; j++) {
                     const color = (i + j) % 2 === 0 ? 0xf0d9b5 : 0xb58863;
-                    const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3, metalness: 0.15 });
-                    const geometry = new THREE.BoxGeometry(0.96, 0.12, 0.96);
-                    const square = new THREE.Mesh(geometry, material);
-                    square.position.x = j - 3.5;
-                    square.position.z = i - 3.5;
-                    square.position.y = -0.06;
+                    const square = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.12, 0.96), new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.12 }));
+                    square.position.set(j - 3.5, -0.06, i - 3.5);
                     square.receiveShadow = true;
                     boardGroup.add(square);
                     
                     const div = document.createElement('div');
                     div.textContent = `${String.fromCharCode(97+j)}${8-i}`;
                     div.style.color = (i+j)%2===0 ? '#553b1f' : '#f0e6d2';
-                    div.style.fontSize = '9px';
+                    div.style.fontSize = '10px';
                     div.style.fontWeight = 'bold';
                     div.style.textShadow = '0 0 2px rgba(0,0,0,0.5)';
                     const label = new CSS2DObject(div);
-                    label.position.set(j - 3.5, -0.22, i - 3.5);
+                    label.position.set(j - 3.5, -0.2, i - 3.5);
                     boardGroup.add(label);
                 }
             }
@@ -831,123 +793,70 @@
             
             piecesGroup = new THREE.Group();
             scene.add(piecesGroup);
-            
             createAllPieces();
             
-            renderer.domElement.addEventListener('click', onClick, false);
-            renderer.domElement.addEventListener('touchstart', onTouchStart, false);
-            renderer.domElement.addEventListener('touchend', onTouchEnd, false);
+            renderer.domElement.addEventListener('click', onClick);
+            renderer.domElement.addEventListener('touchstart', onTouchStart);
+            renderer.domElement.addEventListener('touchend', onTouchEnd);
         }
         
-        let touchTarget = null;
-        
-        function onTouchStart(event) {
-            event.preventDefault();
-            const touch = event.touches[0];
-            const feedback = document.createElement('div');
-            feedback.className = 'touch-feedback';
-            feedback.style.left = touch.clientX + 'px';
-            feedback.style.top = touch.clientY + 'px';
-            document.body.appendChild(feedback);
-            setTimeout(() => feedback.remove(), 400);
-            touchTarget = { x: touch.clientX, y: touch.clientY };
-        }
-        
-        function onTouchEnd(event) {
-            event.preventDefault();
-            if (touchTarget) {
+        let touchPos = null;
+        function onTouchStart(e) { e.preventDefault(); const t = e.touches[0]; touchPos = { x: t.clientX, y: t.clientY }; }
+        function onTouchEnd(e) {
+            e.preventDefault();
+            if (touchPos) {
                 const rect = renderer.domElement.getBoundingClientRect();
-                const x = touchTarget.x - rect.left;
-                const y = touchTarget.y - rect.top;
-                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                    handleInteraction(x, y);
-                }
-                touchTarget = null;
+                handleInteraction(touchPos.x - rect.left, touchPos.y - rect.top);
+                touchPos = null;
             }
         }
-        
-        function onClick(event) {
+        function onClick(e) {
             const rect = renderer.domElement.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            handleInteraction(x, y);
+            handleInteraction(e.clientX - rect.left, e.clientY - rect.top);
         }
         
         function handleInteraction(x, y) {
-            if(gameOver) return;
+            if (gameOver || (gameMode === 'auto')) return;
             
-            const rect = renderer.domElement.getBoundingClientRect();
-            const mouseX = (x / rect.width) * 2 - 1;
-            const mouseY = -(y / rect.height) * 2 + 1;
-            
+            const mouse = new THREE.Vector2((x / renderer.domElement.clientWidth) * 2 - 1, -(y / renderer.domElement.clientHeight) * 2 + 1);
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
+            raycaster.setFromCamera(mouse, camera);
             
-            const intersects = raycaster.intersectObjects(piecesGroup.children, true);
             let clickedPiece = null;
-            
-            for(let intersect of intersects) {
-                let obj = intersect.object;
-                while(obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
-                if(obj.userData && obj.userData.piece) {
-                    clickedPiece = obj;
-                    break;
-                }
+            const intersects = raycaster.intersectObjects(piecesGroup.children, true);
+            for (let hit of intersects) {
+                let obj = hit.object;
+                while (obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
+                if (obj.userData?.piece) { clickedPiece = obj; break; }
             }
             
-            const planeIntersects = raycaster.intersectObjects(piecesGroup.children, false);
-            let targetRowCol = null;
-            for(let intersect of planeIntersects) {
-                const point = intersect.point;
-                const col = Math.round(point.x + 3.5);
-                const row = Math.round(point.z + 3.5);
-                if(row >= 0 && row < 8 && col >= 0 && col < 8) {
-                    targetRowCol = { row, col };
-                    break;
-                }
+            let target = null;
+            const planeHits = raycaster.intersectObjects(piecesGroup.children, false);
+            for (let hit of planeHits) {
+                const col = Math.round(hit.point.x + 3.5);
+                const row = Math.round(hit.point.z + 3.5);
+                if (row >= 0 && row < 8 && col >= 0 && col < 8) { target = { row, col }; break; }
             }
             
-            if(selectedPiece) {
-                if(targetRowCol) {
-                    if(movePiece(selectedPiece.piece, targetRowCol.row, targetRowCol.col)) {
-                        clearHighlights();
-                        selectedPiece = null;
-                        switchTurn();
-                    } else {
-                        clearHighlights();
-                        selectedPiece = null;
-                    }
+            if (selectedPiece) {
+                if (target && movePiece(selectedPiece.piece, target.row, target.col)) {
+                    clearHighlights();
+                    selectedPiece = null;
+                    switchTurn();
                 } else {
                     clearHighlights();
                     selectedPiece = null;
                 }
-            }
-            else if(clickedPiece && clickedPiece.userData.piece) {
+            } else if (clickedPiece?.userData.piece) {
                 const piece = clickedPiece.userData.piece;
-                if(gameMode === 'vsAI') {
-                    if(piece.color === playerColor && piece.color === currentTurn) {
-                        selectedPiece = { piece: piece };
-                        clearHighlights();
-                        highlightSquare(piece.row, piece.col, 0xffaa44);
-                        for(let i = 0; i < 8; i++) {
-                            for(let j = 0; j < 8; j++) {
-                                if(isValidMove(piece, i, j, boardState)) {
-                                    highlightSquare(i, j, 0x44ff44);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if(piece.color === currentTurn) {
-                        selectedPiece = { piece: piece };
-                        clearHighlights();
-                        highlightSquare(piece.row, piece.col, 0xffaa44);
-                        for(let i = 0; i < 8; i++) {
-                            for(let j = 0; j < 8; j++) {
-                                if(isValidMove(piece, i, j, boardState)) {
-                                    highlightSquare(i, j, 0x44ff44);
-                                }
-                            }
+                const canPlay = (gameMode === 'vsAI' && piece.color === playerColor && piece.color === currentTurn) || (gameMode === 'vs2' && piece.color === currentTurn);
+                if (canPlay) {
+                    selectedPiece = { piece };
+                    clearHighlights();
+                    highlightSquare(piece.row, piece.col, 0xffaa44);
+                    for (let i = 0; i < 8; i++) {
+                        for (let j = 0; j < 8; j++) {
+                            if (isValidMove(piece, i, j, boardState)) highlightSquare(i, j, 0x44ff44);
                         }
                     }
                 }
@@ -957,16 +866,13 @@
         function createAllPieces() {
             while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
             piecesMeshes.clear();
-            
-            for(let i = 0; i < 8; i++) {
-                for(let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
                     const piece = boardState[i][j];
-                    if(piece) {
+                    if (piece) {
                         const mesh = createPiece3D(piece);
-                        mesh.userData = { row: i, col: j, piece: piece };
-                        mesh.position.x = j - 3.5;
-                        mesh.position.z = i - 3.5;
-                        mesh.position.y = 0.08;
+                        mesh.userData = { row: i, col: j, piece };
+                        mesh.position.set(j - 3.5, 0.08, i - 3.5);
                         piecesGroup.add(mesh);
                         piecesMeshes.set(`${i},${j}`, mesh);
                     }
@@ -976,115 +882,159 @@
         
         function update3DPiece(piece) {
             const oldKey = `${piece.row},${piece.col}`;
-            if(piecesMeshes.has(oldKey)) {
-                const oldMesh = piecesMeshes.get(oldKey);
-                if(oldMesh && oldMesh.userData.piece === piece) {
-                    piecesGroup.remove(oldMesh);
-                    piecesMeshes.delete(oldKey);
-                }
+            if (piecesMeshes.has(oldKey)) {
+                piecesGroup.remove(piecesMeshes.get(oldKey));
+                piecesMeshes.delete(oldKey);
             }
-            
-            for(let [key, mesh] of piecesMeshes) {
-                if(mesh.userData.piece === piece && (mesh.userData.row !== piece.row || mesh.userData.col !== piece.col)) {
-                    piecesGroup.remove(mesh);
-                    piecesMeshes.delete(key);
+            for (let [k, m] of piecesMeshes) {
+                if (m.userData.piece === piece && (m.userData.row !== piece.row || m.userData.col !== piece.col)) {
+                    piecesGroup.remove(m);
+                    piecesMeshes.delete(k);
                     break;
                 }
             }
-            
             const newMesh = createPiece3D(piece);
-            newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
-            newMesh.position.x = piece.col - 3.5;
-            newMesh.position.z = piece.row - 3.5;
-            newMesh.position.y = 0.08;
+            newMesh.userData = { row: piece.row, col: piece.col, piece };
+            newMesh.position.set(piece.col - 3.5, 0.08, piece.row - 3.5);
             piecesGroup.add(newMesh);
             piecesMeshes.set(`${piece.row},${piece.col}`, newMesh);
         }
         
         function remove3DPiece(piece) {
             const key = `${piece.row},${piece.col}`;
-            if(piecesMeshes.has(key)) {
-                const mesh = piecesMeshes.get(key);
-                if(mesh) piecesGroup.remove(mesh);
+            if (piecesMeshes.has(key)) {
+                piecesGroup.remove(piecesMeshes.get(key));
                 piecesMeshes.delete(key);
             }
         }
         
         function clearHighlights() {
-            for(let h of highlightMeshes) {
-                if(h && h.parent) piecesGroup.remove(h);
-            }
+            highlightMeshes.forEach(h => piecesGroup.remove(h));
             highlightMeshes = [];
         }
         
         function highlightSquare(row, col, color) {
-            const geometry = new THREE.BoxGeometry(0.94, 0.05, 0.94);
-            const material = new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.65, emissive: color, emissiveIntensity: 0.2 });
-            const square = new THREE.Mesh(geometry, material);
-            square.position.x = col - 3.5;
-            square.position.z = row - 3.5;
-            square.position.y = -0.03;
+            const square = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.05, 0.94), new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0.7, emissive: color, emissiveIntensity: 0.25 }));
+            square.position.set(col - 3.5, -0.03, row - 3.5);
             piecesGroup.add(square);
             highlightMeshes.push(square);
         }
         
         function updateTurnDisplay() {
-            const turnSymbol = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
-            document.getElementById('turn-text').innerHTML = turnSymbol;
-            document.getElementById('mode-label').innerHTML = gameMode === 'vsAI' ? 'vs IA' : '2 Jugadores';
-            if(gameMode === 'vsAI') {
-                document.getElementById('player-color-label').innerHTML = `Tus piezas: ${colorOptions.find(c => c.value === whiteCustomColor)?.name || 'Personalizado'}`;
-            } else {
-                document.getElementById('player-color-label').innerHTML = `Colores personalizados`;
-            }
+            document.getElementById('turn-text').innerHTML = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
+            let modeText = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
+            document.getElementById('mode-label').innerHTML = modeText;
+            document.getElementById('game-status').innerHTML = gameOver ? '🏆 Partida finalizada' : '🎮 En juego';
         }
         
         function resetGame() {
+            if (gameMode === 'auto') stopAutoPlay();
             initBoard();
             createAllPieces();
             clearHighlights();
             selectedPiece = null;
-            gameOver = false;
             updateTurnDisplay();
-            document.getElementById('game-status').innerText = 'En juego';
-            if(gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') {
-                setTimeout(() => aiMove(), 200);
-            }
+            if (gameMode === 'auto') startAutoPlay();
+            else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 300);
         }
         
-        function setMode(mode) {
+        function startGame(mode, whiteColor, blackColor) {
             gameMode = mode;
-            if (mode === 'vsAI') {
-                const randomDark = darkColorOptions[Math.floor(Math.random() * darkColorOptions.length)];
-                blackCustomColor = randomDark.value;
-                aiColor = 'black';
-                playerColor = 'white';
-                whiteCustomColor = selectedWhiteColor;
-            } else {
-                whiteCustomColor = selectedWhiteColor;
-                blackCustomColor = selectedBlackColor;
-                playerColor = 'white';
-                player2Color = 'black';
-            }
-            resetGame();
-        }
-        
-        function recolorGame() {
-            if (gameMode === 'vsAI') {
-                showColorPicker();
-            } else {
-                showColorPicker();
-            }
-        }
-        
-        function startGameWithColors() {
-            whiteCustomColor = selectedWhiteColor;
-            blackCustomColor = selectedBlackColor;
-            document.getElementById('color-picker-modal').style.display = 'none';
+            whiteCustomColor = whiteColor;
+            blackCustomColor = blackColor;
+            playerColor = 'white';
+            
+            if (gameMode === 'auto') stopAutoPlay();
             initBoard();
-            init3D();
-            animate();
+            if (piecesGroup) createAllPieces();
+            document.getElementById('start-modal').style.display = 'none';
+            
+            if (gameMode === 'auto') startAutoPlay();
+            else if (gameMode === 'vsAI' && currentTurn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
         }
+        
+        function renderColorSelector() {
+            const grid = document.getElementById('color-grid');
+            grid.innerHTML = '';
+            const colors = isSelectingBlack ? darkOptions : colorOptions;
+            
+            colors.forEach((c, idx) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.background = c.preview;
+                swatch.style.background = `radial-gradient(circle at 30% 30%, ${c.preview}, ${c.preview}aa)`;
+                swatch.onclick = () => {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    if (isSelectingBlack) {
+                        selectedBlackIdx = idx;
+                        document.getElementById('color-preview').style.background = c.preview;
+                    } else {
+                        selectedWhiteIdx = idx;
+                        document.getElementById('color-preview').style.background = c.preview;
+                    }
+                };
+                grid.appendChild(swatch);
+            });
+            
+            if (!isSelectingBlack && pendingMode !== 'auto') {
+                document.getElementById('color-preview').style.background = colorOptions[selectedWhiteIdx].preview;
+            } else if (isSelectingBlack) {
+                document.getElementById('color-preview').style.background = darkOptions[selectedBlackIdx].preview;
+            }
+        }
+        
+        document.getElementById('select-vsai').onclick = () => { 
+            pendingMode = 'vsAI'; 
+            isSelectingBlack = false;
+            document.getElementById('color-prompt').innerHTML = '🎨 Elige el color de TUS piezas BLANCAS:'; 
+            renderColorSelector(); 
+        };
+        
+        document.getElementById('select-vs2').onclick = () => { 
+            pendingMode = 'vs2'; 
+            isSelectingBlack = false;
+            document.getElementById('color-prompt').innerHTML = '🎨 Elige el color de las piezas BLANCAS:'; 
+            renderColorSelector(); 
+        };
+        
+        document.getElementById('select-auto').onclick = () => { 
+            pendingMode = 'auto'; 
+            document.getElementById('color-prompt').innerHTML = '🎨 IA vs IA - Colores aleatorios automáticos'; 
+            document.getElementById('color-preview').style.background = 'linear-gradient(135deg, #ffcc44, #ff66aa)';
+            const grid = document.getElementById('color-grid');
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ffd700; padding:20px;">🌈 Colores aleatorios al iniciar</div>';
+        };
+        
+        document.getElementById('confirm-start').onclick = () => {
+            if (pendingMode === 'auto') {
+                const randWhite = colorOptions[Math.floor(Math.random() * colorOptions.length)].value;
+                const randBlack = darkOptions[Math.floor(Math.random() * darkOptions.length)].value;
+                startGame('auto', randWhite, randBlack);
+            } else if (pendingMode === 'vs2') {
+                if (isSelectingBlack) {
+                    startGame('vs2', colorOptions[selectedWhiteIdx].value, darkOptions[selectedBlackIdx].value);
+                } else {
+                    isSelectingBlack = true;
+                    document.getElementById('color-prompt').innerHTML = '🎨 Ahora elige el color de las piezas NEGRAS:';
+                    renderColorSelector();
+                    document.getElementById('confirm-start').innerHTML = '✅ CONFIRMAR COLORES';
+                }
+            } else {
+                startGame('vsAI', colorOptions[selectedWhiteIdx].value, darkOptions[0].value);
+            }
+        };
+        
+        document.getElementById('btn-reset').onclick = () => resetGame();
+        document.getElementById('btn-recolor').onclick = () => { if (gameMode !== 'auto') document.getElementById('start-modal').style.display = 'flex'; };
+        document.getElementById('btn-auto').onclick = () => {
+            if (gameMode === 'auto') stopAutoPlay();
+            else { stopAutoPlay(); gameMode = 'auto'; resetGame(); }
+        };
+        document.getElementById('btn-stop-auto').onclick = () => { stopAutoPlay(); };
+        
+        renderColorSelector();
+        init3D();
         
         function animate() {
             requestAnimationFrame(animate);
@@ -1092,24 +1042,13 @@
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }
-        
-        document.getElementById('btn-vsai').addEventListener('click', () => setMode('vsAI'));
-        document.getElementById('btn-vs2').addEventListener('click', () => setMode('vs2'));
-        document.getElementById('btn-reset').addEventListener('click', () => resetGame());
-        document.getElementById('btn-recolor').addEventListener('click', () => recolorGame());
-        document.getElementById('start-game-btn').addEventListener('click', () => startGameWithColors());
-        
-        selectedWhiteColor = colorOptions[0].value;
-        selectedBlackColor = darkColorOptions[0].value;
-        renderColorPicker();
+        animate();
         
         window.addEventListener('resize', () => {
-            if(camera) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                if(renderer) renderer.setSize(window.innerWidth, window.innerHeight);
-                if(labelRenderer) labelRenderer.setSize(window.innerWidth, window.innerHeight);
-            }
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
