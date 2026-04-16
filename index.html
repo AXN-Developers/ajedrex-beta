@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEDREZ TOTAL - CON ANIMACIONES | 2D/3D | IA | PROMOCIÓN</title>
+    <title>Ajedrez Total - 2D/3D con Animaciones | IA | Multijugador</title>
     <style>
         * {
             user-select: none;
@@ -13,9 +13,10 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #0a0f1e;
         }
+        /* Modales */
         .modal-full {
             position: fixed;
             top: 0;
@@ -121,6 +122,7 @@
             cursor: pointer;
             margin-top: 15px;
         }
+        /* UI flotante */
         .ui-top-left, .ui-top-right, .ui-bottom {
             position: fixed;
             z-index: 1000;
@@ -159,6 +161,8 @@
             display: flex;
             gap: 16px;
             pointer-events: auto;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         button.action {
             background: #e63946;
@@ -168,9 +172,12 @@
             font-weight: bold;
             color: white;
             cursor: pointer;
+            transition: 0.1s;
         }
+        button.action:active { transform: scale(0.96); }
         button.action.purple { background: #9b59b6; }
         button.action.orange { background: #f39c12; }
+        button.action.cyan { background: #1abc9c; }
         .status-text {
             position: fixed;
             bottom: 20px;
@@ -226,7 +233,9 @@
             font-size: 48px;
             cursor: pointer;
             border: 2px solid #ffaa44;
+            transition: 0.1s;
         }
+        .promo-item:active { transform: scale(0.94); }
         @media (max-width: 650px) {
             .swatch { width: 48px; height: 48px; }
             .btn-mode { padding: 6px 16px; font-size: 13px; }
@@ -238,20 +247,20 @@
 <div id="startModal" class="modal-full">
     <div class="modal-card">
         <h1>♞ AJEDREZ TOTAL</h1>
-        <div class="badge">✨ ANIMACIONES | 2D/3D | IA | PROMOCIÓN ✨</div>
+        <div class="badge">✨ ANIMACIONES FLUIDAS | 2D/3D | IA | COLORES ✨</div>
         <div class="btn-group">
             <button class="btn-mode ai" id="modeVsAI">🤖 VS IA</button>
             <button class="btn-mode pvp" id="mode2P">👥 2 JUGADORES</button>
             <button class="btn-mode auto" id="modeAIAI">⚡ IA vs IA</button>
         </div>
         <div class="btn-group">
-            <button class="btn-mode btn-dim" id="dim3d">🎮 3D</button>
-            <button class="btn-mode btn-dim" id="dim2d">🖼️ 2D</button>
+            <button class="btn-mode btn-dim" id="dim3d">🎮 3D REALISTA</button>
+            <button class="btn-mode btn-dim" id="dim2d">🖼️ 2D CLÁSICO</button>
         </div>
-        <h3 id="colorPrompt" style="color:#ffd966;">🎨 COLOR DE TUS PIEZAS:</h3>
+        <h3 id="colorPrompt" style="color:#ffd966;">🎨 COLOR DE TUS PIEZAS (BLANCAS):</h3>
         <div id="colorGrid" class="color-grid"></div>
         <div id="previewCircle" class="preview-circle"></div>
-        <button class="start-btn" id="startGameBtn">🚀 COMENZAR</button>
+        <button class="start-btn" id="startGameBtn">🚀 COMENZAR PARTIDA</button>
     </div>
 </div>
 
@@ -266,6 +275,7 @@
     <button class="action" id="resetBtn">🔄 REINICIAR</button>
     <button class="action purple" id="colorBtn">🎨 COLORES</button>
     <button class="action orange" id="toggleDimBtn">🔄 CAMBIAR 2D/3D</button>
+    <button class="action cyan" id="changeModeBtn">🎮 CAMBIAR MODO</button>
 </div>
 <div class="status-text" id="statusMsg">⚡ LISTO</div>
 <canvas id="canvas2d"></canvas>
@@ -287,19 +297,18 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 // ==================== ESTADO GLOBAL ====================
 let board = Array(8).fill().map(() => Array(8).fill(null));
 let turn = 'white';
-let gameMode = 'vsAI';
+let gameMode = 'vsAI';     // vsAI, vs2, auto
 let playerColor = 'white';
 let gameOver = false;
 let selectedPiece = null;
 let is3D = true;
 
-// 3D
+// 3D vars
 let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
 let piecesMap = new Map();
 let highlightMeshes = [];
-let activeAnimation = null;
 
-// 2D
+// 2D vars
 let ctx2d, canvas2d;
 let selected2D = null;
 let highlight2D = [];
@@ -363,7 +372,7 @@ function initBoard() {
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 400);
 }
 
-// ==================== REGLAS COMPLETAS (CON JAQUE) ====================
+// ==================== REGLAS COMPLETAS (con jaque) ====================
 function isSquareAttacked(boardState, row, col, attackerColor) {
     for (let i = 0; i < 8; i++)
         for (let j = 0; j < 8; j++) {
@@ -455,25 +464,28 @@ function findKing(color, boardState) {
     return null;
 }
 
-// ==================== ANIMACIÓN DE MOVIMIENTO (3D) ====================
-function animatePieceMovement(mesh, startX, startZ, endX, endZ, duration = 250, onComplete) {
+// ==================== ANIMACIÓN FLUIDA 3D ====================
+function animatePiece3D(mesh, startX, startZ, endX, endZ, duration = 280, onComplete) {
     if (!mesh) return;
     const startY = mesh.position.y;
+    const startRotY = mesh.rotation.y;
     const startTime = performance.now();
     
     function step(now) {
         const elapsed = now - startTime;
         let t = Math.min(1, elapsed / duration);
-        const easeOutCubic = 1 - Math.pow(1 - t, 3);
-        mesh.position.x = startX + (endX - startX) * easeOutCubic;
-        mesh.position.z = startZ + (endZ - startZ) * easeOutCubic;
-        mesh.position.y = startY + Math.sin(t * Math.PI) * 0.25;
+        const easeOutBack = 1 - Math.pow(1 - t, 3);
+        mesh.position.x = startX + (endX - startX) * easeOutBack;
+        mesh.position.z = startZ + (endZ - startZ) * easeOutBack;
+        mesh.position.y = startY + Math.sin(t * Math.PI) * 0.28;
+        mesh.rotation.y = startRotY + Math.sin(t * Math.PI) * 0.5;
         if (t < 1) {
             requestAnimationFrame(step);
         } else {
             mesh.position.x = endX;
             mesh.position.z = endZ;
             mesh.position.y = startY;
+            mesh.rotation.y = startRotY;
             if (onComplete) onComplete();
         }
     }
@@ -514,18 +526,18 @@ async function executeMove(piece, toRow, toCol) {
     let oldMesh = null;
     if (is3D) oldMesh = piecesMap.get(`${fromRow},${fromCol}`);
     
-    // Animación en 3D antes de modificar el estado lógico
+    // Animación en 3D antes de modificar el estado
     if (is3D && oldMesh) {
         const startX = oldMesh.position.x;
         const startZ = oldMesh.position.z;
         const endX = toCol - 3.5;
         const endZ = toRow - 3.5;
         await new Promise((resolve) => {
-            animatePieceMovement(oldMesh, startX, startZ, endX, endZ, 220, resolve);
+            animatePiece3D(oldMesh, startX, startZ, endX, endZ, 280, resolve);
         });
     }
     
-    // Ahora modificar el tablero y los meshes
+    // Actualizar lógica del tablero
     board[toRow][toCol] = piece;
     board[fromRow][fromCol] = null;
     piece.row = toRow; piece.col = toCol;
@@ -536,6 +548,7 @@ async function executeMove(piece, toRow, toCol) {
         piece.type = newType;
     }
     
+    // Enroque
     if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
         const rookFrom = toCol === 6 ? 7 : 0;
         const rookTo = toCol === 6 ? 5 : 3;
@@ -552,7 +565,6 @@ async function executeMove(piece, toRow, toCol) {
     
     if (is3D) {
         if (target) removePieceMesh(target.row, target.col);
-        // Actualizar el mesh de la pieza movida (ya está en nueva posición)
         if (oldMesh) {
             piecesGroup.remove(oldMesh);
             piecesMap.delete(`${fromRow},${fromCol}`);
@@ -621,7 +633,7 @@ async function makeAIMove() {
 
 function startAutoPlay() {
     if (autoInterval) clearInterval(autoInterval);
-    autoInterval = setInterval(() => { if (!gameOver && turn) makeAIMove(); else if (gameOver) clearInterval(autoInterval); }, 520);
+    autoInterval = setInterval(() => { if (!gameOver && turn) makeAIMove(); else if (gameOver) clearInterval(autoInterval); }, 500);
 }
 function stopAutoPlay() { if (autoInterval) { clearInterval(autoInterval); autoInterval = null; } }
 
@@ -841,7 +853,7 @@ async function handleClick3D(x,y) {
     }
 }
 
-// ==================== MODO 2D (con animación simple de rebote) ====================
+// ==================== MODO 2D CON ANIMACIÓN VISUAL ====================
 function init2D() {
     canvas2d = document.getElementById('canvas2d');
     canvas2d.width = window.innerWidth;
@@ -901,12 +913,14 @@ function onTouch2DStart(e) { e.preventDefault(); const t=e.touches[0]; touch2D={
 function onTouch2DEnd(e) { e.preventDefault(); if(touch2D) { handleClick2D(touch2D.x, touch2D.y); touch2D=null; } }
 function onClick2D(e) { handleClick2D(e.clientX, e.clientY); }
 
-// Animación simple en 2D (refresco visual con rebote)
+// Animación 2D: pequeño efecto de "rebote" visual
 async function animate2DMove(piece, fromRow, fromCol, toRow, toCol) {
     return new Promise((resolve) => {
-        draw2DBoard(); // redibujar estado actual
-        // Simular animación con timeout (efecto visual de parpadeo)
-        setTimeout(resolve, 80);
+        draw2DBoard();
+        setTimeout(() => {
+            draw2DBoard();
+            resolve();
+        }, 60);
     });
 }
 
@@ -938,12 +952,13 @@ async function handleClick2D(x,y) {
     }
 }
 
-// ==================== UI Y CONTROL ====================
+// ==================== UI Y CONTROL DE MODOS ====================
 function updateUI() {
     document.getElementById('turnText').innerHTML = turn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
     let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
     document.getElementById('modeLabel').innerHTML = modeStr;
 }
+
 function resetGame() {
     if (gameMode === 'auto') stopAutoPlay();
     initBoard();
@@ -952,6 +967,7 @@ function resetGame() {
     if (gameMode === 'auto') startAutoPlay();
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 300);
 }
+
 function switchDimension() {
     if (is3D) {
         is3D = false;
@@ -967,6 +983,21 @@ function switchDimension() {
         document.getElementById('toggleDimBtn').innerHTML = '🔄 CAMBIAR A 2D';
     }
 }
+
+// Cambiar modo en plena partida (reinicia la partida con nuevo modo)
+function changeGameMode(newMode) {
+    if (autoInterval) stopAutoPlay();
+    gameMode = newMode;
+    if (gameMode === 'auto') {
+        playerColor = 'white';
+    } else if (gameMode === 'vsAI') {
+        playerColor = 'white';
+    } else {
+        playerColor = 'white';
+    }
+    resetGame();
+}
+
 function startGame(mode, whiteVal, blackVal, dim) {
     gameMode = mode;
     whiteColorCode = whiteVal;
@@ -985,6 +1016,7 @@ function startGame(mode, whiteVal, blackVal, dim) {
     if (gameMode === 'auto') startAutoPlay();
     else if (gameMode === 'vsAI' && turn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
 }
+
 function renderColorSelector() {
     const grid = document.getElementById('colorGrid');
     grid.innerHTML = '';
@@ -1004,6 +1036,7 @@ function renderColorSelector() {
     });
     document.getElementById('previewCircle').style.backgroundColor = isSelectingBlackFor2P ? darkPalette[selectedBlackIdx].preview : colorPalette[selectedWhiteIdx].preview;
 }
+
 let chosenDimension = '3d';
 document.getElementById('dim3d').onclick = () => chosenDimension = '3d';
 document.getElementById('dim2d').onclick = () => chosenDimension = '2d';
@@ -1022,9 +1055,17 @@ document.getElementById('startGameBtn').onclick = () => {
         startGame('vsAI', colorPalette[selectedWhiteIdx].val, darkPalette[0].val, chosenDimension);
     }
 };
+
 document.getElementById('resetBtn').onclick = () => resetGame();
 document.getElementById('colorBtn').onclick = () => { if(gameMode !== 'auto') document.getElementById('startModal').style.display = 'flex'; };
 document.getElementById('toggleDimBtn').onclick = () => switchDimension();
+document.getElementById('changeModeBtn').onclick = () => {
+    const newMode = prompt("Elige modo: vsAI, vs2, auto", gameMode);
+    if (newMode === 'vsAI' || newMode === 'vs2' || newMode === 'auto') {
+        changeGameMode(newMode);
+    } else alert("Modo no válido (usa: vsAI, vs2, auto)");
+};
+
 renderColorSelector();
 function animateLoop() {
     requestAnimationFrame(animateLoop);
