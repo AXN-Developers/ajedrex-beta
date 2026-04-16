@@ -3,1053 +3,1000 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEREX v2.0 COMPLETE - AlexanderGH | Colores + IA + Animaciones</title>
+    <title>AJEREX ULTIMATE - 2D/3D + IA + PROMOCION + COLORES + ANIMACIONES | AlexanderGH</title>
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            box-sizing: border-box;
         }
-        
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
+            background: #0a0a2a;
             touch-action: none;
         }
-        
         #start-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.96);
-            z-index: 1000;
+            background: rgba(0,0,0,0.98);
+            z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            transition: all 0.3s;
         }
-        
         .start-panel {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 40px;
+            background: linear-gradient(145deg, #1a1a2f, #0f0f1f);
+            border-radius: 60px;
             padding: 30px 25px;
             text-align: center;
             max-width: 95%;
-            width: 400px;
-            border: 2px solid rgba(255,215,0,0.5);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease;
+            width: 500px;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.3);
+            animation: slideUpFancy 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUpFancy {
+            0% { opacity: 0; transform: scale(0.9) translateY(60px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
-        
         .start-panel h1 {
-            color: #ffd700;
-            margin: 0 0 5px;
-            font-size: 28px;
-            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #ffd700, #ffaa44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0 0 8px 0;
+            text-shadow: 0 0 15px rgba(255,215,0,0.5);
         }
-        
-        .start-panel h3 {
-            color: #ccc;
-            font-size: 14px;
-            margin: 8px 0;
-        }
-        
         .beta-badge {
-            background: linear-gradient(135deg, #ff9800, #f44336);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 25px;
-            font-size: 11px;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
             display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
             margin-bottom: 20px;
+            box-shadow: 0 0 12px rgba(255,75,43,0.5);
         }
-        
-        .mode-buttons {
+        .mode-buttons, .dimension-buttons {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             justify-content: center;
-            margin: 20px 0;
+            margin: 15px 0;
             flex-wrap: wrap;
         }
-        
         .mode-btn {
-            padding: 12px 20px;
-            font-size: 14px;
+            padding: 12px 24px;
+            font-size: 1rem;
             font-weight: bold;
             border: none;
-            border-radius: 40px;
+            border-radius: 60px;
             cursor: pointer;
-            transition: all 0.2s;
-            min-width: 100px;
+            transition: 0.2s;
+            min-width: 120px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
         }
-        
-        .mode-btn:active { transform: scale(0.95); }
-        .mode-ai { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
-        .mode-2p { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
-        .mode-auto { background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; }
-        
-        .color-preview-box {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin: 15px auto;
-            border: 3px solid gold;
-            transition: all 0.2s;
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-        
+        .mode-btn:active { transform: scale(0.96); }
+        .mode-ai { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; }
+        .mode-2p { background: linear-gradient(135deg, #f12711, #f5af19); color: white; }
+        .mode-auto { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; }
+        .mode-3d { background: linear-gradient(135deg, #2193b0, #6dd5ed); color: white; }
+        .mode-2d { background: linear-gradient(135deg, #606c88, #3f4c6b); color: white; }
         .color-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 15px;
             margin: 20px 0;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
             padding: 5px;
         }
-        
         .color-swatch {
-            width: 55px;
-            height: 55px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
+            transition: 0.2s;
             margin: 0 auto;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px black;
         }
-        
-        .color-swatch:hover { transform: scale(1.1); border-color: white; }
-        .color-swatch.selected { border-color: gold; transform: scale(1.1); box-shadow: 0 0 15px gold; }
-        
+        .color-swatch.selected { border-color: gold; transform: scale(1.1); box-shadow: 0 0 20px gold; }
+        .color-preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 15px auto;
+            border: 3px solid gold;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
         .start-btn {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
-            padding: 14px 30px;
-            font-size: 18px;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
             border: none;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
+            border-radius: 50px;
             width: 100%;
-            transition: all 0.2s;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 15px;
         }
-        
-        .start-btn:active { transform: scale(0.98); }
-        
-        #info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            background: rgba(0,0,0,0.8);
-            padding: 8px 15px;
-            border-radius: 25px;
-            pointer-events: none;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-            font-size: 11px;
-            font-weight: bold;
+        #promotion-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10,10,30,0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 25px;
+            text-align: center;
+            z-index: 20000;
+            border: 2px solid #ffd700;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 320px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
-        
-        #turn-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.85);
-            color: #ffd700;
-            padding: 10px 20px;
+        .promotion-pieces {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .promo-piece {
+            width: 80px;
+            height: 80px;
+            background: #2a2a3e;
             border-radius: 30px;
-            font-size: 15px;
-            font-weight: bold;
-            pointer-events: none;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,215,0,0.6);
-            font-family: monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid #ffaa44;
         }
-        
-        #controls {
+        .promo-piece:hover { transform: scale(1.1); background: #3a3a5e; border-color: gold; }
+        #info, #turn-indicator, #controls, #status, #dimension-toggle {
             position: absolute;
+            z-index: 100;
+        }
+        #info {
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 10px 18px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        #turn-indicator {
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 1px solid gold;
+            font-family: monospace;
+            pointer-events: none;
+        }
+        #controls {
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            padding: 10px 15px;
-            border-radius: 50px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 80px;
             display: flex;
-            gap: 12px;
-            z-index: 20;
-            backdrop-filter: blur(10px);
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 15px;
+            pointer-events: auto;
+            z-index: 200;
         }
-        
         button {
-            padding: 10px 18px;
-            font-size: 13px;
+            padding: 10px 20px;
             font-weight: bold;
             border: none;
-            border-radius: 35px;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.2s;
-            min-width: 70px;
+            font-size: 0.9rem;
+            transition: 0.1s;
         }
-        
-        button:active { transform: scale(0.95); }
-        
-        #btn-reset { background: linear-gradient(135deg, #f44336, #e53935); color: white; }
-        #btn-recolor { background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; }
-        #btn-auto { background: linear-gradient(135deg, #00BCD4, #009688); color: white; }
-        #btn-stop-auto { background: linear-gradient(135deg, #FF5722, #E64A19); color: white; display: none; }
-        
+        button:active { transform: scale(0.96); }
+        #btn-reset { background: #e63946; color: white; }
+        #btn-recolor { background: #9b59b6; color: white; }
+        #toggle-dim { background: #f39c12; color: white; }
         #status {
-            position: absolute;
             bottom: 20px;
-            right: 10px;
-            background: rgba(0,0,0,0.75);
-            color: #ddd;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
             padding: 6px 15px;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 11px;
+            color: #ccc;
             pointer-events: none;
-            font-family: monospace;
         }
-        
+        #canvas2d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: #1a1a2a;
+            z-index: 5;
+        }
         .touch-feedback {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.6), transparent);
+            background: radial-gradient(circle, rgba(255,215,0,0.7), transparent);
             pointer-events: none;
             transform: translate(-50%, -50%);
-            z-index: 100;
-            animation: ripple 0.5s ease-out forwards;
+            animation: rippleBlast 0.6s ease-out forwards;
+            z-index: 1000;
         }
-        
-        @keyframes ripple {
-            0% { width: 0px; height: 0px; opacity: 0.8; }
-            100% { width: 100px; height: 100px; opacity: 0; }
+        @keyframes rippleBlast {
+            0% { width: 0; height: 0; opacity: 0.9; }
+            100% { width: 140px; height: 140px; opacity: 0; }
         }
-        
-        @media (max-width: 600px) {
-            button { padding: 6px 12px; font-size: 10px; min-width: 55px; }
-            #turn-indicator { font-size: 11px; padding: 6px 12px; }
-            .color-swatch { width: 45px; height: 45px; }
-            .mode-btn { padding: 8px 12px; font-size: 12px; min-width: 80px; }
-            .start-panel { padding: 20px; width: 90%; }
+        @media (max-width: 700px) {
+            .color-swatch { width: 50px; height: 50px; }
+            .mode-btn { padding: 8px 16px; font-size: 12px; min-width: 90px; }
+            .start-panel { width: 95%; padding: 20px; }
+            .promo-piece { width: 65px; height: 65px; font-size: 45px; }
         }
     </style>
 </head>
 <body>
-    <div id="start-modal">
-        <div class="start-panel">
-            <h1>♜ AJEREX v2.0</h1>
-            <div class="beta-badge">🎨 COLORES PERSONALIZABLES | ANIMACIONES | IA</div>
-            <h3>🎮 ELIGE TU MODO DE JUEGO:</h3>
-            <div class="mode-buttons">
-                <button class="mode-btn mode-ai" id="select-vsai">🤖 VS IA</button>
-                <button class="mode-btn mode-2p" id="select-vs2">👥 2 JUGADORES</button>
-                <button class="mode-btn mode-auto" id="select-auto">⚡ IA vs IA</button>
-            </div>
-            <h3 id="color-prompt">🎨 Elige el color de tus piezas BLANCAS:</h3>
-            <div class="color-grid" id="color-grid"></div>
-            <div class="color-preview-box" id="color-preview" style="background: #eeeeff;"></div>
-            <button class="start-btn" id="confirm-start">🚀 INICIAR PARTIDA</button>
-            <p style="font-size: 10px; color: #888; margin-top: 15px;">Toca una pieza → Toca una casilla para mover | Gira la cámara con un dedo</p>
+
+<div id="start-modal">
+    <div class="start-panel">
+        <h1>♜ AJEREX ULTIMATE</h1>
+        <div class="beta-badge">✨ 2D | 3D | IA PROMOCION | COLORES EXTREME ✨</div>
+        <h3 style="color:#ffd7a0;">🎮 MODO DE JUEGO</h3>
+        <div class="mode-buttons">
+            <button class="mode-btn mode-ai" id="select-vsai">🤖 VS IA</button>
+            <button class="mode-btn mode-2p" id="select-vs2">👥 2 JUGADORES</button>
+            <button class="mode-btn mode-auto" id="select-auto">⚡ IA vs IA</button>
         </div>
+        <h3 style="color:#ffd7a0;">🖥️ DIMENSIÓN</h3>
+        <div class="dimension-buttons">
+            <button class="mode-btn mode-3d" id="select-3d">🎮 3D REALISTA</button>
+            <button class="mode-btn mode-2d" id="select-2d">🖼️ 2D CLÁSICO</button>
+        </div>
+        <h3 id="color-prompt" style="color:#ffd7a0;">🎨 ELIGE TUS PIEZAS BLANCAS:</h3>
+        <div class="color-grid" id="color-grid"></div>
+        <div class="color-preview-box" id="color-preview"></div>
+        <button class="start-btn" id="confirm-start">🚀 INICIAR AVENTURA</button>
+        <p style="font-size: 10px; margin-top: 12px; color: #aaa;">Toca pieza → Toca destino | Promoción al llegar al final</p>
     </div>
+</div>
 
-    <div id="info">
-        ♜ AJEREX v2.0 | <span id="mode-label">Selecciona modo</span>
-    </div>
-    <div id="turn-indicator">
-        Turno: <span id="turn-text">♔ Blancas</span>
-    </div>
-    <div id="controls">
-        <button id="btn-reset">🔄 Reiniciar</button>
-        <button id="btn-recolor">🎨 Cambiar Color</button>
-        <button id="btn-auto">⚡ Auto Jugar</button>
-        <button id="btn-stop-auto">⏹️ Detener Auto</button>
-    </div>
-    <div id="status">
-        🎮 <span id="game-status">Selecciona un modo</span>
-    </div>
+<div id="promotion-modal">
+    <h3 style="color:#ffd966;">🌟 ¡PROMOCIÓN ÉPICA! 🌟</h3>
+    <p style="color:white">Elige una nueva forma para tu peón:</p>
+    <div class="promotion-pieces" id="promotion-pieces"></div>
+</div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-            }
-        }
-    </script>
+<div id="info">♜ AJEREX ULTIMATE | <span id="mode-label">SELECCIONA MODO</span></div>
+<div id="turn-indicator">⚔️ TURNO: <span id="turn-text">BLANCAS</span></div>
+<div id="controls">
+    <button id="btn-reset">🔄 REINICIAR</button>
+    <button id="btn-recolor">🎨 COLORES</button>
+    <button id="toggle-dim">🔄 CAMBIAR 2D/3D</button>
+</div>
+<div id="status">🎮 <span id="game-status">LISTO</span></div>
+<canvas id="canvas2d"></canvas>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+        }
+    }
+</script>
 
-        let boardState = Array(8).fill().map(() => Array(8).fill(null));
-        let currentTurn = 'white';
-        let gameMode = 'vsAI';
-        let playerColor = 'white';
-        let gameOver = false;
-        let selectedPiece = null;
-        
-        let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
-        let piecesMeshes = new Map();
-        let highlightMeshes = [];
-        let autoPlayInterval = null;
-        let isAutoPlaying = false;
-        
-        let whiteCustomColor = 0xeeeeff;
-        let blackCustomColor = 0x222222;
-        
-        const colorOptions = [
-            { name: 'Blanco Clásico', value: 0xeeeeff, preview: '#eeeeff' },
-            { name: 'Dorado Real', value: 0xffcc44, preview: '#ffcc44' },
-            { name: 'Plateado', value: 0xc0c0c0, preview: '#c0c0c0' },
-            { name: 'Rubí', value: 0xff4444, preview: '#ff4444' },
-            { name: 'Zafiro', value: 0x4488ff, preview: '#4488ff' },
-            { name: 'Esmeralda', value: 0x44ff88, preview: '#44ff88' },
-            { name: 'Amatista', value: 0xaa66ff, preview: '#aa66ff' },
-            { name: 'Topacio', value: 0xffaa44, preview: '#ffaa44' }
-        ];
-        
-        const darkOptions = [
-            { name: 'Negro Clásico', value: 0x222222, preview: '#222222' },
-            { name: 'Obsidiana', value: 0x111111, preview: '#111111' },
-            { name: 'Grafito', value: 0x333344, preview: '#333344' },
-            { name: 'Caoba', value: 0x4a2511, preview: '#4a2511' },
-            { name: 'Ébano', value: 0x2c1810, preview: '#2c1810' },
-            { name: 'Carbón', value: 0x2a2a2a, preview: '#2a2a2a' },
-            { name: 'Violeta Oscuro', value: 0x331155, preview: '#331155' },
-            { name: 'Bronce', value: 0xcd7f32, preview: '#cd7f32' }
-        ];
-        
-        let selectedWhiteIdx = 0;
-        let selectedBlackIdx = 0;
-        let pendingMode = 'vsAI';
-        let isSelectingBlack = false;
-        
-        class Piece {
-            constructor(type, color, row, col) {
-                this.type = type;
-                this.color = color;
-                this.row = row;
-                this.col = col;
-                this.hasMoved = false;
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+let boardState = Array(8).fill().map(() => Array(8).fill(null));
+let currentTurn = 'white';
+let gameMode = 'vsAI';
+let playerColor = 'white';
+let gameOver = false;
+let selectedPiece = null;
+let is3D = true;
+let autoPlayInterval = null;
+let pendingPromotion = null;
+
+let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
+let piecesMeshes = new Map();
+let highlightMeshes = [];
+
+let ctx, canvas, boardSize2D = 500;
+let selectedRowCol = null;
+let highlightCells = [];
+
+let whiteCustomColor = 0xeeeeff;
+let blackCustomColor = 0x222222;
+
+const colorOptions = [
+    { name: 'Blanco Real', value: 0xeeeeff, preview: '#eeeeff' },
+    { name: 'Dorado Legend', value: 0xffcc44, preview: '#ffcc44' },
+    { name: 'Plateado Místico', value: 0xc0c0c0, preview: '#c0c0c0' },
+    { name: 'Rubí Fuego', value: 0xff4444, preview: '#ff4444' },
+    { name: 'Zafiro Alfa', value: 0x4488ff, preview: '#4488ff' },
+    { name: 'Esmeralda Dragón', value: 0x44ff88, preview: '#44ff88' },
+    { name: 'Amatista Arcano', value: 0xaa66ff, preview: '#aa66ff' },
+    { name: 'Topacio Solar', value: 0xffaa44, preview: '#ffaa44' }
+];
+
+const darkOptions = [
+    { name: 'Obsidiana', value: 0x111111, preview: '#111111' },
+    { name: 'Grafito Élite', value: 0x333344, preview: '#333344' },
+    { name: 'Caoba Ancestral', value: 0x4a2511, preview: '#4a2511' },
+    { name: 'Ébano Oscuro', value: 0x2c1810, preview: '#2c1810' },
+    { name: 'Violeta Nocturno', value: 0x331155, preview: '#331155' },
+    { name: 'Carbón Voraz', value: 0x222222, preview: '#222222' }
+];
+
+let selectedWhiteIdx = 0, selectedBlackIdx = 0, pendingMode = 'vsAI', isSelectingBlack = false, pendingDimension = '3d';
+
+class Piece {
+    constructor(type, color, row, col) {
+        this.type = type;
+        this.color = color;
+        this.row = row;
+        this.col = col;
+        this.hasMoved = false;
+    }
+}
+
+function initBoard() {
+    boardState = Array(8).fill().map(() => Array(8).fill(null));
+    for (let i = 0; i < 8; i++) {
+        boardState[1][i] = new Piece('pawn', 'black', 1, i);
+        boardState[6][i] = new Piece('pawn', 'white', 6, i);
+    }
+    const piecesOrder = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+    for (let i = 0; i < 8; i++) {
+        boardState[0][i] = new Piece(piecesOrder[i], 'black', 0, i);
+        boardState[7][i] = new Piece(piecesOrder[i], 'white', 7, i);
+    }
+    currentTurn = 'white';
+    gameOver = false;
+    selectedPiece = null;
+    selectedRowCol = null;
+    updateUIDisplay();
+    document.getElementById('game-status').innerText = '⚔️ EN JUEGO ⚔️';
+    if (gameMode === 'auto') startAutoPlay();
+    else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 400);
+}
+
+function isValidMove(piece, toRow, toCol, board) {
+    const fromRow = piece.row, fromCol = piece.col;
+    const target = board[toRow][toCol];
+    if (target && target.color === piece.color) return false;
+    const deltaRow = toRow - fromRow, deltaCol = toCol - fromCol;
+    const absDeltaRow = Math.abs(deltaRow), absDeltaCol = Math.abs(deltaCol);
+    switch(piece.type) {
+        case 'pawn':
+            const dir = piece.color === 'white' ? -1 : 1;
+            const startRow = piece.color === 'white' ? 6 : 1;
+            if (deltaCol === 0 && !target) {
+                if (deltaRow === dir) return true;
+                if (deltaRow === 2*dir && fromRow === startRow && !board[fromRow+dir][fromCol]) return true;
+            } else if (absDeltaCol === 1 && deltaRow === dir && target) return true;
+            return false;
+        case 'knight': return (absDeltaRow === 2 && absDeltaCol === 1) || (absDeltaRow === 1 && absDeltaCol === 2);
+        case 'bishop':
+            if (absDeltaRow !== absDeltaCol) return false;
+            let stepRow = deltaRow > 0 ? 1 : -1, stepCol = deltaCol > 0 ? 1 : -1;
+            let r = fromRow + stepRow, c = fromCol + stepCol;
+            while (r !== toRow || c !== toCol) {
+                if (board[r][c]) return false;
+                r += stepRow; c += stepCol;
             }
-        }
-        
-        function initBoard() {
-            boardState = Array(8).fill().map(() => Array(8).fill(null));
-            for (let i = 0; i < 8; i++) {
-                boardState[1][i] = new Piece('pawn', 'black', 1, i);
-                boardState[6][i] = new Piece('pawn', 'white', 6, i);
-            }
-            const piecesOrder = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
-            for (let i = 0; i < 8; i++) {
-                boardState[0][i] = new Piece(piecesOrder[i], 'black', 0, i);
-                boardState[7][i] = new Piece(piecesOrder[i], 'white', 7, i);
-            }
-            currentTurn = 'white';
-            gameOver = false;
-            selectedPiece = null;
-            updateTurnDisplay();
-            document.getElementById('game-status').innerText = 'En juego';
-            
-            if (gameMode === 'auto') {
-                startAutoPlay();
-            } else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white' && !gameOver) {
-                setTimeout(() => makeAIMove(), 500);
-            }
-        }
-        
-        function isValidMove(piece, toRow, toCol, board) {
-            const fromRow = piece.row, fromCol = piece.col;
-            const target = board[toRow][toCol];
-            if (target && target.color === piece.color) return false;
-            
-            const deltaRow = toRow - fromRow;
-            const deltaCol = toCol - fromCol;
-            const absDeltaRow = Math.abs(deltaRow);
-            const absDeltaCol = Math.abs(deltaCol);
-            
-            switch(piece.type) {
-                case 'pawn':
-                    const dir = piece.color === 'white' ? -1 : 1;
-                    const startRow = piece.color === 'white' ? 6 : 1;
-                    if (deltaCol === 0 && !target) {
-                        if (deltaRow === dir) return true;
-                        if (deltaRow === 2*dir && fromRow === startRow && !board[fromRow+dir][fromCol]) return true;
-                    } else if (absDeltaCol === 1 && deltaRow === dir && target) return true;
-                    return false;
-                case 'knight':
-                    return (absDeltaRow === 2 && absDeltaCol === 1) || (absDeltaRow === 1 && absDeltaCol === 2);
-                case 'bishop':
-                    if (absDeltaRow !== absDeltaCol) return false;
-                    let stepRow = deltaRow > 0 ? 1 : -1;
-                    let stepCol = deltaCol > 0 ? 1 : -1;
-                    let r = fromRow + stepRow, c = fromCol + stepCol;
-                    while (r !== toRow || c !== toCol) {
-                        if (board[r][c]) return false;
-                        r += stepRow; c += stepCol;
-                    }
-                    return true;
-                case 'rook':
-                    if (fromRow !== toRow && fromCol !== toCol) return false;
-                    if (fromRow === toRow) {
-                        let step = deltaCol > 0 ? 1 : -1;
-                        for (let c = fromCol + step; c !== toCol; c += step) if (board[toRow][c]) return false;
-                    } else {
-                        let step = deltaRow > 0 ? 1 : -1;
-                        for (let r = fromRow + step; r !== toRow; r += step) if (board[r][toCol]) return false;
-                    }
-                    return true;
-                case 'queen':
-                    return (isValidMove(new Piece('rook', piece.color, fromRow, fromCol), toRow, toCol, board) ||
-                            isValidMove(new Piece('bishop', piece.color, fromRow, fromCol), toRow, toCol, board));
-                case 'king':
-                    if (absDeltaRow <= 1 && absDeltaCol <= 1) return true;
-                    if (absDeltaCol === 2 && deltaRow === 0 && !piece.hasMoved) {
-                        const rookCol = deltaCol === 2 ? 7 : 0;
-                        const rook = board[fromRow][rookCol];
-                        if (rook && rook.type === 'rook' && !rook.hasMoved) {
-                            const between = deltaCol === 2 ? [5,6] : [1,2,3];
-                            for (let c of between) if (board[fromRow][c]) return false;
-                            return true;
-                        }
-                    }
-                    return false;
-                default: return false;
-            }
-        }
-        
-        function animateMove(mesh, fromX, fromZ, toX, toZ, callback) {
-            if (!mesh) { if(callback) callback(); return; }
-            const startTime = performance.now();
-            const startY = mesh.position.y;
-            
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const t = Math.min(1, elapsed / 220);
-                const easeOut = 1 - Math.pow(1 - t, 2);
-                mesh.position.x = fromX + (toX - fromX) * easeOut;
-                mesh.position.z = fromZ + (toZ - fromZ) * easeOut;
-                mesh.position.y = startY + Math.sin(t * Math.PI) * 0.18;
-                
-                if (t < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    mesh.position.x = toX;
-                    mesh.position.z = toZ;
-                    mesh.position.y = startY;
-                    if(callback) callback();
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        
-        function movePiece(piece, toRow, toCol) {
-            const fromRow = piece.row, fromCol = piece.col;
-            const target = boardState[toRow][toCol];
-            if (!isValidMove(piece, toRow, toCol, boardState)) return false;
-            
-            const pieceMesh = piecesMeshes.get(`${fromRow},${fromCol}`);
-            const fromX = pieceMesh ? pieceMesh.position.x : (fromCol - 3.5);
-            const fromZ = pieceMesh ? pieceMesh.position.z : (fromRow - 3.5);
-            const toX = toCol - 3.5;
-            const toZ = toRow - 3.5;
-            
-            boardState[toRow][toCol] = piece;
-            boardState[fromRow][fromCol] = null;
-            piece.row = toRow;
-            piece.col = toCol;
-            piece.hasMoved = true;
-            
-            if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) piece.type = 'queen';
-            
-            if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
-                const rookFromCol = toCol === 6 ? 7 : 0;
-                const rookToCol = toCol === 6 ? 5 : 3;
-                const rook = boardState[fromRow][rookFromCol];
-                if (rook && rook.type === 'rook') {
-                    boardState[fromRow][rookToCol] = rook;
-                    boardState[fromRow][rookFromCol] = null;
-                    rook.row = fromRow;
-                    rook.col = rookToCol;
-                    rook.hasMoved = true;
-                    update3DPiece(rook);
-                }
-            }
-            
-            if (pieceMesh) {
-                animateMove(pieceMesh, fromX, fromZ, toX, toZ, () => update3DPiece(piece));
-            } else {
-                update3DPiece(piece);
-            }
-            
-            if (target) remove3DPiece(target);
             return true;
-        }
-        
-        function getAllMoves(color) {
-            let moves = [];
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    const piece = boardState[i][j];
-                    if (piece && piece.color === color) {
-                        for (let ti = 0; ti < 8; ti++) {
-                            for (let tj = 0; tj < 8; tj++) {
-                                if (isValidMove(piece, ti, tj, boardState)) {
-                                    moves.push({ piece, toRow: ti, toCol: tj });
-                                }
-                            }
-                        }
-                    }
+        case 'rook':
+            if (fromRow !== toRow && fromCol !== toCol) return false;
+            if (fromRow === toRow) {
+                let step = deltaCol > 0 ? 1 : -1;
+                for (let c = fromCol + step; c !== toCol; c += step) if (board[toRow][c]) return false;
+            } else {
+                let step = deltaRow > 0 ? 1 : -1;
+                for (let r = fromRow + step; r !== toRow; r += step) if (board[r][toCol]) return false;
+            }
+            return true;
+        case 'queen':
+            return (isValidMove(new Piece('rook', piece.color, fromRow, fromCol), toRow, toCol, board) ||
+                    isValidMove(new Piece('bishop', piece.color, fromRow, fromCol), toRow, toCol, board));
+        case 'king':
+            if (absDeltaRow <= 1 && absDeltaCol <= 1) return true;
+            if (absDeltaCol === 2 && deltaRow === 0 && !piece.hasMoved) {
+                const rookCol = deltaCol === 2 ? 7 : 0;
+                const rook = board[fromRow][rookCol];
+                if (rook && rook.type === 'rook' && !rook.hasMoved) {
+                    for (let c of (deltaCol === 2 ? [5,6] : [1,2,3])) if (board[fromRow][c]) return false;
+                    return true;
                 }
-            }
-            return moves;
-        }
-        
-        function makeAIMove() {
-            if (gameOver) return false;
-            const aiColor = gameMode === 'vsAI' ? (playerColor === 'white' ? 'black' : 'white') : currentTurn;
-            if (currentTurn !== aiColor) return false;
-            
-            const moves = getAllMoves(aiColor);
-            if (moves.length === 0) {
-                gameOver = true;
-                document.getElementById('game-status').innerText = `🏆 Ganan ${aiColor === 'white' ? 'Negras' : 'Blancas'}!`;
-                if (autoPlayInterval) clearInterval(autoPlayInterval);
-                return false;
-            }
-            
-            const randomMove = moves[Math.floor(Math.random() * moves.length)];
-            if (movePiece(randomMove.piece, randomMove.toRow, randomMove.toCol)) {
-                clearHighlights();
-                selectedPiece = null;
-                switchTurn();
-                return true;
             }
             return false;
-        }
-        
-        function startAutoPlay() {
-            if (autoPlayInterval) clearInterval(autoPlayInterval);
-            isAutoPlaying = true;
-            document.getElementById('btn-auto').style.display = 'none';
-            document.getElementById('btn-stop-auto').style.display = 'block';
-            autoPlayInterval = setInterval(() => {
-                if (!gameOver && currentTurn) {
-                    makeAIMove();
-                } else if (gameOver) {
-                    stopAutoPlay();
-                }
-            }, 550);
-        }
-        
-        function stopAutoPlay() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-            }
-            isAutoPlaying = false;
-            document.getElementById('btn-auto').style.display = 'block';
-            document.getElementById('btn-stop-auto').style.display = 'none';
-        }
-        
-        function switchTurn() {
-            currentTurn = currentTurn === 'white' ? 'black' : 'white';
-            updateTurnDisplay();
-            
-            let whiteKingExists = false, blackKingExists = false;
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    const p = boardState[i][j];
-                    if (p && p.type === 'king') {
-                        if (p.color === 'white') whiteKingExists = true;
-                        else blackKingExists = true;
-                    }
-                }
-            }
-            
-            if (!whiteKingExists) {
-                gameOver = true;
-                document.getElementById('game-status').innerText = '🏆 Ganan Negras!';
-                if (autoPlayInterval) clearInterval(autoPlayInterval);
-            }
-            if (!blackKingExists) {
-                gameOver = true;
-                document.getElementById('game-status').innerText = '🏆 Ganan Blancas!';
-                if (autoPlayInterval) clearInterval(autoPlayInterval);
-            }
-            if (gameOver) return;
-            
-            if (gameMode === 'vsAI') {
-                const isPlayerTurn = (playerColor === currentTurn);
-                if (!isPlayerTurn && !gameOver) setTimeout(() => makeAIMove(), 200);
-            } else if (gameMode === 'auto' && !gameOver && !isAutoPlaying) {
-                startAutoPlay();
-            }
-        }
-        
-        function createPiece3D(piece) {
-            const group = new THREE.Group();
-            const mainColor = piece.color === 'white' ? whiteCustomColor : blackCustomColor;
-            const goldColor = 0xffcc44;
-            
-            const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.85, roughness: 0.2, emissive: piece.color === 'white' ? 0x442200 : 0x000000, emissiveIntensity: 0.1 });
-            const baseGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.12, 32);
-            const base = new THREE.Mesh(baseGeo, baseMat);
-            base.position.y = 0.06;
-            base.castShadow = true;
-            group.add(base);
-            
-            const bodyGeo = new THREE.CylinderGeometry(0.32, 0.35, 0.28, 32);
-            const body = new THREE.Mesh(bodyGeo, baseMat);
-            body.position.y = 0.25;
-            body.castShadow = true;
-            group.add(body);
-            
-            const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.95, emissive: 0x442200, emissiveIntensity: 0.15 });
-            
-            switch(piece.type) {
-                case 'king':
-                    const topPart = new THREE.CylinderGeometry(0.28, 0.3, 0.35, 32);
-                    const topMesh = new THREE.Mesh(topPart, baseMat);
-                    topMesh.position.y = 0.52;
-                    group.add(topMesh);
-                    const barH = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.08), goldMat);
-                    const barV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.28, 0.08), goldMat);
-                    barH.position.y = 0.78;
-                    barV.position.y = 0.78;
-                    group.add(barH);
-                    group.add(barV);
-                    const ballMesh = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16), goldMat);
-                    ballMesh.position.y = 0.93;
-                    group.add(ballMesh);
-                    break;
-                case 'queen':
-                    const queenBody = new THREE.CylinderGeometry(0.28, 0.32, 0.42, 32);
-                    const queenMesh = new THREE.Mesh(queenBody, baseMat);
-                    queenMesh.position.y = 0.52;
-                    group.add(queenMesh);
-                    for(let i = 0; i < 8; i++) {
-                        const angle = (i / 8) * Math.PI * 2;
-                        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 6), goldMat);
-                        spike.position.set(Math.cos(angle) * 0.27, 0.79, Math.sin(angle) * 0.27);
-                        group.add(spike);
-                    }
-                    const gemMesh = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16), new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.85, emissive: 0xff44aa, emissiveIntensity: 0.2 }));
-                    gemMesh.position.y = 0.89;
-                    group.add(gemMesh);
-                    break;
-                case 'knight':
-                    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 0.38, 12), baseMat);
-                    neck.position.set(0.15, 0.48, 0);
-                    neck.rotation.z = -0.35;
-                    group.add(neck);
-                    const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.24), baseMat);
-                    head.position.set(0.35, 0.68, 0);
-                    head.rotation.z = -0.15;
-                    group.add(head);
-                    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.16, 6), baseMat);
-                    ear.position.set(0.42, 0.84, 0.1);
-                    group.add(ear);
-                    const mane = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.22, 6), new THREE.MeshStandardMaterial({ color: piece.color === 'white' ? 0xccaa77 : 0x555555 }));
-                    mane.position.set(0.22, 0.72, -0.14);
-                    mane.rotation.x = 0.4;
-                    group.add(mane);
-                    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16), new THREE.MeshStandardMaterial({ color: 0x000000 }));
-                    eye.position.set(0.46, 0.74, 0.13);
-                    group.add(eye);
-                    break;
-                case 'bishop':
-                    const mitre = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.48, 8), baseMat);
-                    mitre.position.y = 0.62;
-                    group.add(mitre);
-                    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.045, 16, 48), goldMat);
-                    ring.rotation.x = Math.PI / 2;
-                    ring.position.y = 0.42;
-                    group.add(ring);
-                    const ballBishop = new THREE.Mesh(new THREE.SphereGeometry(0.085, 16), goldMat);
-                    ballBishop.position.y = 0.89;
-                    group.add(ballBishop);
-                    break;
-                case 'rook':
-                    const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.52, 8), baseMat);
-                    tower.position.y = 0.42;
-                    group.add(tower);
-                    for(let i = 0; i < 4; i++) {
-                        const angle = (i / 4) * Math.PI * 2;
-                        const battlement = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.16, 0.14), baseMat);
-                        battlement.position.set(Math.cos(angle) * 0.34, 0.73, Math.sin(angle) * 0.34);
-                        group.add(battlement);
-                    }
-                    const topRing = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.04, 16, 48), goldMat);
-                    topRing.rotation.x = Math.PI / 2;
-                    topRing.position.y = 0.71;
-                    group.add(topRing);
-                    break;
-                case 'pawn':
-                    const pawnNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.22, 16), baseMat);
-                    pawnNeck.position.y = 0.42;
-                    group.add(pawnNeck);
-                    const pawnHead = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32), baseMat);
-                    pawnHead.position.y = 0.65;
-                    group.add(pawnHead);
-                    const pawnRing = new THREE.Mesh(new THREE.TorusGeometry(0.27, 0.045, 16, 48), goldMat);
-                    pawnRing.rotation.x = Math.PI / 2;
-                    pawnRing.position.y = 0.36;
-                    group.add(pawnRing);
-                    break;
-            }
-            return group;
-        }
-        
-        function init3D() {
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0a2a);
-            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.005);
-            
-            camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(5.5, 7.5, 7.5);
-            
-            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            document.body.appendChild(renderer.domElement);
-            
-            labelRenderer = new CSS2DRenderer();
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.domElement.style.position = 'absolute';
-            labelRenderer.domElement.style.top = '0px';
-            labelRenderer.domElement.style.left = '0px';
-            labelRenderer.domElement.style.pointerEvents = 'none';
-            document.body.appendChild(labelRenderer.domElement);
-            
-            orbitControls = new OrbitControls(camera, renderer.domElement);
-            orbitControls.enableDamping = true;
-            orbitControls.dampingFactor = 0.06;
-            orbitControls.enableZoom = true;
-            orbitControls.zoomSpeed = 0.9;
-            orbitControls.rotateSpeed = 0.9;
-            orbitControls.touchRotate = true;
-            orbitControls.touchZoom = true;
-            orbitControls.target.set(0, 0.5, 0);
-            
-            const ambient = new THREE.AmbientLight(0x404060);
-            scene.add(ambient);
-            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.3);
-            mainLight.position.set(5, 12, 6);
-            mainLight.castShadow = true;
-            mainLight.shadow.mapSize.width = 1024;
-            mainLight.shadow.mapSize.height = 1024;
-            scene.add(mainLight);
-            const fillLight = new THREE.PointLight(0xccaa88, 0.6);
-            fillLight.position.set(-3, 5, 4);
-            scene.add(fillLight);
-            const backLight = new THREE.PointLight(0x88aaff, 0.5);
-            backLight.position.set(0, 4, -6);
-            scene.add(backLight);
-            const rimLight = new THREE.PointLight(0xffaa66, 0.4);
-            rimLight.position.set(3, 4, -5);
-            scene.add(rimLight);
-            
-            const boardGroup = new THREE.Group();
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    const color = (i + j) % 2 === 0 ? 0xf0d9b5 : 0xb58863;
-                    const square = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.12, 0.96), new THREE.MeshStandardMaterial({ color: color, roughness: 0.35, metalness: 0.12 }));
-                    square.position.set(j - 3.5, -0.06, i - 3.5);
-                    square.receiveShadow = true;
-                    boardGroup.add(square);
-                    
-                    const div = document.createElement('div');
-                    div.textContent = `${String.fromCharCode(97+j)}${8-i}`;
-                    div.style.color = (i+j)%2===0 ? '#553b1f' : '#f0e6d2';
-                    div.style.fontSize = '10px';
-                    div.style.fontWeight = 'bold';
-                    div.style.textShadow = '0 0 2px rgba(0,0,0,0.5)';
-                    const label = new CSS2DObject(div);
-                    label.position.set(j - 3.5, -0.2, i - 3.5);
-                    boardGroup.add(label);
-                }
-            }
-            scene.add(boardGroup);
-            
-            piecesGroup = new THREE.Group();
-            scene.add(piecesGroup);
-            createAllPieces();
-            
-            renderer.domElement.addEventListener('click', onClick);
-            renderer.domElement.addEventListener('touchstart', onTouchStart);
-            renderer.domElement.addEventListener('touchend', onTouchEnd);
-        }
-        
-        let touchPos = null;
-        function onTouchStart(e) { e.preventDefault(); const t = e.touches[0]; touchPos = { x: t.clientX, y: t.clientY }; }
-        function onTouchEnd(e) {
-            e.preventDefault();
-            if (touchPos) {
-                const rect = renderer.domElement.getBoundingClientRect();
-                handleInteraction(touchPos.x - rect.left, touchPos.y - rect.top);
-                touchPos = null;
-            }
-        }
-        function onClick(e) {
-            const rect = renderer.domElement.getBoundingClientRect();
-            handleInteraction(e.clientX - rect.left, e.clientY - rect.top);
-        }
-        
-        function handleInteraction(x, y) {
-            if (gameOver || (gameMode === 'auto')) return;
-            
-            const mouse = new THREE.Vector2((x / renderer.domElement.clientWidth) * 2 - 1, -(y / renderer.domElement.clientHeight) * 2 + 1);
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mouse, camera);
-            
-            let clickedPiece = null;
-            const intersects = raycaster.intersectObjects(piecesGroup.children, true);
-            for (let hit of intersects) {
-                let obj = hit.object;
-                while (obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
-                if (obj.userData?.piece) { clickedPiece = obj; break; }
-            }
-            
-            let target = null;
-            const planeHits = raycaster.intersectObjects(piecesGroup.children, false);
-            for (let hit of planeHits) {
-                const col = Math.round(hit.point.x + 3.5);
-                const row = Math.round(hit.point.z + 3.5);
-                if (row >= 0 && row < 8 && col >= 0 && col < 8) { target = { row, col }; break; }
-            }
-            
-            if (selectedPiece) {
-                if (target && movePiece(selectedPiece.piece, target.row, target.col)) {
-                    clearHighlights();
-                    selectedPiece = null;
-                    switchTurn();
-                } else {
-                    clearHighlights();
-                    selectedPiece = null;
-                }
-            } else if (clickedPiece?.userData.piece) {
-                const piece = clickedPiece.userData.piece;
-                const canPlay = (gameMode === 'vsAI' && piece.color === playerColor && piece.color === currentTurn) || (gameMode === 'vs2' && piece.color === currentTurn);
-                if (canPlay) {
-                    selectedPiece = { piece };
-                    clearHighlights();
-                    highlightSquare(piece.row, piece.col, 0xffaa44);
-                    for (let i = 0; i < 8; i++) {
-                        for (let j = 0; j < 8; j++) {
-                            if (isValidMove(piece, i, j, boardState)) highlightSquare(i, j, 0x44ff44);
-                        }
-                    }
-                }
-            }
-        }
-        
-        function createAllPieces() {
-            while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
-            piecesMeshes.clear();
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    const piece = boardState[i][j];
-                    if (piece) {
-                        const mesh = createPiece3D(piece);
-                        mesh.userData = { row: i, col: j, piece };
-                        mesh.position.set(j - 3.5, 0.08, i - 3.5);
-                        piecesGroup.add(mesh);
-                        piecesMeshes.set(`${i},${j}`, mesh);
-                    }
-                }
-            }
-        }
-        
-        function update3DPiece(piece) {
-            const oldKey = `${piece.row},${piece.col}`;
-            if (piecesMeshes.has(oldKey)) {
-                piecesGroup.remove(piecesMeshes.get(oldKey));
-                piecesMeshes.delete(oldKey);
-            }
-            for (let [k, m] of piecesMeshes) {
-                if (m.userData.piece === piece && (m.userData.row !== piece.row || m.userData.col !== piece.col)) {
-                    piecesGroup.remove(m);
-                    piecesMeshes.delete(k);
-                    break;
-                }
-            }
-            const newMesh = createPiece3D(piece);
-            newMesh.userData = { row: piece.row, col: piece.col, piece };
-            newMesh.position.set(piece.col - 3.5, 0.08, piece.row - 3.5);
-            piecesGroup.add(newMesh);
-            piecesMeshes.set(`${piece.row},${piece.col}`, newMesh);
-        }
-        
-        function remove3DPiece(piece) {
-            const key = `${piece.row},${piece.col}`;
-            if (piecesMeshes.has(key)) {
-                piecesGroup.remove(piecesMeshes.get(key));
-                piecesMeshes.delete(key);
-            }
-        }
-        
-        function clearHighlights() {
-            highlightMeshes.forEach(h => piecesGroup.remove(h));
-            highlightMeshes = [];
-        }
-        
-        function highlightSquare(row, col, color) {
-            const square = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.05, 0.94), new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0.7, emissive: color, emissiveIntensity: 0.25 }));
-            square.position.set(col - 3.5, -0.03, row - 3.5);
-            piecesGroup.add(square);
-            highlightMeshes.push(square);
-        }
-        
-        function updateTurnDisplay() {
-            document.getElementById('turn-text').innerHTML = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
-            let modeText = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
-            document.getElementById('mode-label').innerHTML = modeText;
-            document.getElementById('game-status').innerHTML = gameOver ? '🏆 Partida finalizada' : '🎮 En juego';
-        }
-        
-        function resetGame() {
-            if (gameMode === 'auto') stopAutoPlay();
-            initBoard();
-            createAllPieces();
-            clearHighlights();
-            selectedPiece = null;
-            updateTurnDisplay();
-            if (gameMode === 'auto') startAutoPlay();
-            else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 300);
-        }
-        
-        function startGame(mode, whiteColor, blackColor) {
-            gameMode = mode;
-            whiteCustomColor = whiteColor;
-            blackCustomColor = blackColor;
-            playerColor = 'white';
-            
-            if (gameMode === 'auto') stopAutoPlay();
-            initBoard();
-            if (piecesGroup) createAllPieces();
-            document.getElementById('start-modal').style.display = 'none';
-            
-            if (gameMode === 'auto') startAutoPlay();
-            else if (gameMode === 'vsAI' && currentTurn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
-        }
-        
-        function renderColorSelector() {
-            const grid = document.getElementById('color-grid');
-            grid.innerHTML = '';
-            const colors = isSelectingBlack ? darkOptions : colorOptions;
-            
-            colors.forEach((c, idx) => {
-                const swatch = document.createElement('div');
-                swatch.className = 'color-swatch';
-                swatch.style.background = c.preview;
-                swatch.style.background = `radial-gradient(circle at 30% 30%, ${c.preview}, ${c.preview}aa)`;
-                swatch.onclick = () => {
-                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-                    swatch.classList.add('selected');
-                    if (isSelectingBlack) {
-                        selectedBlackIdx = idx;
-                        document.getElementById('color-preview').style.background = c.preview;
-                    } else {
-                        selectedWhiteIdx = idx;
-                        document.getElementById('color-preview').style.background = c.preview;
-                    }
-                };
-                grid.appendChild(swatch);
-            });
-            
-            if (!isSelectingBlack && pendingMode !== 'auto') {
-                document.getElementById('color-preview').style.background = colorOptions[selectedWhiteIdx].preview;
-            } else if (isSelectingBlack) {
-                document.getElementById('color-preview').style.background = darkOptions[selectedBlackIdx].preview;
-            }
-        }
-        
-        document.getElementById('select-vsai').onclick = () => { 
-            pendingMode = 'vsAI'; 
-            isSelectingBlack = false;
-            document.getElementById('color-prompt').innerHTML = '🎨 Elige el color de TUS piezas BLANCAS:'; 
-            renderColorSelector(); 
-        };
-        
-        document.getElementById('select-vs2').onclick = () => { 
-            pendingMode = 'vs2'; 
-            isSelectingBlack = false;
-            document.getElementById('color-prompt').innerHTML = '🎨 Elige el color de las piezas BLANCAS:'; 
-            renderColorSelector(); 
-        };
-        
-        document.getElementById('select-auto').onclick = () => { 
-            pendingMode = 'auto'; 
-            document.getElementById('color-prompt').innerHTML = '🎨 IA vs IA - Colores aleatorios automáticos'; 
-            document.getElementById('color-preview').style.background = 'linear-gradient(135deg, #ffcc44, #ff66aa)';
-            const grid = document.getElementById('color-grid');
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ffd700; padding:20px;">🌈 Colores aleatorios al iniciar</div>';
-        };
-        
-        document.getElementById('confirm-start').onclick = () => {
-            if (pendingMode === 'auto') {
-                const randWhite = colorOptions[Math.floor(Math.random() * colorOptions.length)].value;
-                const randBlack = darkOptions[Math.floor(Math.random() * darkOptions.length)].value;
-                startGame('auto', randWhite, randBlack);
-            } else if (pendingMode === 'vs2') {
-                if (isSelectingBlack) {
-                    startGame('vs2', colorOptions[selectedWhiteIdx].value, darkOptions[selectedBlackIdx].value);
-                } else {
-                    isSelectingBlack = true;
-                    document.getElementById('color-prompt').innerHTML = '🎨 Ahora elige el color de las piezas NEGRAS:';
-                    renderColorSelector();
-                    document.getElementById('confirm-start').innerHTML = '✅ CONFIRMAR COLORES';
-                }
-            } else {
-                startGame('vsAI', colorOptions[selectedWhiteIdx].value, darkOptions[0].value);
-            }
-        };
-        
-        document.getElementById('btn-reset').onclick = () => resetGame();
-        document.getElementById('btn-recolor').onclick = () => { if (gameMode !== 'auto') document.getElementById('start-modal').style.display = 'flex'; };
-        document.getElementById('btn-auto').onclick = () => {
-            if (gameMode === 'auto') stopAutoPlay();
-            else { stopAutoPlay(); gameMode = 'auto'; resetGame(); }
-        };
-        document.getElementById('btn-stop-auto').onclick = () => { stopAutoPlay(); };
-        
-        renderColorSelector();
-        init3D();
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            orbitControls.update();
-            renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
-        }
-        animate();
-        
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        default: return false;
+    }
+}
+
+function showPromotionDialog() {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('promotion-modal');
+        const container = document.getElementById('promotion-pieces');
+        container.innerHTML = '';
+        const types = [
+            { type: 'queen', symbol: '♕', name: 'REINA' },
+            { type: 'rook', symbol: '♖', name: 'TORRE' },
+            { type: 'bishop', symbol: '♗', name: 'ALFIL' },
+            { type: 'knight', symbol: '♘', name: 'CABALLO' }
+        ];
+        types.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'promo-piece';
+            div.innerHTML = p.symbol;
+            div.title = p.name;
+            div.onclick = () => {
+                modal.style.display = 'none';
+                resolve(p.type);
+            };
+            container.appendChild(div);
         });
-    </script>
+        modal.style.display = 'flex';
+    });
+}
+
+async function executeMove(piece, toRow, toCol) {
+    const fromRow = piece.row, fromCol = piece.col;
+    const target = boardState[toRow][toCol];
+    boardState[toRow][toCol] = piece;
+    boardState[fromRow][fromCol] = null;
+    piece.row = toRow;
+    piece.col = toCol;
+    piece.hasMoved = true;
+    if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) {
+        const newType = await showPromotionDialog();
+        piece.type = newType;
+    }
+    if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
+        const rookFromCol = toCol === 6 ? 7 : 0;
+        const rookToCol = toCol === 6 ? 5 : 3;
+        const rook = boardState[fromRow][rookFromCol];
+        if (rook && rook.type === 'rook') {
+            boardState[fromRow][rookToCol] = rook;
+            boardState[fromRow][rookFromCol] = null;
+            rook.row = fromRow;
+            rook.col = rookToCol;
+            rook.hasMoved = true;
+            if (is3D) update3DPiece(rook);
+        }
+    }
+    if (is3D) {
+        if (target) remove3DPiece(target);
+        update3DPiece(piece);
+    }
+    return true;
+}
+
+function getAllMoves(color) {
+    let moves = [];
+    for (let i = 0; i < 8; i++)
+        for (let j = 0; j < 8; j++) {
+            const piece = boardState[i][j];
+            if (piece && piece.color === color)
+                for (let ti = 0; ti < 8; ti++)
+                    for (let tj = 0; tj < 8; tj++)
+                        if (isValidMove(piece, ti, tj, boardState))
+                            moves.push({ piece, toRow: ti, toCol: tj });
+        }
+    return moves;
+}
+
+async function makeAIMove() {
+    if (gameOver) return false;
+    const aiColor = gameMode === 'vsAI' ? (playerColor === 'white' ? 'black' : 'white') : currentTurn;
+    if (currentTurn !== aiColor) return false;
+    const moves = getAllMoves(aiColor);
+    if (moves.length === 0) {
+        gameOver = true;
+        document.getElementById('game-status').innerHTML = `🏆 VICTORIA ${aiColor === 'white' ? 'NEGRAS' : 'BLANCAS'} 🏆`;
+        if (autoPlayInterval) clearInterval(autoPlayInterval);
+        return false;
+    }
+    const randomMove = moves[Math.floor(Math.random() * moves.length)];
+    if (await executeMove(randomMove.piece, randomMove.toRow, randomMove.toCol)) {
+        if (is3D) { clearHighlights3D(); selectedPiece = null; }
+        else { selectedRowCol = null; highlightCells = []; if (canvas) draw2DBoard(); }
+        switchTurn();
+        return true;
+    }
+    return false;
+}
+
+function startAutoPlay() {
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+    autoPlayInterval = setInterval(() => { if (!gameOver && currentTurn) makeAIMove(); else if (gameOver) clearInterval(autoPlayInterval); }, 520);
+}
+
+function stopAutoPlay() { if (autoPlayInterval) { clearInterval(autoPlayInterval); autoPlayInterval = null; } }
+
+function switchTurn() {
+    currentTurn = currentTurn === 'white' ? 'black' : 'white';
+    updateUIDisplay();
+    let whiteKing = false, blackKing = false;
+    for (let i = 0; i < 8; i++)
+        for (let j = 0; j < 8; j++) {
+            const p = boardState[i][j];
+            if (p && p.type === 'king') { if (p.color === 'white') whiteKing = true; else blackKing = true; }
+        }
+    if (!whiteKing) { gameOver = true; document.getElementById('game-status').innerHTML = '🏆 NEGRAS GANAN 🏆'; if (autoPlayInterval) clearInterval(autoPlayInterval); }
+    if (!blackKing) { gameOver = true; document.getElementById('game-status').innerHTML = '🏆 BLANCAS GANAN 🏆'; if (autoPlayInterval) clearInterval(autoPlayInterval); }
+    if (gameOver) return;
+    if (gameMode === 'vsAI') {
+        const isPlayerTurn = (playerColor === currentTurn);
+        if (!isPlayerTurn && !gameOver) setTimeout(() => makeAIMove(), 200);
+    }
+    if (is3D && !gameOver && gameMode !== 'auto') draw3DHighlights();
+    if (!is3D && !gameOver) draw2DBoard();
+}
+
+function createPiece3D(piece) {
+    const group = new THREE.Group();
+    const mainColor = piece.color === 'white' ? whiteCustomColor : blackCustomColor;
+    const goldColor = 0xffcc44;
+    const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.9, roughness: 0.2, emissive: piece.color === 'white' ? 0x442200 : 0x000000, emissiveIntensity: 0.1 });
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.13, 32), baseMat);
+    base.position.y = 0.06;
+    group.add(base);
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.35, 0.28, 32), baseMat);
+    body.position.y = 0.25;
+    group.add(body);
+    const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.98 });
+    switch(piece.type) {
+        case 'king':
+            const top = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.3, 0.36, 32), baseMat);
+            top.position.y = 0.52;
+            group.add(top);
+            const barH = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.09, 0.09), goldMat);
+            const barV = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.3, 0.09), goldMat);
+            barH.position.y = 0.79; barV.position.y = 0.79;
+            group.add(barH); group.add(barV);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24), goldMat);
+            ball.position.y = 0.94;
+            group.add(ball);
+            break;
+        case 'queen':
+            const qb = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.44, 32), baseMat);
+            qb.position.y = 0.52;
+            group.add(qb);
+            for(let i=0;i<8;i++) {
+                const ang = (i/8)*Math.PI*2;
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.22, 8), goldMat);
+                spike.position.set(Math.cos(ang)*0.29, 0.8, Math.sin(ang)*0.29);
+                group.add(spike);
+            }
+            const gem = new THREE.Mesh(new THREE.SphereGeometry(0.12, 24), new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.9 }));
+            gem.position.y = 0.9;
+            group.add(gem);
+            break;
+        case 'knight':
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.26,0.4,12), baseMat);
+            neck.position.set(0.15,0.48,0); neck.rotation.z=-0.35;
+            group.add(neck);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.32,0.32,0.26), baseMat);
+            head.position.set(0.36,0.69,0); head.rotation.z=-0.15;
+            group.add(head);
+            const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1,0.18,6), baseMat);
+            ear.position.set(0.44,0.86,0.12);
+            group.add(ear);
+            const mane = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.12,0.24,6), new THREE.MeshStandardMaterial({ color: 0xaa8866 }));
+            mane.position.set(0.22,0.73,-0.15); mane.rotation.x=0.4;
+            group.add(mane);
+            break;
+        case 'bishop':
+            const mitre = new THREE.Mesh(new THREE.ConeGeometry(0.31,0.52,12), baseMat);
+            mitre.position.y = 0.63;
+            group.add(mitre);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(0.29,0.05,20,48), goldMat);
+            ring.rotation.x = Math.PI/2;
+            ring.position.y = 0.43;
+            group.add(ring);
+            break;
+        case 'rook':
+            const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.33,0.37,0.55,8), baseMat);
+            tower.position.y = 0.43;
+            group.add(tower);
+            for(let i=0;i<4;i++) {
+                const ang = (i/4)*Math.PI*2;
+                const batt = new THREE.Mesh(new THREE.BoxGeometry(0.15,0.18,0.15), baseMat);
+                batt.position.set(Math.cos(ang)*0.36,0.75,Math.sin(ang)*0.36);
+                group.add(batt);
+            }
+            break;
+        case 'pawn':
+            const pneck = new THREE.Mesh(new THREE.CylinderGeometry(0.23,0.29,0.24,20), baseMat);
+            pneck.position.y = 0.43;
+            group.add(pneck);
+            const phead = new THREE.Mesh(new THREE.SphereGeometry(0.21,32), baseMat);
+            phead.position.y = 0.66;
+            group.add(phead);
+            break;
+    }
+    return group;
+}
+
+function init3D() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050b1a);
+    scene.fog = new THREE.FogExp2(0x050b1a, 0.008);
+    camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.set(5.8, 7.8, 7.8);
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+    labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0px';
+    labelRenderer.domElement.style.left = '0px';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    document.body.appendChild(labelRenderer.domElement);
+    orbitControls = new OrbitControls(camera, renderer.domElement);
+    orbitControls.enableDamping = true;
+    orbitControls.target.set(0,0.5,0);
+    const ambient = new THREE.AmbientLight(0x404060);
+    scene.add(ambient);
+    const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.4);
+    mainLight.position.set(5,12,7);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+    const fill = new THREE.PointLight(0xccaa88,0.6);
+    fill.position.set(-3,5,4);
+    scene.add(fill);
+    const boardGroup = new THREE.Group();
+    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
+        const col = (i+j)%2===0 ? 0xf0d9b5 : 0xb58863;
+        const sq = new THREE.Mesh(new THREE.BoxGeometry(0.96,0.13,0.96), new THREE.MeshStandardMaterial({ color:col, roughness:0.3 }));
+        sq.position.set(j-3.5, -0.07, i-3.5);
+        sq.receiveShadow = true;
+        boardGroup.add(sq);
+    }
+    scene.add(boardGroup);
+    piecesGroup = new THREE.Group();
+    scene.add(piecesGroup);
+    createAllPieces3D();
+    renderer.domElement.addEventListener('click', onClick3D);
+    renderer.domElement.addEventListener('touchstart', onTouch3D);
+    renderer.domElement.addEventListener('touchend', onTouchEnd3D);
+}
+
+function createAllPieces3D() {
+    while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
+    piecesMeshes.clear();
+    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
+        const piece = boardState[i][j];
+        if(piece) {
+            const mesh = createPiece3D(piece);
+            mesh.userData = { row:i, col:j, piece };
+            mesh.position.set(j-3.5, 0.09, i-3.5);
+            piecesGroup.add(mesh);
+            piecesMeshes.set(`${i},${j}`, mesh);
+        }
+    }
+}
+
+function update3DPiece(piece) {
+    const key = `${piece.row},${piece.col}`;
+    if(piecesMeshes.has(key)) { piecesGroup.remove(piecesMeshes.get(key)); piecesMeshes.delete(key); }
+    const newMesh = createPiece3D(piece);
+    newMesh.userData = { row:piece.row, col:piece.col, piece };
+    newMesh.position.set(piece.col-3.5, 0.09, piece.row-3.5);
+    piecesGroup.add(newMesh);
+    piecesMeshes.set(key, newMesh);
+}
+
+function remove3DPiece(piece) { const key = `${piece.row},${piece.col}`; if(piecesMeshes.has(key)) { piecesGroup.remove(piecesMeshes.get(key)); piecesMeshes.delete(key); } }
+
+function clearHighlights3D() { highlightMeshes.forEach(h => piecesGroup.remove(h)); highlightMeshes = []; }
+
+function highlightSquare3D(row,col,color) {
+    const sq = new THREE.Mesh(new THREE.BoxGeometry(0.94,0.06,0.94), new THREE.MeshStandardMaterial({ color, transparent:true, opacity:0.75, emissive:color, emissiveIntensity:0.3 }));
+    sq.position.set(col-3.5, -0.02, row-3.5);
+    piecesGroup.add(sq);
+    highlightMeshes.push(sq);
+}
+
+function draw3DHighlights() {
+    if(selectedPiece) {
+        clearHighlights3D();
+        highlightSquare3D(selectedPiece.piece.row, selectedPiece.piece.col, 0xffaa44);
+        for(let i=0;i<8;i++) for(let j=0;j<8;j++) if(isValidMove(selectedPiece.piece, i, j, boardState)) highlightSquare3D(i,j,0x44ff44);
+    }
+}
+
+let touchCache = null;
+function onTouch3D(e) { e.preventDefault(); const t=e.touches[0]; touchCache={x:t.clientX, y:t.clientY}; }
+function onTouchEnd3D(e) { e.preventDefault(); if(touchCache) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(touchCache.x-rect.left, touchCache.y-rect.top); touchCache=null; } }
+function onClick3D(e) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(e.clientX-rect.left, e.clientY-rect.top); }
+
+async function handleClick3D(x,y) {
+    if(gameOver || gameMode==='auto') return;
+    const mouse = new THREE.Vector2((x/renderer.domElement.clientWidth)*2-1, -(y/renderer.domElement.clientHeight)*2+1);
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    let clickedPiece = null;
+    const hits = raycaster.intersectObjects(piecesGroup.children, true);
+    for(let hit of hits) {
+        let obj = hit.object;
+        while(obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
+        if(obj.userData?.piece) { clickedPiece = obj; break; }
+    }
+    let target = null;
+    const planeHits = raycaster.intersectObjects(piecesGroup.children, false);
+    for(let hit of planeHits) {
+        const col = Math.round(hit.point.x + 3.5);
+        const row = Math.round(hit.point.z + 3.5);
+        if(row>=0 && row<8 && col>=0 && col<8) { target={row,col}; break; }
+    }
+    if(selectedPiece) {
+        if(target && await executeMove(selectedPiece.piece, target.row, target.col)) {
+            clearHighlights3D();
+            selectedPiece = null;
+            switchTurn();
+        } else { clearHighlights3D(); selectedPiece = null; }
+    } else if(clickedPiece?.userData.piece) {
+        const p = clickedPiece.userData.piece;
+        const can = (gameMode==='vsAI' && p.color===playerColor && p.color===currentTurn) || (gameMode==='vs2' && p.color===currentTurn);
+        if(can) { selectedPiece = { piece:p }; draw3DHighlights(); }
+    }
+}
+
+function init2D() {
+    canvas = document.getElementById('canvas2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx = canvas.getContext('2d');
+    canvas.style.display = 'block';
+    if(renderer) renderer.domElement.style.display = 'none';
+    if(labelRenderer) labelRenderer.domElement.style.display = 'none';
+    canvas.addEventListener('click', onClick2D);
+    canvas.addEventListener('touchstart', onTouch2DStart);
+    canvas.addEventListener('touchend', onTouch2DEnd);
+    draw2DBoard();
+}
+
+function getSquare2D(x,y) {
+    const size = Math.min(canvas.width, canvas.height)*0.72;
+    const offX = (canvas.width-size)/2;
+    const offY = (canvas.height-size)/2;
+    const sq = size/8;
+    const col = Math.floor((x-offX)/sq);
+    const row = Math.floor((y-offY)/sq);
+    if(row>=0 && row<8 && col>=0 && col<8) return {row,col};
+    return null;
+}
+
+function draw2DBoard() {
+    if(!ctx) return;
+    const size = Math.min(canvas.width, canvas.height)*0.72;
+    const offX = (canvas.width-size)/2;
+    const offY = (canvas.height-size)/2;
+    const sq = size/8;
+    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
+        const isLight = (i+j)%2===0;
+        ctx.fillStyle = isLight ? '#eed9bb' : '#b58863';
+        ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
+        if(selectedRowCol && selectedRowCol.row===i && selectedRowCol.col===j) {
+            ctx.fillStyle = 'rgba(255,170,68,0.7)';
+            ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
+        }
+        for(let h of highlightCells) {
+            if(h.row===i && h.col===j) {
+                ctx.fillStyle = 'rgba(68,255,68,0.55)';
+                ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
+            }
+        }
+        const piece = boardState[i][j];
+        if(piece) {
+            let sym = '';
+            switch(piece.type) {
+                case 'king': sym='♔'; break;
+                case 'queen': sym='♕'; break;
+                case 'rook': sym='♖'; break;
+                case 'bishop': sym='♗'; break;
+                case 'knight': sym='♘'; break;
+                case 'pawn': sym='♙'; break;
+            }
+            ctx.font = `${sq*0.58}px 'Segoe UI', 'Arial'`;
+            ctx.fillStyle = piece.color === 'white' ? '#fff7e8' : '#111';
+            ctx.shadowBlur = 0;
+            ctx.fillText(sym, offX+j*sq+sq*0.28, offY+i*sq+sq*0.78);
+        }
+    }
+}
+
+let touch2D = null;
+function onTouch2DStart(e) { e.preventDefault(); const t=e.touches[0]; touch2D={x:t.clientX, y:t.clientY}; }
+function onTouch2DEnd(e) { e.preventDefault(); if(touch2D) { handleClick2D(touch2D.x, touch2D.y); touch2D=null; } }
+function onClick2D(e) { handleClick2D(e.clientX, e.clientY); }
+
+async function handleClick2D(x,y) {
+    if(gameOver || gameMode==='auto') return;
+    const coord = getSquare2D(x,y);
+    if(!coord) { selectedRowCol=null; highlightCells=[]; draw2DBoard(); return; }
+    if(selectedRowCol) {
+        const piece = boardState[selectedRowCol.row][selectedRowCol.col];
+        if(piece && await executeMove(piece, coord.row, coord.col)) {
+            selectedRowCol = null;
+            highlightCells = [];
+            switchTurn();
+        } else { selectedRowCol = null; highlightCells = []; }
+        draw2DBoard();
+    } else {
+        const piece = boardState[coord.row][coord.col];
+        if(piece) {
+            const can = (gameMode==='vsAI' && piece.color===playerColor && piece.color===currentTurn) || (gameMode==='vs2' && piece.color===currentTurn);
+            if(can) {
+                selectedRowCol = coord;
+                highlightCells = [];
+                for(let i=0;i<8;i++) for(let j=0;j<8;j++) if(isValidMove(piece,i,j,boardState)) highlightCells.push({row:i,col:j});
+                draw2DBoard();
+            }
+        }
+    }
+}
+
+function switchDimension() {
+    if(is3D) {
+        is3D = false;
+        init2D();
+        document.getElementById('toggle-dim').innerHTML = '🔄 CAMBIAR A 3D';
+        if(renderer) renderer.domElement.style.display = 'none';
+        if(labelRenderer) labelRenderer.domElement.style.display = 'none';
+    } else {
+        is3D = true;
+        document.getElementById('canvas2d').style.display = 'none';
+        if(renderer) renderer.domElement.style.display = 'block';
+        if(labelRenderer) labelRenderer.domElement.style.display = 'block';
+        createAllPieces3D();
+        draw3DHighlights();
+        document.getElementById('toggle-dim').innerHTML = '🔄 CAMBIAR A 2D';
+    }
+}
+
+function updateUIDisplay() {
+    document.getElementById('turn-text').innerHTML = currentTurn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
+    let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
+    document.getElementById('mode-label').innerHTML = modeStr;
+}
+
+function resetGame() {
+    if(gameMode === 'auto') stopAutoPlay();
+    initBoard();
+    if(is3D) { createAllPieces3D(); clearHighlights3D(); selectedPiece = null; }
+    else { selectedRowCol = null; highlightCells = []; draw2DBoard(); }
+    if(gameMode === 'auto') startAutoPlay();
+    else if(gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 300);
+}
+
+function startGame(mode, whiteVal, blackVal, dim) {
+    gameMode = mode;
+    whiteCustomColor = whiteVal;
+    blackCustomColor = blackVal;
+    playerColor = 'white';
+    is3D = (dim === '3d');
+    if(gameMode === 'auto') stopAutoPlay();
+    initBoard();
+    if(is3D) {
+        if(!scene) init3D();
+        else { createAllPieces3D(); if(renderer) renderer.domElement.style.display = 'block'; if(labelRenderer) labelRenderer.domElement.style.display = 'block'; document.getElementById('canvas2d').style.display = 'none'; }
+    } else {
+        init2D();
+    }
+    document.getElementById('start-modal').style.display = 'none';
+    if(gameMode === 'auto') startAutoPlay();
+    else if(gameMode === 'vsAI' && currentTurn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
+}
+
+function renderColorSelector() {
+    const grid = document.getElementById('color-grid');
+    grid.innerHTML = '';
+    const colors = isSelectingBlack ? darkOptions : colorOptions;
+    colors.forEach((c, idx) => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch';
+        swatch.style.background = c.preview;
+        swatch.onclick = () => {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            swatch.classList.add('selected');
+            if(isSelectingBlack) selectedBlackIdx = idx;
+            else selectedWhiteIdx = idx;
+            document.getElementById('color-preview').style.background = c.preview;
+        };
+        grid.appendChild(swatch);
+    });
+    document.getElementById('color-preview').style.background = isSelectingBlack ? darkOptions[selectedBlackIdx].preview : colorOptions[selectedWhiteIdx].preview;
+}
+
+let selectedDimension = '3d';
+document.getElementById('select-3d').onclick = () => { selectedDimension = '3d'; };
+document.getElementById('select-2d').onclick = () => { selectedDimension = '2d'; };
+document.getElementById('select-vsai').onclick = () => { pendingMode = 'vsAI'; isSelectingBlack = false; document.getElementById('color-prompt').innerHTML = '🎨 COLOR TUS PIEZAS BLANCAS:'; renderColorSelector(); };
+document.getElementById('select-vs2').onclick = () => { pendingMode = 'vs2'; isSelectingBlack = false; document.getElementById('color-prompt').innerHTML = '🎨 BLANCAS:'; renderColorSelector(); };
+document.getElementById('select-auto').onclick = () => { pendingMode = 'auto'; document.getElementById('color-prompt').innerHTML = '🌈 IA vs IA (colores aleatorios)'; document.getElementById('color-grid').innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ffd966;">✨ COLORES ALEATORIOS ✨</div>'; };
+
+document.getElementById('confirm-start').onclick = () => {
+    if(pendingMode === 'auto') {
+        const randW = colorOptions[Math.floor(Math.random()*colorOptions.length)].value;
+        const randB = darkOptions[Math.floor(Math.random()*darkOptions.length)].value;
+        startGame('auto', randW, randB, selectedDimension);
+    } else if(pendingMode === 'vs2') {
+        if(isSelectingBlack) startGame('vs2', colorOptions[selectedWhiteIdx].value, darkOptions[selectedBlackIdx].value, selectedDimension);
+        else { isSelectingBlack = true; document.getElementById('color-prompt').innerHTML = '🎨 AHORA ELIGE NEGRAS:'; renderColorSelector(); document.getElementById('confirm-start').innerHTML = '✅ CONFIRMAR COLORES'; }
+    } else {
+        startGame('vsAI', colorOptions[selectedWhiteIdx].value, darkOptions[0].value, selectedDimension);
+    }
+};
+
+document.getElementById('btn-reset').onclick = () => resetGame();
+document.getElementById('btn-recolor').onclick = () => { if(gameMode !== 'auto') document.getElementById('start-modal').style.display = 'flex'; };
+document.getElementById('toggle-dim').onclick = () => switchDimension();
+
+renderColorSelector();
+
+function animate() {
+    requestAnimationFrame(animate);
+    if(is3D && scene && renderer) {
+        orbitControls.update();
+        renderer.render(scene, camera);
+        if(labelRenderer) labelRenderer.render(scene, camera);
+    }
+}
+animate();
+
+window.addEventListener('resize', () => {
+    if(is3D && camera) {
+        camera.aspect = window.innerWidth/window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        if(labelRenderer) labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    } else if(!is3D && canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        draw2DBoard();
+    }
+});
+</script>
 </body>
 </html>
