@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ajedrez Total - 2D/3D con Animaciones | IA | Multijugador</title>
+    <title>Ajedrez Total - Jaque Mate + Promoción IA | 2D/3D</title>
     <style>
         * {
             user-select: none;
@@ -13,10 +13,9 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: #0a0f1e;
         }
-        /* Modales */
         .modal-full {
             position: fixed;
             top: 0;
@@ -122,7 +121,6 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        /* UI flotante */
         .ui-top-left, .ui-top-right, .ui-bottom {
             position: fixed;
             z-index: 1000;
@@ -189,6 +187,41 @@
             color: #ccc;
             pointer-events: none;
         }
+        .capture-panel {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            padding: 12px;
+            width: 100px;
+            max-height: 60%;
+            overflow-y: auto;
+            z-index: 1000;
+            pointer-events: none;
+            border: 1px solid rgba(255,215,0,0.4);
+            text-align: center;
+            font-size: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .capture-panel.left { left: 10px; }
+        .capture-panel.right { right: 10px; }
+        .capture-panel h4 {
+            margin: 0 0 8px 0;
+            color: #ffd966;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .capture-item {
+            background: rgba(30,30,50,0.7);
+            border-radius: 20px;
+            padding: 5px;
+            font-size: 28px;
+            text-align: center;
+        }
         #canvas2d {
             position: fixed;
             top: 0;
@@ -233,10 +266,11 @@
             font-size: 48px;
             cursor: pointer;
             border: 2px solid #ffaa44;
-            transition: 0.1s;
         }
         .promo-item:active { transform: scale(0.94); }
-        @media (max-width: 650px) {
+        @media (max-width: 800px) {
+            .capture-panel { width: 70px; }
+            .capture-item { font-size: 22px; }
             .swatch { width: 48px; height: 48px; }
             .btn-mode { padding: 6px 16px; font-size: 13px; }
         }
@@ -247,7 +281,7 @@
 <div id="startModal" class="modal-full">
     <div class="modal-card">
         <h1>♞ AJEDREZ TOTAL</h1>
-        <div class="badge">✨ ANIMACIONES FLUIDAS | 2D/3D | IA | COLORES ✨</div>
+        <div class="badge">✨ JAQUE MATE | PROMOCIÓN IA | CAPTURAS ✨</div>
         <div class="btn-group">
             <button class="btn-mode ai" id="modeVsAI">🤖 VS IA</button>
             <button class="btn-mode pvp" id="mode2P">👥 2 JUGADORES</button>
@@ -269,8 +303,17 @@
     <div class="promo-pieces" id="promoOptions"></div>
 </div>
 
+<div id="captureWhitePanel" class="capture-panel left" style="display: none;">
+    <h4>⚪ CAPTURADAS</h4>
+    <div id="whiteCapturesList"></div>
+</div>
+<div id="captureBlackPanel" class="capture-panel right" style="display: none;">
+    <h4>⚫ CAPTURADAS</h4>
+    <div id="blackCapturesList"></div>
+</div>
+
 <div class="ui-top-left">♜ AJEDREZ | <span id="modeLabel">MODO</span></div>
-<div class="ui-top-right">⚔️ TURNO: <span id="turnText">BLANCAS</span></div>
+<div class="ui-top-right">⚔️ TURNO: <span id="turnText">BLANCAS</span> <span id="checkIndicator" style="color:#ff6666; margin-left:8px;"></span></div>
 <div class="ui-bottom">
     <button class="action" id="resetBtn">🔄 REINICIAR</button>
     <button class="action purple" id="colorBtn">🎨 COLORES</button>
@@ -297,18 +340,20 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 // ==================== ESTADO GLOBAL ====================
 let board = Array(8).fill().map(() => Array(8).fill(null));
 let turn = 'white';
-let gameMode = 'vsAI';     // vsAI, vs2, auto
+let gameMode = 'vsAI';
 let playerColor = 'white';
 let gameOver = false;
 let selectedPiece = null;
 let is3D = true;
+let checkState = false; // true si el rey del turno actual está en jaque
 
-// 3D vars
+let whiteCaptures = [];
+let blackCaptures = [];
+
 let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
 let piecesMap = new Map();
 let highlightMeshes = [];
 
-// 2D vars
 let ctx2d, canvas2d;
 let selected2D = null;
 let highlight2D = [];
@@ -338,7 +383,6 @@ let pendingDimension = '3d';
 let isSelectingBlackFor2P = false;
 let autoInterval = null;
 
-// ==================== CLASE PIEZA ====================
 class Piece {
     constructor(type, color, row, col) {
         this.type = type;
@@ -366,13 +410,18 @@ function initBoard() {
     selectedPiece = null;
     selected2D = null;
     highlight2D = [];
+    whiteCaptures = [];
+    blackCaptures = [];
+    checkState = false;
     updateUI();
+    updateCapturePanels();
     document.getElementById('statusMsg').innerText = '⚔️ EN JUEGO';
+    document.getElementById('checkIndicator').innerText = '';
     if (gameMode === 'auto') startAutoPlay();
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 400);
 }
 
-// ==================== REGLAS COMPLETAS (con jaque) ====================
+// ==================== REGLAS COMPLETAS ====================
 function isSquareAttacked(boardState, row, col, attackerColor) {
     for (let i = 0; i < 8; i++)
         for (let j = 0; j < 8; j++) {
@@ -464,36 +513,65 @@ function findKing(color, boardState) {
     return null;
 }
 
-// ==================== ANIMACIÓN FLUIDA 3D ====================
-function animatePiece3D(mesh, startX, startZ, endX, endZ, duration = 280, onComplete) {
-    if (!mesh) return;
-    const startY = mesh.position.y;
-    const startRotY = mesh.rotation.y;
-    const startTime = performance.now();
-    
-    function step(now) {
-        const elapsed = now - startTime;
-        let t = Math.min(1, elapsed / duration);
-        const easeOutBack = 1 - Math.pow(1 - t, 3);
-        mesh.position.x = startX + (endX - startX) * easeOutBack;
-        mesh.position.z = startZ + (endZ - startZ) * easeOutBack;
-        mesh.position.y = startY + Math.sin(t * Math.PI) * 0.28;
-        mesh.rotation.y = startRotY + Math.sin(t * Math.PI) * 0.5;
-        if (t < 1) {
-            requestAnimationFrame(step);
-        } else {
-            mesh.position.x = endX;
-            mesh.position.z = endZ;
-            mesh.position.y = startY;
-            mesh.rotation.y = startRotY;
-            if (onComplete) onComplete();
-        }
-    }
-    requestAnimationFrame(step);
+function isCheck(color, boardState) {
+    const kingPos = findKing(color, boardState);
+    if (!kingPos) return false;
+    return isSquareAttacked(boardState, kingPos.row, kingPos.col, color === 'white' ? 'black' : 'white');
 }
 
-// ==================== PROMOCIÓN Y MOVIMIENTO CON ANIMACIÓN ====================
-function showPromotionDialog() {
+function hasAnyLegalMove(color, boardState) {
+    for (let i = 0; i < 8; i++)
+        for (let j = 0; j < 8; j++) {
+            const p = boardState[i][j];
+            if (p && p.color === color)
+                for (let ti = 0; ti < 8; ti++)
+                    for (let tj = 0; tj < 8; tj++)
+                        if (isValidMove(p, ti, tj, boardState))
+                            return true;
+        }
+    return false;
+}
+
+// ==================== CAPTURAS ====================
+function addCapture(piece) {
+    if (piece.color === 'white') blackCaptures.push(piece.type);
+    else whiteCaptures.push(piece.type);
+    updateCapturePanels();
+}
+
+function updateCapturePanels() {
+    const whitePanel = document.getElementById('captureWhitePanel');
+    const blackPanel = document.getElementById('captureBlackPanel');
+    const whiteList = document.getElementById('whiteCapturesList');
+    const blackList = document.getElementById('blackCapturesList');
+    
+    if (gameMode === 'auto') {
+        whitePanel.style.display = 'none';
+        blackPanel.style.display = 'none';
+        return;
+    }
+    if (gameMode === 'vsAI') {
+        if (playerColor === 'white') {
+            whitePanel.style.display = 'flex';
+            blackPanel.style.display = 'none';
+        } else {
+            whitePanel.style.display = 'none';
+            blackPanel.style.display = 'flex';
+        }
+    } else {
+        whitePanel.style.display = 'flex';
+        blackPanel.style.display = 'flex';
+    }
+    const pieceMap = { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙' };
+    whiteList.innerHTML = whiteCaptures.map(t => `<div class="capture-item">${pieceMap[t]}</div>`).join('');
+    blackList.innerHTML = blackCaptures.map(t => `<div class="capture-item">${pieceMap[t]}</div>`).join('');
+}
+
+// ==================== PROMOCIÓN (IA automática) ====================
+function showPromotionDialog(isAI = false) {
+    if (isAI) {
+        return Promise.resolve('queen');
+    }
     return new Promise((resolve) => {
         const modal = document.getElementById('promotionBox');
         const container = document.getElementById('promoOptions');
@@ -518,37 +596,57 @@ function showPromotionDialog() {
     });
 }
 
-async function executeMove(piece, toRow, toCol) {
+// ==================== ANIMACIÓN 3D ====================
+function animatePiece3D(mesh, startX, startZ, endX, endZ, duration = 280, onComplete) {
+    if (!mesh) return;
+    const startY = mesh.position.y;
+    const startRotY = mesh.rotation.y;
+    const startTime = performance.now();
+    function step(now) {
+        const elapsed = now - startTime;
+        let t = Math.min(1, elapsed / duration);
+        const ease = 1 - Math.pow(1 - t, 3);
+        mesh.position.x = startX + (endX - startX) * ease;
+        mesh.position.z = startZ + (endZ - startZ) * ease;
+        mesh.position.y = startY + Math.sin(t * Math.PI) * 0.28;
+        mesh.rotation.y = startRotY + Math.sin(t * Math.PI) * 0.5;
+        if (t < 1) requestAnimationFrame(step);
+        else {
+            mesh.position.x = endX;
+            mesh.position.z = endZ;
+            mesh.position.y = startY;
+            mesh.rotation.y = startRotY;
+            if (onComplete) onComplete();
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+async function executeMove(piece, toRow, toCol, isAIPromotion = false) {
     if (!isValidMove(piece, toRow, toCol, board)) return false;
     const fromRow = piece.row, fromCol = piece.col;
     const target = board[toRow][toCol];
+    if (target) addCapture(target);
     
     let oldMesh = null;
     if (is3D) oldMesh = piecesMap.get(`${fromRow},${fromCol}`);
-    
-    // Animación en 3D antes de modificar el estado
     if (is3D && oldMesh) {
-        const startX = oldMesh.position.x;
-        const startZ = oldMesh.position.z;
-        const endX = toCol - 3.5;
-        const endZ = toRow - 3.5;
-        await new Promise((resolve) => {
-            animatePiece3D(oldMesh, startX, startZ, endX, endZ, 280, resolve);
-        });
+        const startX = oldMesh.position.x, startZ = oldMesh.position.z;
+        const endX = toCol - 3.5, endZ = toRow - 3.5;
+        await new Promise(resolve => animatePiece3D(oldMesh, startX, startZ, endX, endZ, 280, resolve));
     }
     
-    // Actualizar lógica del tablero
     board[toRow][toCol] = piece;
     board[fromRow][fromCol] = null;
     piece.row = toRow; piece.col = toCol;
     piece.hasMoved = true;
     
     if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) {
-        const newType = await showPromotionDialog();
+        const isAI = (gameMode === 'auto') || (gameMode === 'vsAI' && piece.color !== playerColor);
+        const newType = await showPromotionDialog(isAI);
         piece.type = newType;
     }
     
-    // Enroque
     if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
         const rookFrom = toCol === 6 ? 7 : 0;
         const rookTo = toCol === 6 ? 5 : 3;
@@ -570,11 +668,12 @@ async function executeMove(piece, toRow, toCol) {
             piecesMap.delete(`${fromRow},${fromCol}`);
         }
         const newMesh = createPieceMesh(piece);
-        newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
+        newMesh.userData = { row: piece.row, col: piece.col, piece };
         newMesh.position.set(piece.col - 3.5, 0.09, piece.row - 3.5);
         piecesGroup.add(newMesh);
         piecesMap.set(`${piece.row},${piece.col}`, newMesh);
     }
+    updateCapturePanels();
     return true;
 }
 
@@ -585,11 +684,10 @@ function removePieceMesh(row, col) {
         piecesMap.delete(key);
     }
 }
-
 function updateSinglePiece(piece) {
     removePieceMesh(piece.row, piece.col);
     const newMesh = createPieceMesh(piece);
-    newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
+    newMesh.userData = { row: piece.row, col: piece.col, piece };
     newMesh.position.set(piece.col - 3.5, 0.09, piece.row - 3.5);
     piecesGroup.add(newMesh);
     piecesMap.set(`${piece.row},${piece.col}`, newMesh);
@@ -617,15 +715,18 @@ async function makeAIMove() {
     const moves = getAllMoves(aiColor);
     if (moves.length === 0) {
         gameOver = true;
-        document.getElementById('statusMsg').innerHTML = `🏆 JAQUE MATE - Ganan ${aiColor === 'white' ? 'NEGRAS' : 'BLANCAS'}`;
+        const isCheckNow = isCheck(aiColor, board);
+        if (isCheckNow) document.getElementById('statusMsg').innerHTML = `🏆 JAQUE MATE - Ganan ${aiColor === 'white' ? 'NEGRAS' : 'BLANCAS'}`;
+        else document.getElementById('statusMsg').innerHTML = `🏆 AHOGADO - TABLAS`;
         if (autoInterval) clearInterval(autoInterval);
         return false;
     }
     const randomMove = moves[Math.floor(Math.random() * moves.length)];
-    if (await executeMove(randomMove.piece, randomMove.toRow, randomMove.toCol)) {
+    const isAIPromotion = true;
+    if (await executeMove(randomMove.piece, randomMove.toRow, randomMove.toCol, isAIPromotion)) {
         if (is3D) { clearHighlights3D(); selectedPiece = null; }
         else { selected2D = null; highlight2D = []; draw2DBoard(); }
-        switchTurn();
+        await switchTurn();
         return true;
     }
     return false;
@@ -637,16 +738,20 @@ function startAutoPlay() {
 }
 function stopAutoPlay() { if (autoInterval) { clearInterval(autoInterval); autoInterval = null; } }
 
-function switchTurn() {
+async function switchTurn() {
     if (gameOver) return;
     turn = turn === 'white' ? 'black' : 'white';
+    const inCheck = isCheck(turn, board);
+    checkState = inCheck;
     updateUI();
-    const whiteKing = findKing('white', board);
-    const blackKing = findKing('black', board);
-    if (!whiteKing) { gameOver = true; document.getElementById('statusMsg').innerHTML = '🏆 NEGRAS GANAN (REY CAPTURADO)'; if (autoInterval) clearInterval(autoInterval); }
-    if (!blackKing) { gameOver = true; document.getElementById('statusMsg').innerHTML = '🏆 BLANCAS GANAN (REY CAPTURADO)'; if (autoInterval) clearInterval(autoInterval); }
-    if (gameOver) return;
-    
+    const hasMoves = hasAnyLegalMove(turn, board);
+    if (!hasMoves) {
+        gameOver = true;
+        if (inCheck) document.getElementById('statusMsg').innerHTML = `🏆 JAQUE MATE - Ganan ${turn === 'white' ? 'NEGRAS' : 'BLANCAS'}`;
+        else document.getElementById('statusMsg').innerHTML = `🏆 AHOGADO - TABLAS`;
+        if (autoInterval) clearInterval(autoInterval);
+        return;
+    }
     if (gameMode === 'vsAI') {
         const isPlayerTurn = (playerColor === turn);
         if (!isPlayerTurn && !gameOver) setTimeout(() => makeAIMove(), 200);
@@ -658,7 +763,7 @@ function switchTurn() {
     if (!is3D) draw2DBoard();
 }
 
-// ==================== 3D GRÁFICOS ====================
+// ==================== 3D ====================
 function createPieceMesh(piece) {
     const group = new THREE.Group();
     const mainColor = piece.color === 'white' ? whiteColorCode : blackColorCode;
@@ -840,10 +945,10 @@ async function handleClick3D(x,y) {
     }
     if (selectedPiece) {
         if (targetCell && isValidMove(selectedPiece.piece, targetCell.row, targetCell.col, board)) {
-            if (await executeMove(selectedPiece.piece, targetCell.row, targetCell.col)) {
+            if (await executeMove(selectedPiece.piece, targetCell.row, targetCell.col, false)) {
                 clearHighlights3D();
                 selectedPiece = null;
-                switchTurn();
+                await switchTurn();
             } else { clearHighlights3D(); selectedPiece = null; }
         } else { clearHighlights3D(); selectedPiece = null; }
     } else if (clicked?.userData.piece) {
@@ -853,7 +958,7 @@ async function handleClick3D(x,y) {
     }
 }
 
-// ==================== MODO 2D CON ANIMACIÓN VISUAL ====================
+// ==================== MODO 2D ====================
 function init2D() {
     canvas2d = document.getElementById('canvas2d');
     canvas2d.width = window.innerWidth;
@@ -912,18 +1017,7 @@ let touch2D = null;
 function onTouch2DStart(e) { e.preventDefault(); const t=e.touches[0]; touch2D={x:t.clientX, y:t.clientY}; }
 function onTouch2DEnd(e) { e.preventDefault(); if(touch2D) { handleClick2D(touch2D.x, touch2D.y); touch2D=null; } }
 function onClick2D(e) { handleClick2D(e.clientX, e.clientY); }
-
-// Animación 2D: pequeño efecto de "rebote" visual
-async function animate2DMove(piece, fromRow, fromCol, toRow, toCol) {
-    return new Promise((resolve) => {
-        draw2DBoard();
-        setTimeout(() => {
-            draw2DBoard();
-            resolve();
-        }, 60);
-    });
-}
-
+async function animate2DMove() { return new Promise(resolve => { draw2DBoard(); setTimeout(() => { draw2DBoard(); resolve(); }, 60); }); }
 async function handleClick2D(x,y) {
     if (gameOver || gameMode==='auto') return;
     const coord = getSquare2D(x,y);
@@ -931,10 +1025,10 @@ async function handleClick2D(x,y) {
     if (selected2D) {
         const piece = board[selected2D.row][selected2D.col];
         if (piece && isValidMove(piece, coord.row, coord.col, board)) {
-            await animate2DMove(piece, selected2D.row, selected2D.col, coord.row, coord.col);
-            if (await executeMove(piece, coord.row, coord.col)) {
+            await animate2DMove();
+            if (await executeMove(piece, coord.row, coord.col, false)) {
                 selected2D = null; highlight2D = [];
-                switchTurn();
+                await switchTurn();
             } else { selected2D = null; highlight2D = []; }
         } else { selected2D = null; highlight2D = []; }
         draw2DBoard();
@@ -952,11 +1046,14 @@ async function handleClick2D(x,y) {
     }
 }
 
-// ==================== UI Y CONTROL DE MODOS ====================
+// ==================== UI Y CONTROL ====================
 function updateUI() {
     document.getElementById('turnText').innerHTML = turn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
     let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
     document.getElementById('modeLabel').innerHTML = modeStr;
+    if (checkState && !gameOver) document.getElementById('checkIndicator').innerHTML = '⚠️ JAQUE';
+    else document.getElementById('checkIndicator').innerHTML = '';
+    updateCapturePanels();
 }
 
 function resetGame() {
@@ -984,17 +1081,12 @@ function switchDimension() {
     }
 }
 
-// Cambiar modo en plena partida (reinicia la partida con nuevo modo)
 function changeGameMode(newMode) {
     if (autoInterval) stopAutoPlay();
     gameMode = newMode;
-    if (gameMode === 'auto') {
-        playerColor = 'white';
-    } else if (gameMode === 'vsAI') {
-        playerColor = 'white';
-    } else {
-        playerColor = 'white';
-    }
+    if (gameMode === 'auto') playerColor = 'white';
+    else if (gameMode === 'vsAI') playerColor = 'white';
+    else playerColor = 'white';
     resetGame();
 }
 
@@ -1061,9 +1153,8 @@ document.getElementById('colorBtn').onclick = () => { if(gameMode !== 'auto') do
 document.getElementById('toggleDimBtn').onclick = () => switchDimension();
 document.getElementById('changeModeBtn').onclick = () => {
     const newMode = prompt("Elige modo: vsAI, vs2, auto", gameMode);
-    if (newMode === 'vsAI' || newMode === 'vs2' || newMode === 'auto') {
-        changeGameMode(newMode);
-    } else alert("Modo no válido (usa: vsAI, vs2, auto)");
+    if (newMode === 'vsAI' || newMode === 'vs2' || newMode === 'auto') changeGameMode(newMode);
+    else alert("Modo no válido (usa: vsAI, vs2, auto)");
 };
 
 renderColorSelector();
