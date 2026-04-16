@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEDREZ TOTAL 3D/2D - IA + MULTIJUGADOR + REGLAS COMPLETAS</title>
+    <title>AJEDREZ TOTAL - 2D/3D + IA + REGLAS COMPLETAS</title>
     <style>
         * {
             user-select: none;
@@ -13,7 +13,7 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #0a0f1e;
         }
         /* MODAL INICIO */
@@ -29,7 +29,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
         }
         .modal-card {
             background: linear-gradient(145deg, #1e1f2c, #13141f);
@@ -128,7 +127,6 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        /* UI flotante */
         .ui-top-left, .ui-top-right, .ui-bottom {
             position: fixed;
             z-index: 1000;
@@ -317,19 +315,19 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 
 // ---------- ESTADO GLOBAL ----------
 let board = Array(8).fill().map(() => Array(8).fill(null));
-let turn = 'white';        // white / black
-let gameMode = 'vsAI';     // vsAI, vs2, auto
+let turn = 'white';
+let gameMode = 'vsAI';
 let playerColor = 'white';
 let gameOver = false;
-let selectedPiece = null;   // { piece, row, col }
+let selectedPiece = null;
 let is3D = true;
 
-// 3D vars
+// 3D
 let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
 let piecesMap = new Map();
 let highlightMeshes = [];
 
-// 2D vars
+// 2D
 let ctx2d, canvas2d;
 let selected2D = null;
 let highlight2D = [];
@@ -354,8 +352,7 @@ const darkPalette = [
     { name: 'Ébano', val: 0x2c1810, preview: '#2c1810' },
     { name: 'Violeta', val: 0x331155, preview: '#331155' }
 ];
-let selectedWhiteIdx = 0;
-let selectedBlackIdx = 0;
+let selectedWhiteIdx = 0, selectedBlackIdx = 0;
 let pendingMode = 'vsAI';
 let pendingDimension = '3d';
 let isSelectingBlackFor2P = false;
@@ -364,8 +361,8 @@ let autoInterval = null;
 // ---------- CLASE PIEZA ----------
 class Piece {
     constructor(type, color, row, col) {
-        this.type = type;   // king, queen, rook, bishop, knight, pawn
-        this.color = color; // white / black
+        this.type = type;
+        this.color = color;
         this.row = row;
         this.col = col;
         this.hasMoved = false;
@@ -375,7 +372,6 @@ class Piece {
 // ---------- INICIALIZAR TABLERO ----------
 function initBoard() {
     board = Array(8).fill().map(() => Array(8).fill(null));
-    // peones
     for (let i = 0; i < 8; i++) {
         board[1][i] = new Piece('pawn', 'black', 1, i);
         board[6][i] = new Piece('pawn', 'white', 6, i);
@@ -396,12 +392,12 @@ function initBoard() {
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 400);
 }
 
-// ---------- REGLAS DE MOVIMIENTO (COMPLETAS) ----------
-function isSquareAttacked(boardState, row, col, colorAttacking) {
+// ---------- REGLAS COMPLETAS (con jaque) ----------
+function isSquareAttacked(boardState, row, col, attackerColor) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             const p = boardState[i][j];
-            if (p && p.color === colorAttacking) {
+            if (p && p.color === attackerColor) {
                 if (isValidMoveWithoutSelfCheck(p, row, col, boardState, true)) return true;
             }
         }
@@ -467,7 +463,7 @@ function isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, ignoreSelf
 
 function isValidMove(piece, toRow, toCol, boardState) {
     if (!isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, false)) return false;
-    // simulación para evitar auto-jaque
+    // Simulación para evitar auto-jaque
     const backup = boardState[toRow][toCol];
     const fromRow = piece.row, fromCol = piece.col;
     boardState[toRow][toCol] = piece;
@@ -518,6 +514,7 @@ function showPromotionDialog() {
 }
 
 async function executeMove(piece, toRow, toCol) {
+    if (!isValidMove(piece, toRow, toCol, board)) return false;
     const fromRow = piece.row, fromCol = piece.col;
     const target = board[toRow][toCol];
     board[toRow][toCol] = piece;
@@ -550,7 +547,7 @@ async function executeMove(piece, toRow, toCol) {
     return true;
 }
 
-// ---------- IA (aleatoria pero legal) ----------
+// ---------- IA ----------
 function getAllMoves(color) {
     let moves = [];
     for (let i = 0; i < 8; i++)
@@ -613,7 +610,7 @@ function switchTurn() {
     if (!is3D) draw2DBoard();
 }
 
-// ---------- 3D GRÁFICOS ----------
+// ---------- 3D ----------
 function createPieceMesh(piece) {
     const group = new THREE.Group();
     const mainColor = piece.color === 'white' ? whiteColorCode : blackColorCode;
@@ -782,6 +779,7 @@ let touchCache = null;
 function onTouch3DStart(e) { e.preventDefault(); const t=e.touches[0]; touchCache={x:t.clientX, y:t.clientY}; }
 function onTouch3DEnd(e) { e.preventDefault(); if(touchCache) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(touchCache.x-rect.left, touchCache.y-rect.top); touchCache=null; } }
 function onClick3D(e) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(e.clientX-rect.left, e.clientY-rect.top); }
+
 async function handleClick3D(x,y) {
     if (gameOver || gameMode === 'auto') return;
     const mouse = new THREE.Vector2((x/renderer.domElement.clientWidth)*2-1, -(y/renderer.domElement.clientHeight)*2+1);
@@ -802,10 +800,12 @@ async function handleClick3D(x,y) {
         if (row>=0 && row<8 && col>=0 && col<8) { targetCell = { row, col }; break; }
     }
     if (selectedPiece) {
-        if (targetCell && await executeMove(selectedPiece.piece, targetCell.row, targetCell.col)) {
-            clearHighlights3D();
-            selectedPiece = null;
-            switchTurn();
+        if (targetCell && isValidMove(selectedPiece.piece, targetCell.row, targetCell.col, board)) {
+            if (await executeMove(selectedPiece.piece, targetCell.row, targetCell.col)) {
+                clearHighlights3D();
+                selectedPiece = null;
+                switchTurn();
+            } else { clearHighlights3D(); selectedPiece = null; }
         } else { clearHighlights3D(); selectedPiece = null; }
     } else if (clicked?.userData.piece) {
         const p = clicked.userData.piece;
@@ -879,9 +879,11 @@ async function handleClick2D(x,y) {
     if (!coord) { selected2D=null; highlight2D=[]; draw2DBoard(); return; }
     if (selected2D) {
         const piece = board[selected2D.row][selected2D.col];
-        if (piece && await executeMove(piece, coord.row, coord.col)) {
-            selected2D = null; highlight2D = [];
-            switchTurn();
+        if (piece && isValidMove(piece, coord.row, coord.col, board)) {
+            if (await executeMove(piece, coord.row, coord.col)) {
+                selected2D = null; highlight2D = [];
+                switchTurn();
+            } else { selected2D = null; highlight2D = []; }
         } else { selected2D = null; highlight2D = []; }
         draw2DBoard();
     } else {
