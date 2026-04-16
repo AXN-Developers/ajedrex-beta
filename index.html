@@ -2,101 +2,229 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AJEREX BETA v1.2 - AlexanderGH PROJECTS 2026 🪐</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            touch-action: none;
+        }
+        
         #info {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             color: white;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 8px;
+            background: rgba(0,0,0,0.75);
+            padding: 6px 12px;
+            border-radius: 20px;
             pointer-events: none;
             z-index: 10;
-            backdrop-filter: blur(5px);
-            font-size: 14px;
+            backdrop-filter: blur(8px);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
         }
+        
         #turn-indicator {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: gold;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 20px;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.85);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
             font-weight: bold;
             font-family: monospace;
             pointer-events: none;
             z-index: 10;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,215,0,0.5);
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,215,0,0.6);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
+        
         #controls {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.7);
-            padding: 12px 20px;
-            border-radius: 30px;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 8px 12px;
+            border-radius: 40px;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             z-index: 20;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
+        
         button {
-            padding: 8px 20px;
-            font-size: 16px;
+            padding: 8px 16px;
+            font-size: 12px;
             font-weight: bold;
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: all 0.2s ease;
             font-family: inherit;
+            touch-action: manipulation;
+            min-width: 70px;
         }
-        button:hover {
-            transform: scale(1.05);
+        
+        button:active {
+            transform: scale(0.95);
         }
-        #btn-vsai { background: #4CAF50; color: white; }
-        #btn-vs2 { background: #ff9800; color: white; }
-        #btn-reset { background: #f44336; color: white; }
+        
+        #btn-vsai { 
+            background: linear-gradient(135deg, #4CAF50, #45a049); 
+            color: white; 
+            box-shadow: 0 2px 8px rgba(76,175,80,0.3);
+        }
+        
+        #btn-vs2 { 
+            background: linear-gradient(135deg, #ff9800, #f57c00); 
+            color: white;
+            box-shadow: 0 2px 8px rgba(255,152,0,0.3);
+        }
+        
+        #btn-reset { 
+            background: linear-gradient(135deg, #f44336, #e53935); 
+            color: white;
+            box-shadow: 0 2px 8px rgba(244,67,54,0.3);
+        }
+        
         #status {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.6);
+            bottom: 15px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
             color: #ddd;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 10px;
             font-family: monospace;
             pointer-events: none;
+            backdrop-filter: blur(4px);
         }
+        
+        #touch-instruction {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+            font-weight: bold;
+            transition: opacity 1s;
+        }
+        
+        .touch-feedback {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,215,0,0.5);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            animation: ripple 0.4s ease-out forwards;
+        }
+        
+        @keyframes ripple {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 0.8;
+            }
+            100% {
+                width: 80px;
+                height: 80px;
+                opacity: 0;
+            }
+        }
+        
         @media (max-width: 600px) {
-            button { padding: 6px 12px; font-size: 12px; }
-            #turn-indicator { font-size: 14px; padding: 8px 16px; top: 10px; right: 10px; }
-            #info { font-size: 10px; top: 10px; left: 10px; }
+            button {
+                padding: 6px 12px;
+                font-size: 11px;
+                min-width: 60px;
+            }
+            
+            #turn-indicator {
+                font-size: 11px;
+                padding: 6px 12px;
+                top: 8px;
+                right: 8px;
+            }
+            
+            #info {
+                font-size: 8px;
+                top: 8px;
+                left: 8px;
+                padding: 4px 10px;
+            }
+            
+            #controls {
+                gap: 8px;
+                padding: 6px 10px;
+                bottom: 10px;
+            }
+            
+            #status {
+                font-size: 8px;
+                bottom: 10px;
+                right: 8px;
+            }
+        }
+        
+        @media (max-width: 900px) and (orientation: landscape) {
+            #controls {
+                bottom: 8px;
+            }
+            #turn-indicator {
+                top: 5px;
+                right: 5px;
+                font-size: 10px;
+            }
+            #info {
+                font-size: 7px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="info">
-        ♜ AJEDREX BETA v1.2 - AlexanderGH PROJECTS 2026 🪐 | <span id="mode-label">vs IA</span>
+        ♜ AJEREX BETA v1.2 - AlexanderGH PROJECTS 2026 🪐 | <span id="mode-label">vs IA</span>
     </div>
     <div id="turn-indicator">
-        Turno: <span id="turn-text">Blancas</span>
+        Turno: <span id="turn-text">♔ Blancas</span>
     </div>
     <div id="controls">
-        <button id="btn-vsai">🤖 vs IA (Tú Blancas)</button>
-        <button id="btn-vs2">👥 2 Jugadores</button>
+        <button id="btn-vsai">🤖 vs IA</button>
+        <button id="btn-vs2">👥 2 Jug</button>
         <button id="btn-reset">🔄 Reiniciar</button>
     </div>
     <div id="status">
-        Estado: <span id="game-status">En juego</span>
+        📱 <span id="game-status">En juego</span>
+    </div>
+    <div id="touch-instruction">
+        👆 Toca pieza → Toca casilla
     </div>
 
     <script type="importmap">
@@ -113,7 +241,6 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // --- Lógica del juego de ajedrez ---
         let boardState = Array(8).fill().map(() => Array(8).fill(null));
         let currentTurn = 'white';
         let gameMode = 'vsAI';
@@ -123,6 +250,7 @@
         let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
         let piecesMeshes = new Map();
         let highlightMeshes = [];
+        let touchStartTime = 0;
         
         class Piece {
             constructor(type, color, row, col) {
@@ -136,12 +264,10 @@
         
         function initBoard() {
             boardState = Array(8).fill().map(() => Array(8).fill(null));
-            // Peones
             for (let i = 0; i < 8; i++) {
                 boardState[1][i] = new Piece('pawn', 'black', 1, i);
                 boardState[6][i] = new Piece('pawn', 'white', 6, i);
             }
-            // Piezas mayores
             const piecesOrder = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
             for (let i = 0; i < 8; i++) {
                 boardState[0][i] = new Piece(piecesOrder[i], 'black', 0, i);
@@ -152,6 +278,11 @@
             selectedPiece = null;
             updateTurnDisplay();
             document.getElementById('game-status').innerText = 'En juego';
+            
+            setTimeout(() => {
+                const instr = document.getElementById('touch-instruction');
+                if(instr) instr.style.opacity = '0';
+            }, 4000);
         }
         
         function isValidMove(piece, toRow, toCol, board) {
@@ -260,12 +391,12 @@
                     else blackKingExists = true;
                 }
             }
-            if(!whiteKingExists) { gameOver=true; document.getElementById('game-status').innerText = 'Ganan Negras!'; }
-            if(!blackKingExists) { gameOver=true; document.getElementById('game-status').innerText = 'Ganan Blancas!'; }
+            if(!whiteKingExists) { gameOver=true; document.getElementById('game-status').innerText = '🏆 Ganan Negras!'; }
+            if(!blackKingExists) { gameOver=true; document.getElementById('game-status').innerText = '🏆 Ganan Blancas!'; }
             if(gameOver) return;
             
             if (gameMode === 'vsAI' && currentTurn === 'black' && !gameOver) {
-                setTimeout(() => aiMove(), 100);
+                setTimeout(() => aiMove(), 150);
             }
         }
         
@@ -288,7 +419,7 @@
             }
             if (moves.length === 0) {
                 gameOver = true;
-                document.getElementById('game-status').innerText = 'Blancas ganan';
+                document.getElementById('game-status').innerText = '🏆 Blancas ganan';
                 return;
             }
             const randomMove = moves[Math.floor(Math.random() * moves.length)];
@@ -301,14 +432,11 @@
             }
         }
         
-        // --- Creación de piezas 3D con formas realistas ---
         function createPiece3D(piece) {
             const group = new THREE.Group();
             const mainColor = piece.color === 'white' ? 0xeeeeff : 0x222222;
             const goldColor = 0xffcc44;
-            const silverColor = 0xccccdd;
             
-            // Base
             const baseGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.12, 32);
             const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.7, roughness: 0.3 });
             const base = new THREE.Mesh(baseGeo, baseMat);
@@ -316,21 +444,18 @@
             base.castShadow = true;
             group.add(base);
             
-            // Cuerpo
             const bodyGeo = new THREE.CylinderGeometry(0.32, 0.35, 0.28, 32);
             const body = new THREE.Mesh(bodyGeo, baseMat);
             body.position.y = 0.25;
             body.castShadow = true;
             group.add(body);
             
-            // Detalles según tipo
             switch(piece.type) {
                 case 'king':
                     const topPart = new THREE.CylinderGeometry(0.28, 0.3, 0.35, 32);
                     const topMesh = new THREE.Mesh(topPart, baseMat);
                     topMesh.position.y = 0.52;
                     group.add(topMesh);
-                    // Cruz
                     const crossH = new THREE.BoxGeometry(0.28, 0.08, 0.08);
                     const crossV = new THREE.BoxGeometry(0.08, 0.28, 0.08);
                     const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.9 });
@@ -351,7 +476,6 @@
                     const queenMesh = new THREE.Mesh(queenBody, baseMat);
                     queenMesh.position.y = 0.52;
                     group.add(queenMesh);
-                    // Corona con puntas
                     for(let i = 0; i < 6; i++) {
                         const angle = (i / 6) * Math.PI * 2;
                         const spikeGeo = new THREE.ConeGeometry(0.07, 0.2, 6);
@@ -370,32 +494,27 @@
                     break;
                     
                 case 'knight':
-                    // Cabeza de caballo
                     const neckGeo = new THREE.CylinderGeometry(0.2, 0.26, 0.38, 12);
                     const neck = new THREE.Mesh(neckGeo, baseMat);
                     neck.position.set(0.15, 0.48, 0);
                     neck.rotation.z = -0.35;
                     neck.rotation.x = 0.1;
                     group.add(neck);
-                    
                     const headGeo = new THREE.BoxGeometry(0.3, 0.3, 0.24);
                     const head = new THREE.Mesh(headGeo, baseMat);
                     head.position.set(0.35, 0.68, 0);
                     head.rotation.z = -0.15;
                     group.add(head);
-                    
                     const earGeo = new THREE.ConeGeometry(0.09, 0.16, 6);
                     const ear = new THREE.Mesh(earGeo, baseMat);
                     ear.position.set(0.42, 0.84, 0.1);
                     group.add(ear);
-                    
                     const maneGeo = new THREE.CylinderGeometry(0.13, 0.11, 0.22, 6);
                     const maneMat = new THREE.MeshStandardMaterial({ color: piece.color === 'white' ? 0xccaa77 : 0x444444 });
                     const mane = new THREE.Mesh(maneGeo, maneMat);
                     mane.position.set(0.22, 0.72, -0.14);
                     mane.rotation.x = 0.4;
                     group.add(mane);
-                    
                     const eyeGeo = new THREE.SphereGeometry(0.05, 16);
                     const eyeMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
                     const eye = new THREE.Mesh(eyeGeo, eyeMat);
@@ -408,14 +527,12 @@
                     const mitre = new THREE.Mesh(mitreGeo, baseMat);
                     mitre.position.y = 0.62;
                     group.add(mitre);
-                    
                     const ringGeo = new THREE.TorusGeometry(0.28, 0.04, 16, 48);
                     const ringMat = new THREE.MeshStandardMaterial({ color: goldColor });
                     const ring = new THREE.Mesh(ringGeo, ringMat);
                     ring.rotation.x = Math.PI / 2;
                     ring.position.y = 0.42;
                     group.add(ring);
-                    
                     const topBallBishop = new THREE.SphereGeometry(0.08, 16);
                     const ballBishop = new THREE.Mesh(topBallBishop, new THREE.MeshStandardMaterial({ color: goldColor }));
                     ballBishop.position.y = 0.88;
@@ -427,7 +544,6 @@
                     const tower = new THREE.Mesh(towerGeo, baseMat);
                     tower.position.y = 0.42;
                     group.add(tower);
-                    
                     for(let i = 0; i < 4; i++) {
                         const angle = (i / 4) * Math.PI * 2;
                         const battlementGeo = new THREE.BoxGeometry(0.14, 0.16, 0.14);
@@ -444,12 +560,10 @@
                     const pawnNeckMesh = new THREE.Mesh(pawnNeck, baseMat);
                     pawnNeckMesh.position.y = 0.42;
                     group.add(pawnNeckMesh);
-                    
                     const pawnHead = new THREE.SphereGeometry(0.19, 32);
                     const pawnHeadMesh = new THREE.Mesh(pawnHead, baseMat);
                     pawnHeadMesh.position.y = 0.64;
                     group.add(pawnHeadMesh);
-                    
                     const pawnRing = new THREE.TorusGeometry(0.27, 0.04, 16, 48);
                     const pawnRingMesh = new THREE.Mesh(pawnRing, new THREE.MeshStandardMaterial({ color: goldColor }));
                     pawnRingMesh.rotation.x = Math.PI / 2;
@@ -461,19 +575,20 @@
             return group;
         }
         
-        // --- Inicialización 3D ---
         function init3D() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x0a0a2a);
-            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.006);
+            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.008);
             
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(6, 8, 8);
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 1000);
+            camera.position.set(5.5, 7.5, 7.5);
             camera.lookAt(0, 0, 0);
             
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.body.appendChild(renderer.domElement);
             
             labelRenderer = new CSS2DRenderer();
@@ -486,17 +601,22 @@
             
             orbitControls = new OrbitControls(camera, renderer.domElement);
             orbitControls.enableDamping = true;
-            orbitControls.dampingFactor = 0.05;
+            orbitControls.dampingFactor = 0.06;
             orbitControls.autoRotate = false;
             orbitControls.enableZoom = true;
+            orbitControls.zoomSpeed = 0.8;
+            orbitControls.rotateSpeed = 0.8;
+            orbitControls.touchRotate = true;
+            orbitControls.touchZoom = true;
             orbitControls.target.set(0, 0.5, 0);
             
-            // Luces
             const ambient = new THREE.AmbientLight(0x404060);
             scene.add(ambient);
-            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.2);
+            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.0);
             mainLight.position.set(5, 12, 6);
             mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 512;
+            mainLight.shadow.mapSize.height = 512;
             scene.add(mainLight);
             const fillLight = new THREE.PointLight(0xccaa88, 0.5);
             fillLight.position.set(-3, 5, 4);
@@ -505,7 +625,6 @@
             backLight.position.set(0, 4, -6);
             scene.add(backLight);
             
-            // Tablero
             const boardGroup = new THREE.Group();
             for (let i = 0; i < 8; i++) {
                 for (let j = 0; j < 8; j++) {
@@ -519,14 +638,14 @@
                     square.receiveShadow = true;
                     boardGroup.add(square);
                     
-                    // Etiquetas
                     const div = document.createElement('div');
                     div.textContent = `${String.fromCharCode(97+j)}${8-i}`;
                     div.style.color = (i+j)%2===0 ? '#553b1f' : '#f0e6d2';
-                    div.style.fontSize = '11px';
+                    div.style.fontSize = '9px';
                     div.style.fontWeight = 'bold';
+                    div.style.textShadow = '0 0 2px rgba(0,0,0,0.5)';
                     const label = new CSS2DObject(div);
-                    label.position.set(j - 3.5, -0.2, i - 3.5);
+                    label.position.set(j - 3.5, -0.18, i - 3.5);
                     boardGroup.add(label);
                 }
             }
@@ -538,6 +657,19 @@
             createAllPieces();
             
             window.addEventListener('click', onClick, false);
+            window.addEventListener('touchstart', onTouchStart, false);
+        }
+        
+        function onTouchStart(event) {
+            if (event.touches.length === 1) {
+                const touch = event.touches[0];
+                const feedback = document.createElement('div');
+                feedback.className = 'touch-feedback';
+                feedback.style.left = touch.clientX + 'px';
+                feedback.style.top = touch.clientY + 'px';
+                document.body.appendChild(feedback);
+                setTimeout(() => feedback.remove(), 400);
+            }
         }
         
         function createAllPieces() {
@@ -596,7 +728,7 @@
         
         function highlightSquare(row, col, color) {
             const geometry = new THREE.BoxGeometry(0.94, 0.05, 0.94);
-            const material = new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.6 });
+            const material = new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.65 });
             const square = new THREE.Mesh(geometry, material);
             square.position.x = col - 3.5;
             square.position.z = row - 3.5;
@@ -605,13 +737,11 @@
             highlightMeshes.push(square);
         }
         
-        function onClick(event) {
-            if(gameOver) return;
-            
+        function getCoordinatesFromPoint(x, y) {
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
-            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-            mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            mouse.x = (x / renderer.domElement.clientWidth) * 2 - 1;
+            mouse.y = -(y / renderer.domElement.clientHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             
             const intersects = raycaster.intersectObjects(piecesGroup.children, true);
@@ -626,10 +756,9 @@
                 }
             }
             
-            // Obtener coordenadas del tablero desde el punto de intersección
-            const groundIntersects = raycaster.intersectObjects(piecesGroup.children, false);
+            const planeIntersects = raycaster.intersectObjects(piecesGroup.children, false);
             let targetRowCol = null;
-            for(let intersect of groundIntersects) {
+            for(let intersect of planeIntersects) {
                 const point = intersect.point;
                 const col = Math.round(point.x + 3.5);
                 const row = Math.round(point.z + 3.5);
@@ -638,6 +767,14 @@
                     break;
                 }
             }
+            
+            return { clickedPiece, targetRowCol };
+        }
+        
+        function onClick(event) {
+            if(gameOver) return;
+            
+            const { clickedPiece, targetRowCol } = getCoordinatesFromPoint(event.clientX, event.clientY);
             
             if(selectedPiece) {
                 if(targetRowCol) {
@@ -672,7 +809,8 @@
         }
         
         function updateTurnDisplay() {
-            document.getElementById('turn-text').innerHTML = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
+            const turnSymbol = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
+            document.getElementById('turn-text').innerHTML = turnSymbol;
             document.getElementById('mode-label').innerHTML = gameMode === 'vsAI' ? 'vs IA' : '2 Jugadores';
         }
         
@@ -702,6 +840,12 @@
         document.getElementById('btn-vsai').addEventListener('click', () => setMode('vsAI'));
         document.getElementById('btn-vs2').addEventListener('click', () => setMode('vs2'));
         document.getElementById('btn-reset').addEventListener('click', () => resetGame());
+        
+        document.body.addEventListener('touchmove', (e) => {
+            if (e.target === renderer.domElement) {
+                e.preventDefault();
+            }
+        }, { passive: false });
         
         initBoard();
         init3D();
