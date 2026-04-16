@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEREX BETA v1.2 - AlexanderGH PROJECTS 2026 🪐</title>
+    <title>AJEREX BETA v2.0 - Colores Personalizables | AlexanderGH</title>
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -15,6 +15,120 @@
             overflow: hidden; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             touch-action: none;
+        }
+        
+        #color-picker-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .color-panel {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 30px;
+            padding: 25px;
+            text-align: center;
+            max-width: 90%;
+            width: 350px;
+            border: 2px solid rgba(255,215,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .color-panel h2 {
+            color: #ffd700;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        .color-panel h3 {
+            color: #aaa;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .color-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 10px auto;
+            border: 3px solid gold;
+            transition: all 0.2s;
+        }
+        
+        .color-option-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            margin: 0 auto;
+        }
+        
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: white;
+        }
+        
+        .color-swatch.selected {
+            border-color: gold;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px gold;
+        }
+        
+        .beta-badge {
+            background: linear-gradient(135deg, #ff9800, #f44336);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        
+        .start-btn:active {
+            transform: scale(0.95);
         }
         
         #info {
@@ -86,37 +200,7 @@
         #btn-vsai { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
         #btn-vs2 { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
         #btn-reset { background: linear-gradient(135deg, #f44336, #e53935); color: white; }
-        
-        #color-selector {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
-            color: white;
-            position: relative;
-        }
-        
-        .color-option {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            background: rgba(0,0,0,0.9);
-            border-radius: 20px;
-            padding: 8px;
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            backdrop-filter: blur(10px);
-            white-space: nowrap;
-        }
-        
-        .color-option button {
-            background: #333;
-            color: white;
-            padding: 6px 12px;
-            font-size: 11px;
-            min-width: auto;
-        }
-        
-        .color-option button:first-child { background: #eeeeff; color: #333; }
-        .color-option button:last-child { background: #222; color: white; }
+        #btn-recolor { background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; }
         
         #status {
             position: absolute;
@@ -129,23 +213,6 @@
             font-size: 10px;
             font-family: monospace;
             pointer-events: none;
-        }
-        
-        #touch-instruction {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
-            color: #ffd700;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            pointer-events: none;
-            z-index: 10;
-            white-space: nowrap;
-            backdrop-filter: blur(4px);
-            transition: opacity 1s;
         }
         
         .touch-feedback {
@@ -165,23 +232,42 @@
             100% { width: 80px; height: 80px; opacity: 0; }
         }
         
+        @keyframes pieceMove {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(0.15m); }
+            100% { transform: translateY(0); }
+        }
+        
+        .animating-piece {
+            animation: pieceMove 0.2s ease;
+        }
+        
         @media (max-width: 600px) {
             button { padding: 6px 12px; font-size: 11px; min-width: 55px; }
             #turn-indicator { font-size: 11px; padding: 6px 12px; top: 8px; right: 8px; }
             #info { font-size: 8px; top: 8px; left: 8px; padding: 4px 10px; }
             #controls { gap: 8px; padding: 6px 10px; bottom: 10px; }
             #status { font-size: 8px; bottom: 10px; right: 8px; }
-        }
-        
-        @media (max-width: 900px) and (orientation: landscape) {
-            #controls { bottom: 5px; }
-            #turn-indicator { top: 5px; right: 5px; font-size: 10px; }
+            .color-swatch { width: 50px; height: 50px; }
+            .color-panel { padding: 20px; }
         }
     </style>
 </head>
 <body>
+    <div id="color-picker-modal">
+        <div class="color-panel">
+            <h2>🎨 AJEREX v2.0</h2>
+            <div class="beta-badge">✨ COLORES BETA ✨</div>
+            <h3>Elige tu color para las piezas blancas:</h3>
+            <div class="color-option-grid" id="color-grid"></div>
+            <div class="color-preview" id="color-preview" style="background: #eeeeff;"></div>
+            <button class="start-btn" id="start-game-btn">🎮 COMENZAR PARTIDA</button>
+            <p style="font-size: 11px; color: #888; margin-top: 15px;">Los colores en modo 2 jugadores son elegidos por cada jugador<br>En modo IA el oponente tendrá un color aleatorio</p>
+        </div>
+    </div>
+
     <div id="info">
-        ♜ AJEREX v1.2 | <span id="mode-label">vs IA</span> | <span id="player-color-label">Juegas Blancas</span>
+        ♜ AJEREX v2.0 | <span id="mode-label">vs IA</span> | <span id="player-color-label"></span>
     </div>
     <div id="turn-indicator">
         Turno: <span id="turn-text">♔ Blancas</span>
@@ -190,17 +276,10 @@
         <button id="btn-vsai">🤖 vs IA</button>
         <button id="btn-vs2">👥 2 Jug</button>
         <button id="btn-reset">🔄 Reiniciar</button>
-        <button id="color-selector">🎨 Elegir Color</button>
-        <div id="color-options" style="display:none;" class="color-option">
-            <button id="play-white">♔ Blancas</button>
-            <button id="play-black">♚ Negras</button>
-        </div>
+        <button id="btn-recolor">🎨 Cambiar Color</button>
     </div>
     <div id="status">
-        📱 <span id="game-status">En juego</span>
-    </div>
-    <div id="touch-instruction">
-        👆 Toca pieza → Toca casilla
+        🎨 <span id="game-status">En juego</span>
     </div>
 
     <script type="importmap">
@@ -221,12 +300,86 @@
         let currentTurn = 'white';
         let gameMode = 'vsAI';
         let playerColor = 'white';
+        let player2Color = 'black';
+        let aiColor = 'black';
         let gameOver = false;
         let selectedPiece = null;
+        let whiteCustomColor = 0xeeeeff;
+        let blackCustomColor = 0x222222;
         
         let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
         let piecesMeshes = new Map();
         let highlightMeshes = [];
+        let pendingAnimation = null;
+        
+        const colorOptions = [
+            { name: 'Blanco Clásico', value: 0xeeeeff, preview: '#eeeeff' },
+            { name: 'Dorado', value: 0xffcc44, preview: '#ffcc44' },
+            { name: 'Plateado', value: 0xc0c0c0, preview: '#c0c0c0' },
+            { name: 'Rubí', value: 0xff4444, preview: '#ff4444' },
+            { name: 'Zafiro', value: 0x4488ff, preview: '#4488ff' },
+            { name: 'Esmeralda', value: 0x44ff88, preview: '#44ff88' },
+            { name: 'Amatista', value: 0xaa66ff, preview: '#aa66ff' },
+            { name: 'Bronce', value: 0xcd7f32, preview: '#cd7f32' }
+        ];
+        
+        const darkColorOptions = [
+            { name: 'Negro Clásico', value: 0x222222, preview: '#222222' },
+            { name: 'Obsidiana', value: 0x111111, preview: '#111111' },
+            { name: 'Grafito', value: 0x333344, preview: '#333344' },
+            { name: 'Caoba', value: 0x4a2511, preview: '#4a2511' },
+            { name: 'Ébano', value: 0x2c1810, preview: '#2c1810' },
+            { name: 'Carbón', value: 0x2a2a2a, preview: '#2a2a2a' },
+            { name: 'Pizarra', value: 0x3a3a4a, preview: '#3a3a4a' },
+            { name: 'Violeta Oscuro', value: 0x331155, preview: '#331155' }
+        ];
+        
+        let selectedWhiteColor = 0xeeeeff;
+        let selectedBlackColor = 0x222222;
+        let colorSelectionStep = 'white';
+        
+        function renderColorPicker() {
+            const grid = document.getElementById('color-grid');
+            grid.innerHTML = '';
+            const options = colorSelectionStep === 'white' ? colorOptions : darkColorOptions;
+            
+            options.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.background = color.preview;
+                swatch.style.background = `radial-gradient(circle at 30% 30%, ${color.preview}, ${color.preview}dd)`;
+                swatch.addEventListener('click', () => {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    if (colorSelectionStep === 'white') {
+                        selectedWhiteColor = color.value;
+                        document.getElementById('color-preview').style.background = color.preview;
+                    } else {
+                        selectedBlackColor = color.value;
+                        document.getElementById('color-preview').style.background = color.preview;
+                    }
+                });
+                grid.appendChild(swatch);
+            });
+            
+            document.getElementById('color-preview').style.background = colorSelectionStep === 'white' ? 
+                (colorOptions.find(c => c.value === selectedWhiteColor)?.preview || '#eeeeff') : 
+                (darkColorOptions.find(c => c.value === selectedBlackColor)?.preview || '#222222');
+        }
+        
+        function showColorPicker() {
+            colorSelectionStep = 'white';
+            document.querySelector('#color-picker-modal .color-panel h3').innerHTML = '🎨 Elige el color de tus piezas BLANCAS:';
+            renderColorPicker();
+            document.getElementById('color-picker-modal').style.display = 'flex';
+        }
+        
+        function showSecondColorPicker() {
+            colorSelectionStep = 'black';
+            document.querySelector('#color-picker-modal .color-panel h3').innerHTML = '🎨 Elige el color de tus piezas NEGRAS:';
+            renderColorPicker();
+            document.getElementById('color-picker-modal').style.display = 'flex';
+        }
         
         class Piece {
             constructor(type, color, row, col) {
@@ -255,13 +408,10 @@
             updateTurnDisplay();
             document.getElementById('game-status').innerText = 'En juego';
             
-            setTimeout(() => {
-                const instr = document.getElementById('touch-instruction');
-                if(instr) instr.style.opacity = '0';
-            }, 4000);
-            
-            if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white' && !gameOver) {
-                setTimeout(() => aiMove(), 300);
+            if (gameMode === 'vsAI') {
+                if (playerColor === 'black' && currentTurn === 'white' && !gameOver) {
+                    setTimeout(() => aiMove(), 300);
+                }
             }
         }
         
@@ -325,10 +475,43 @@
             }
         }
         
+        function animateMove(mesh, fromX, fromZ, toX, toZ, callback) {
+            if (!mesh) { if(callback) callback(); return; }
+            const startPos = { x: fromX, z: fromZ };
+            const endPos = { x: toX, z: toZ };
+            const duration = 200;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const t = Math.min(1, elapsed / duration);
+                const easeOut = 1 - Math.pow(1 - t, 2);
+                mesh.position.x = startPos.x + (endPos.x - startPos.x) * easeOut;
+                mesh.position.z = startPos.z + (endPos.z - startPos.z) * easeOut;
+                mesh.position.y = 0.08 + Math.sin(t * Math.PI) * 0.12;
+                
+                if (t < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    mesh.position.x = endPos.x;
+                    mesh.position.z = endPos.z;
+                    mesh.position.y = 0.08;
+                    if(callback) callback();
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        
         function movePiece(piece, toRow, toCol) {
             const fromRow = piece.row, fromCol = piece.col;
             const target = boardState[toRow][toCol];
             if (!isValidMove(piece, toRow, toCol, boardState)) return false;
+            
+            const pieceMesh = piecesMeshes.get(`${fromRow},${fromCol}`);
+            const fromX = pieceMesh ? pieceMesh.position.x : (fromCol - 3.5);
+            const fromZ = pieceMesh ? pieceMesh.position.z : (fromRow - 3.5);
+            const toX = toCol - 3.5;
+            const toZ = toRow - 3.5;
             
             boardState[toRow][toCol] = piece;
             boardState[fromRow][fromCol] = null;
@@ -354,7 +537,14 @@
                 }
             }
             
-            update3DPiece(piece);
+            if (pieceMesh) {
+                animateMove(pieceMesh, fromX, fromZ, toX, toZ, () => {
+                    update3DPiece(piece);
+                });
+            } else {
+                update3DPiece(piece);
+            }
+            
             if (target) remove3DPiece(target);
             return true;
         }
@@ -385,14 +575,14 @@
         
         function aiMove() {
             if (gameOver) return;
-            const aiColor = playerColor === 'white' ? 'black' : 'white';
-            if (currentTurn !== aiColor) return;
+            const aiColorToUse = aiColor;
+            if (currentTurn !== aiColorToUse) return;
             
             let moves = [];
             for (let i=0;i<8;i++) {
                 for(let j=0;j<8;j++) {
                     const piece = boardState[i][j];
-                    if(piece && piece.color === aiColor) {
+                    if(piece && piece.color === aiColorToUse) {
                         for(let ti=0;ti<8;ti++) {
                             for(let tj=0;tj<8;tj++) {
                                 if(isValidMove(piece, ti, tj, boardState)) {
@@ -405,7 +595,7 @@
             }
             if (moves.length === 0) {
                 gameOver = true;
-                document.getElementById('game-status').innerText = '🏆 ' + (aiColor === 'black' ? 'Blancas ganan' : 'Negras ganan');
+                document.getElementById('game-status').innerText = '🏆 ' + (aiColorToUse === 'black' ? 'Blancas ganan' : 'Negras ganan');
                 return;
             }
             const randomMove = moves[Math.floor(Math.random() * moves.length)];
@@ -420,11 +610,11 @@
         
         function createPiece3D(piece) {
             const group = new THREE.Group();
-            const mainColor = piece.color === 'white' ? 0xeeeeff : 0x222222;
+            const mainColor = piece.color === 'white' ? whiteCustomColor : blackCustomColor;
             const goldColor = 0xffcc44;
             
             const baseGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.12, 32);
-            const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.7, roughness: 0.3 });
+            const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.8, roughness: 0.25, emissive: piece.color === 'white' ? 0x222200 : 0x000000, emissiveIntensity: 0.1 });
             const base = new THREE.Mesh(baseGeo, baseMat);
             base.position.y = 0.06;
             base.castShadow = true;
@@ -444,7 +634,7 @@
                     group.add(topMesh);
                     const crossH = new THREE.BoxGeometry(0.28, 0.08, 0.08);
                     const crossV = new THREE.BoxGeometry(0.08, 0.28, 0.08);
-                    const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.9 });
+                    const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.95 });
                     const barH = new THREE.Mesh(crossH, goldMat);
                     const barV = new THREE.Mesh(crossV, goldMat);
                     barH.position.y = 0.78;
@@ -473,7 +663,7 @@
                         group.add(spike);
                     }
                     const gem = new THREE.SphereGeometry(0.1, 16);
-                    const gemMat = new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.8 });
+                    const gemMat = new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.85 });
                     const gemMesh = new THREE.Mesh(gem, gemMat);
                     gemMesh.position.y = 0.88;
                     group.add(gemMesh);
@@ -564,7 +754,7 @@
         function init3D() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x0a0a2a);
-            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.008);
+            scene.fog = new THREE.FogExp2(0x0a0a2a, 0.006);
             
             const aspect = window.innerWidth / window.innerHeight;
             camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 1000);
@@ -597,29 +787,32 @@
             
             const ambient = new THREE.AmbientLight(0x404060);
             scene.add(ambient);
-            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.0);
+            const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.2);
             mainLight.position.set(5, 12, 6);
             mainLight.castShadow = true;
-            mainLight.shadow.mapSize.width = 512;
-            mainLight.shadow.mapSize.height = 512;
+            mainLight.shadow.mapSize.width = 1024;
+            mainLight.shadow.mapSize.height = 1024;
             scene.add(mainLight);
             const fillLight = new THREE.PointLight(0xccaa88, 0.5);
             fillLight.position.set(-3, 5, 4);
             scene.add(fillLight);
-            const backLight = new THREE.PointLight(0x88aaff, 0.3);
+            const backLight = new THREE.PointLight(0x88aaff, 0.4);
             backLight.position.set(0, 4, -6);
             scene.add(backLight);
+            const rimLight = new THREE.PointLight(0xffaa66, 0.3);
+            rimLight.position.set(3, 3, -4);
+            scene.add(rimLight);
             
             const boardGroup = new THREE.Group();
             for (let i = 0; i < 8; i++) {
                 for (let j = 0; j < 8; j++) {
                     const color = (i + j) % 2 === 0 ? 0xf0d9b5 : 0xb58863;
-                    const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.1 });
-                    const geometry = new THREE.BoxGeometry(0.96, 0.1, 0.96);
+                    const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3, metalness: 0.15 });
+                    const geometry = new THREE.BoxGeometry(0.96, 0.12, 0.96);
                     const square = new THREE.Mesh(geometry, material);
                     square.position.x = j - 3.5;
                     square.position.z = i - 3.5;
-                    square.position.y = -0.05;
+                    square.position.y = -0.06;
                     square.receiveShadow = true;
                     boardGroup.add(square);
                     
@@ -630,7 +823,7 @@
                     div.style.fontWeight = 'bold';
                     div.style.textShadow = '0 0 2px rgba(0,0,0,0.5)';
                     const label = new CSS2DObject(div);
-                    label.position.set(j - 3.5, -0.18, i - 3.5);
+                    label.position.set(j - 3.5, -0.22, i - 3.5);
                     boardGroup.add(label);
                 }
             }
@@ -782,6 +975,15 @@
         }
         
         function update3DPiece(piece) {
+            const oldKey = `${piece.row},${piece.col}`;
+            if(piecesMeshes.has(oldKey)) {
+                const oldMesh = piecesMeshes.get(oldKey);
+                if(oldMesh && oldMesh.userData.piece === piece) {
+                    piecesGroup.remove(oldMesh);
+                    piecesMeshes.delete(oldKey);
+                }
+            }
+            
             for(let [key, mesh] of piecesMeshes) {
                 if(mesh.userData.piece === piece && (mesh.userData.row !== piece.row || mesh.userData.col !== piece.col)) {
                     piecesGroup.remove(mesh);
@@ -789,10 +991,7 @@
                     break;
                 }
             }
-            if(piecesMeshes.has(`${piece.row},${piece.col}`)) {
-                piecesGroup.remove(piecesMeshes.get(`${piece.row},${piece.col}`));
-                piecesMeshes.delete(`${piece.row},${piece.col}`);
-            }
+            
             const newMesh = createPiece3D(piece);
             newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
             newMesh.position.x = piece.col - 3.5;
@@ -805,23 +1004,26 @@
         function remove3DPiece(piece) {
             const key = `${piece.row},${piece.col}`;
             if(piecesMeshes.has(key)) {
-                piecesGroup.remove(piecesMeshes.get(key));
+                const mesh = piecesMeshes.get(key);
+                if(mesh) piecesGroup.remove(mesh);
                 piecesMeshes.delete(key);
             }
         }
         
         function clearHighlights() {
-            highlightMeshes.forEach(h => piecesGroup.remove(h));
+            for(let h of highlightMeshes) {
+                if(h && h.parent) piecesGroup.remove(h);
+            }
             highlightMeshes = [];
         }
         
         function highlightSquare(row, col, color) {
             const geometry = new THREE.BoxGeometry(0.94, 0.05, 0.94);
-            const material = new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.65 });
+            const material = new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.65, emissive: color, emissiveIntensity: 0.2 });
             const square = new THREE.Mesh(geometry, material);
             square.position.x = col - 3.5;
             square.position.z = row - 3.5;
-            square.position.y = -0.02;
+            square.position.y = -0.03;
             piecesGroup.add(square);
             highlightMeshes.push(square);
         }
@@ -830,8 +1032,11 @@
             const turnSymbol = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
             document.getElementById('turn-text').innerHTML = turnSymbol;
             document.getElementById('mode-label').innerHTML = gameMode === 'vsAI' ? 'vs IA' : '2 Jugadores';
-            const playerText = playerColor === 'white' ? 'Juegas Blancas' : 'Juegas Negras';
-            document.getElementById('player-color-label').innerHTML = gameMode === 'vsAI' ? playerText : '';
+            if(gameMode === 'vsAI') {
+                document.getElementById('player-color-label').innerHTML = `Tus piezas: ${colorOptions.find(c => c.value === whiteCustomColor)?.name || 'Personalizado'}`;
+            } else {
+                document.getElementById('player-color-label').innerHTML = `Colores personalizados`;
+            }
         }
         
         function resetGame() {
@@ -849,14 +1054,36 @@
         
         function setMode(mode) {
             gameMode = mode;
+            if (mode === 'vsAI') {
+                const randomDark = darkColorOptions[Math.floor(Math.random() * darkColorOptions.length)];
+                blackCustomColor = randomDark.value;
+                aiColor = 'black';
+                playerColor = 'white';
+                whiteCustomColor = selectedWhiteColor;
+            } else {
+                whiteCustomColor = selectedWhiteColor;
+                blackCustomColor = selectedBlackColor;
+                playerColor = 'white';
+                player2Color = 'black';
+            }
             resetGame();
         }
         
-        function setPlayerColor(color) {
-            playerColor = color;
-            updateTurnDisplay();
-            resetGame();
-            document.getElementById('color-options').style.display = 'none';
+        function recolorGame() {
+            if (gameMode === 'vsAI') {
+                showColorPicker();
+            } else {
+                showColorPicker();
+            }
+        }
+        
+        function startGameWithColors() {
+            whiteCustomColor = selectedWhiteColor;
+            blackCustomColor = selectedBlackColor;
+            document.getElementById('color-picker-modal').style.display = 'none';
+            initBoard();
+            init3D();
+            animate();
         }
         
         function animate() {
@@ -869,33 +1096,20 @@
         document.getElementById('btn-vsai').addEventListener('click', () => setMode('vsAI'));
         document.getElementById('btn-vs2').addEventListener('click', () => setMode('vs2'));
         document.getElementById('btn-reset').addEventListener('click', () => resetGame());
+        document.getElementById('btn-recolor').addEventListener('click', () => recolorGame());
+        document.getElementById('start-game-btn').addEventListener('click', () => startGameWithColors());
         
-        const colorBtn = document.getElementById('color-selector');
-        const colorOptions = document.getElementById('color-options');
-        colorBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isVisible = colorOptions.style.display === 'flex';
-            colorOptions.style.display = isVisible ? 'none' : 'flex';
-        });
-        
-        document.getElementById('play-white').addEventListener('click', () => setPlayerColor('white'));
-        document.getElementById('play-black').addEventListener('click', () => setPlayerColor('black'));
-        
-        document.addEventListener('click', (e) => {
-            if (!colorBtn.contains(e.target) && !colorOptions.contains(e.target)) {
-                colorOptions.style.display = 'none';
-            }
-        });
-        
-        initBoard();
-        init3D();
-        animate();
+        selectedWhiteColor = colorOptions[0].value;
+        selectedBlackColor = darkColorOptions[0].value;
+        renderColorPicker();
         
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            if(camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                if(renderer) renderer.setSize(window.innerWidth, window.innerHeight);
+                if(labelRenderer) labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            }
         });
     </script>
 </body>
