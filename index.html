@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEDREZ TOTAL - 2D/3D + IA + REGLAS COMPLETAS</title>
+    <title>AJEDREZ TOTAL - CORREGIDO | 2D/3D | IA | SIN DUPLICADOS</title>
     <style>
         * {
             user-select: none;
@@ -13,10 +13,9 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: #0a0f1e;
         }
-        /* MODAL INICIO */
         .modal-full {
             position: fixed;
             top: 0;
@@ -37,7 +36,6 @@
             width: 90%;
             max-width: 520px;
             border: 2px solid rgba(255,215,0,0.5);
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
             text-align: center;
             animation: fadeUp 0.4s ease;
         }
@@ -51,7 +49,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0 0 8px;
+            margin: 0;
         }
         .badge {
             background: #ff6b4a;
@@ -61,7 +59,7 @@
             font-size: 12px;
             font-weight: bold;
             color: white;
-            margin-bottom: 20px;
+            margin: 10px 0 15px;
         }
         .btn-group {
             display: flex;
@@ -80,14 +78,12 @@
             font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         .btn-mode:active { transform: scale(0.96); }
         .btn-mode.ai { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .btn-mode.pvp { background: linear-gradient(135deg, #f12711, #f5af19); }
         .btn-mode.auto { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
         .btn-dim { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
-        .btn-dim.d2d { background: linear-gradient(135deg, #4b6cb7, #182848); }
         .color-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -95,7 +91,6 @@
             margin: 20px 0;
             max-height: 200px;
             overflow-y: auto;
-            padding: 4px;
         }
         .swatch {
             width: 60px;
@@ -103,11 +98,10 @@
             border-radius: 50%;
             cursor: pointer;
             border: 3px solid transparent;
-            transition: 0.1s;
             margin: 0 auto;
             box-shadow: 0 4px 10px black;
         }
-        .swatch.selected { border-color: gold; transform: scale(1.05); box-shadow: 0 0 18px gold; }
+        .swatch.selected { border-color: gold; transform: scale(1.05); }
         .preview-circle {
             width: 70px;
             height: 70px;
@@ -141,7 +135,6 @@
             border-radius: 50px;
             color: white;
             font-size: 13px;
-            font-weight: bold;
         }
         .ui-top-right {
             top: 16px;
@@ -154,7 +147,6 @@
             font-weight: bold;
             font-size: 1.2rem;
             border: 1px solid rgba(255,215,0,0.5);
-            font-family: monospace;
         }
         .ui-bottom {
             bottom: 20px;
@@ -176,7 +168,6 @@
             font-weight: bold;
             color: white;
             cursor: pointer;
-            font-size: 0.9rem;
         }
         button.action.purple { background: #9b59b6; }
         button.action.orange { background: #f39c12; }
@@ -190,7 +181,6 @@
             font-size: 11px;
             color: #ccc;
             pointer-events: none;
-            z-index: 1000;
         }
         #canvas2d {
             position: fixed;
@@ -235,27 +225,11 @@
             justify-content: center;
             font-size: 48px;
             cursor: pointer;
-            transition: 0.1s;
             border: 2px solid #ffaa44;
-        }
-        .promo-item:active { transform: scale(0.94); }
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.7), transparent);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            animation: rippleAnim 0.5s ease-out forwards;
-            z-index: 10000;
-        }
-        @keyframes rippleAnim {
-            0% { width: 0; height: 0; opacity: 0.8; }
-            100% { width: 120px; height: 120px; opacity: 0; }
         }
         @media (max-width: 650px) {
             .swatch { width: 48px; height: 48px; }
             .btn-mode { padding: 6px 16px; font-size: 13px; }
-            .promo-item { width: 60px; height: 60px; font-size: 40px; }
         }
     </style>
 </head>
@@ -264,32 +238,29 @@
 <div id="startModal" class="modal-full">
     <div class="modal-card">
         <h1>♞ AJEDREZ TOTAL</h1>
-        <div class="badge">✨ REGLAS COMPLETAS | 2D/3D | IA ✨</div>
-        <h3 style="color:#ddd;">🎮 MODO</h3>
+        <div class="badge">✨ SIN ERRORES | 2D/3D | IA | PROMOCIÓN ✨</div>
         <div class="btn-group">
             <button class="btn-mode ai" id="modeVsAI">🤖 VS IA</button>
             <button class="btn-mode pvp" id="mode2P">👥 2 JUGADORES</button>
             <button class="btn-mode auto" id="modeAIAI">⚡ IA vs IA</button>
         </div>
-        <h3 style="color:#ddd;">🖥️ DIMENSIÓN</h3>
         <div class="btn-group">
-            <button class="btn-mode btn-dim" id="dim3d">🎮 3D REALISTA</button>
-            <button class="btn-mode btn-dim d2d" id="dim2d">🖼️ 2D CLÁSICO</button>
+            <button class="btn-mode btn-dim" id="dim3d">🎮 3D</button>
+            <button class="btn-mode btn-dim" id="dim2d">🖼️ 2D</button>
         </div>
-        <h3 id="colorPrompt" style="color:#ffd966;">🎨 COLOR DE TUS PIEZAS (BLANCAS):</h3>
+        <h3 id="colorPrompt" style="color:#ffd966;">🎨 COLOR DE TUS PIEZAS:</h3>
         <div id="colorGrid" class="color-grid"></div>
         <div id="previewCircle" class="preview-circle"></div>
-        <button class="start-btn" id="startGameBtn">🚀 COMENZAR PARTIDA</button>
+        <button class="start-btn" id="startGameBtn">🚀 COMENZAR</button>
     </div>
 </div>
 
 <div id="promotionBox" class="promo-modal">
-    <h3 style="color:#ffd966;">🌟 ¡PROMOCIÓN ÉPICA! 🌟</h3>
-    <p style="color:white;">Elige nueva pieza para tu peón:</p>
+    <h3 style="color:#ffd966;">🌟 ¡PROMOCIÓN! 🌟</h3>
     <div class="promo-pieces" id="promoOptions"></div>
 </div>
 
-<div class="ui-top-left">♜ AJEDREZ TOTAL | <span id="modeLabel">MODO</span></div>
+<div class="ui-top-left">♜ AJEDREZ | <span id="modeLabel">MODO</span></div>
 <div class="ui-top-right">⚔️ TURNO: <span id="turnText">BLANCAS</span></div>
 <div class="ui-bottom">
     <button class="action" id="resetBtn">🔄 REINICIAR</button>
@@ -313,18 +284,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-// ---------- ESTADO GLOBAL ----------
+// ==================== ESTADO GLOBAL ====================
 let board = Array(8).fill().map(() => Array(8).fill(null));
 let turn = 'white';
 let gameMode = 'vsAI';
 let playerColor = 'white';
 let gameOver = false;
-let selectedPiece = null;
+let selectedPiece = null;        // { piece, row, col }
 let is3D = true;
 
 // 3D
 let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
-let piecesMap = new Map();
+let piecesMap = new Map();       // key "row,col" -> mesh
 let highlightMeshes = [];
 
 // 2D
@@ -332,7 +303,6 @@ let ctx2d, canvas2d;
 let selected2D = null;
 let highlight2D = [];
 
-// Colores personalizados
 let whiteColorCode = 0xeeeeff;
 let blackColorCode = 0x222222;
 
@@ -358,7 +328,7 @@ let pendingDimension = '3d';
 let isSelectingBlackFor2P = false;
 let autoInterval = null;
 
-// ---------- CLASE PIEZA ----------
+// ==================== CLASE PIEZA ====================
 class Piece {
     constructor(type, color, row, col) {
         this.type = type;
@@ -369,7 +339,7 @@ class Piece {
     }
 }
 
-// ---------- INICIALIZAR TABLERO ----------
+// ==================== INICIALIZAR TABLERO ====================
 function initBoard() {
     board = Array(8).fill().map(() => Array(8).fill(null));
     for (let i = 0; i < 8; i++) {
@@ -392,16 +362,14 @@ function initBoard() {
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 400);
 }
 
-// ---------- REGLAS COMPLETAS (con jaque) ----------
+// ==================== REGLAS COMPLETAS (CON JAQUE) ====================
 function isSquareAttacked(boardState, row, col, attackerColor) {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 8; i++)
         for (let j = 0; j < 8; j++) {
             const p = boardState[i][j];
-            if (p && p.color === attackerColor) {
-                if (isValidMoveWithoutSelfCheck(p, row, col, boardState, true)) return true;
-            }
+            if (p && p.color === attackerColor && isValidMoveWithoutSelfCheck(p, row, col, boardState, true))
+                return true;
         }
-    }
     return false;
 }
 
@@ -419,7 +387,7 @@ function isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, ignoreSelf
             const startRow = piece.color === 'white' ? 6 : 1;
             if (deltaCol === 0 && !target) {
                 if (deltaRow === dir) return true;
-                if (deltaRow === 2 * dir && fromRow === startRow && !boardState[fromRow+dir][fromCol]) return true;
+                if (deltaRow === 2*dir && fromRow === startRow && !boardState[fromRow+dir][fromCol]) return true;
             } else if (absCol === 1 && deltaRow === dir && target) return true;
             return false;
         case 'knight': return (absRow === 2 && absCol === 1) || (absRow === 1 && absCol === 2);
@@ -487,7 +455,7 @@ function findKing(color, boardState) {
     return null;
 }
 
-// ---------- EJECUTAR MOVIMIENTO + PROMOCIÓN ----------
+// ==================== PROMOCIÓN Y MOVIMIENTO ====================
 function showPromotionDialog() {
     return new Promise((resolve) => {
         const modal = document.getElementById('promotionBox');
@@ -517,6 +485,11 @@ async function executeMove(piece, toRow, toCol) {
     if (!isValidMove(piece, toRow, toCol, board)) return false;
     const fromRow = piece.row, fromCol = piece.col;
     const target = board[toRow][toCol];
+    
+    // Guardar mesh antiguo antes de modificar board
+    let oldMesh = null;
+    if (is3D) oldMesh = piecesMap.get(`${fromRow},${fromCol}`);
+    
     board[toRow][toCol] = piece;
     board[fromRow][fromCol] = null;
     piece.row = toRow; piece.col = toCol;
@@ -537,17 +510,46 @@ async function executeMove(piece, toRow, toCol) {
             rook.row = fromRow;
             rook.col = rookTo;
             rook.hasMoved = true;
-            if (is3D) update3DPiece(rook);
+            if (is3D) updateSinglePiece(rook);
         }
     }
+    
     if (is3D) {
-        if (target) remove3DPiece(target);
-        update3DPiece(piece);
+        // Eliminar mesh de destino si hay captura
+        if (target) removePieceMesh(target.row, target.col);
+        // Actualizar mesh de la pieza movida
+        if (oldMesh) {
+            // Reemplazar completamente: eliminar viejo y crear nuevo
+            piecesGroup.remove(oldMesh);
+            piecesMap.delete(`${fromRow},${fromCol}`);
+        }
+        const newMesh = createPieceMesh(piece);
+        newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
+        newMesh.position.set(piece.col - 3.5, 0.09, piece.row - 3.5);
+        piecesGroup.add(newMesh);
+        piecesMap.set(`${piece.row},${piece.col}`, newMesh);
     }
     return true;
 }
 
-// ---------- IA ----------
+function removePieceMesh(row, col) {
+    const key = `${row},${col}`;
+    if (piecesMap.has(key)) {
+        piecesGroup.remove(piecesMap.get(key));
+        piecesMap.delete(key);
+    }
+}
+
+function updateSinglePiece(piece) {
+    removePieceMesh(piece.row, piece.col);
+    const newMesh = createPieceMesh(piece);
+    newMesh.userData = { row: piece.row, col: piece.col, piece: piece };
+    newMesh.position.set(piece.col - 3.5, 0.09, piece.row - 3.5);
+    piecesGroup.add(newMesh);
+    piecesMap.set(`${piece.row},${piece.col}`, newMesh);
+}
+
+// ==================== IA ====================
 function getAllMoves(color) {
     let moves = [];
     for (let i = 0; i < 8; i++)
@@ -610,7 +612,7 @@ function switchTurn() {
     if (!is3D) draw2DBoard();
 }
 
-// ---------- 3D ----------
+// ==================== 3D GRÁFICOS ====================
 function createPieceMesh(piece) {
     const group = new THREE.Group();
     const mainColor = piece.color === 'white' ? whiteColorCode : blackColorCode;
@@ -692,6 +694,21 @@ function createPieceMesh(piece) {
     return group;
 }
 
+function rebuildAllPieces3D() {
+    while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
+    piecesMap.clear();
+    for (let i=0;i<8;i++) for (let j=0;j<8;j++) {
+        const p = board[i][j];
+        if (p) {
+            const mesh = createPieceMesh(p);
+            mesh.userData = { row: i, col: j, piece: p };
+            mesh.position.set(j-3.5, 0.09, i-3.5);
+            piecesGroup.add(mesh);
+            piecesMap.set(`${i},${j}`, mesh);
+        }
+    }
+}
+
 function init3D() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050b1a);
@@ -731,36 +748,12 @@ function init3D() {
     scene.add(boardGroup);
     piecesGroup = new THREE.Group();
     scene.add(piecesGroup);
-    rebuild3DPieces();
+    rebuildAllPieces3D();
     renderer.domElement.addEventListener('click', onClick3D);
     renderer.domElement.addEventListener('touchstart', onTouch3DStart);
     renderer.domElement.addEventListener('touchend', onTouch3DEnd);
 }
 
-function rebuild3DPieces() {
-    while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
-    piecesMap.clear();
-    for (let i=0;i<8;i++) for (let j=0;j<8;j++) {
-        const p = board[i][j];
-        if (p) {
-            const mesh = createPieceMesh(p);
-            mesh.userData = { row:i, col:j, piece:p };
-            mesh.position.set(j-3.5, 0.09, i-3.5);
-            piecesGroup.add(mesh);
-            piecesMap.set(`${i},${j}`, mesh);
-        }
-    }
-}
-function update3DPiece(piece) {
-    const key = `${piece.row},${piece.col}`;
-    if (piecesMap.has(key)) { piecesGroup.remove(piecesMap.get(key)); piecesMap.delete(key); }
-    const newMesh = createPieceMesh(piece);
-    newMesh.userData = { row:piece.row, col:piece.col, piece };
-    newMesh.position.set(piece.col-3.5, 0.09, piece.row-3.5);
-    piecesGroup.add(newMesh);
-    piecesMap.set(key, newMesh);
-}
-function remove3DPiece(piece) { const key = `${piece.row},${piece.col}`; if(piecesMap.has(key)) { piecesGroup.remove(piecesMap.get(key)); piecesMap.delete(key); } }
 function clearHighlights3D() { highlightMeshes.forEach(h => piecesGroup.remove(h)); highlightMeshes = []; }
 function highlight3D(row,col,color) {
     const sq = new THREE.Mesh(new THREE.BoxGeometry(0.94,0.06,0.94), new THREE.MeshStandardMaterial({ color, transparent:true, opacity:0.7, emissive:color, emissiveIntensity:0.3 }));
@@ -814,7 +807,7 @@ async function handleClick3D(x,y) {
     }
 }
 
-// ---------- MODO 2D ----------
+// ==================== MODO 2D ====================
 function init2D() {
     canvas2d = document.getElementById('canvas2d');
     canvas2d.width = window.innerWidth;
@@ -900,7 +893,7 @@ async function handleClick2D(x,y) {
     }
 }
 
-// ---------- UI y control ----------
+// ==================== UI Y CONTROL ====================
 function updateUI() {
     document.getElementById('turnText').innerHTML = turn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
     let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
@@ -909,7 +902,7 @@ function updateUI() {
 function resetGame() {
     if (gameMode === 'auto') stopAutoPlay();
     initBoard();
-    if (is3D) { rebuild3DPieces(); clearHighlights3D(); selectedPiece = null; }
+    if (is3D) { rebuildAllPieces3D(); clearHighlights3D(); selectedPiece = null; }
     else { selected2D = null; highlight2D = []; draw2DBoard(); }
     if (gameMode === 'auto') startAutoPlay();
     else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 300);
@@ -924,7 +917,7 @@ function switchDimension() {
         document.getElementById('canvas2d').style.display = 'none';
         if (renderer) renderer.domElement.style.display = 'block';
         if (labelRenderer) labelRenderer.domElement.style.display = 'block';
-        rebuild3DPieces();
+        rebuildAllPieces3D();
         draw3DHighlights();
         document.getElementById('toggleDimBtn').innerHTML = '🔄 CAMBIAR A 2D';
     }
@@ -939,7 +932,7 @@ function startGame(mode, whiteVal, blackVal, dim) {
     initBoard();
     if (is3D) {
         if (!scene) init3D();
-        else { rebuild3DPieces(); if(renderer) renderer.domElement.style.display='block'; if(labelRenderer) labelRenderer.domElement.style.display='block'; document.getElementById('canvas2d').style.display='none'; }
+        else { rebuildAllPieces3D(); if(renderer) renderer.domElement.style.display='block'; if(labelRenderer) labelRenderer.domElement.style.display='block'; document.getElementById('canvas2d').style.display='none'; }
     } else {
         init2D();
     }
@@ -979,7 +972,7 @@ document.getElementById('startGameBtn').onclick = () => {
         startGame('auto', randW, randB, chosenDimension);
     } else if (pendingMode === 'vs2') {
         if (isSelectingBlackFor2P) startGame('vs2', colorPalette[selectedWhiteIdx].val, darkPalette[selectedBlackIdx].val, chosenDimension);
-        else { isSelectingBlackFor2P = true; document.getElementById('colorPrompt').innerHTML='🎨 AHORA COLOR NEGRAS:'; renderColorSelector(); document.getElementById('startGameBtn').innerHTML = '✅ CONFIRMAR COLORES'; }
+        else { isSelectingBlackFor2P = true; document.getElementById('colorPrompt').innerHTML='🎨 AHORA COLOR NEGRAS:'; renderColorSelector(); document.getElementById('startGameBtn').innerHTML = '✅ CONFIRMAR'; }
     } else {
         startGame('vsAI', colorPalette[selectedWhiteIdx].val, darkPalette[0].val, chosenDimension);
     }
