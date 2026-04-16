@@ -30,7 +30,6 @@
             backdrop-filter: blur(8px);
             font-size: 10px;
             font-weight: bold;
-            letter-spacing: 0.5px;
         }
         
         #turn-indicator {
@@ -48,8 +47,6 @@
             z-index: 10;
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,215,0,0.6);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
         
         #controls {
@@ -57,14 +54,16 @@
             bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             padding: 8px 12px;
             border-radius: 40px;
             display: flex;
             gap: 10px;
             z-index: 20;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 90%;
         }
         
         button {
@@ -77,30 +76,47 @@
             transition: all 0.2s ease;
             font-family: inherit;
             touch-action: manipulation;
-            min-width: 70px;
+            min-width: 65px;
         }
         
         button:active {
             transform: scale(0.95);
         }
         
-        #btn-vsai { 
-            background: linear-gradient(135deg, #4CAF50, #45a049); 
-            color: white; 
-            box-shadow: 0 2px 8px rgba(76,175,80,0.3);
+        #btn-vsai { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
+        #btn-vs2 { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
+        #btn-reset { background: linear-gradient(135deg, #f44336, #e53935); color: white; }
+        
+        #color-selector {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            position: relative;
         }
         
-        #btn-vs2 { 
-            background: linear-gradient(135deg, #ff9800, #f57c00); 
-            color: white;
-            box-shadow: 0 2px 8px rgba(255,152,0,0.3);
+        .color-option {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: rgba(0,0,0,0.9);
+            border-radius: 20px;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
         }
         
-        #btn-reset { 
-            background: linear-gradient(135deg, #f44336, #e53935); 
+        .color-option button {
+            background: #333;
             color: white;
-            box-shadow: 0 2px 8px rgba(244,67,54,0.3);
+            padding: 6px 12px;
+            font-size: 11px;
+            min-width: auto;
         }
+        
+        .color-option button:first-child { background: #eeeeff; color: #333; }
+        .color-option button:last-child { background: #222; color: white; }
         
         #status {
             position: absolute;
@@ -113,7 +129,6 @@
             font-size: 10px;
             font-family: monospace;
             pointer-events: none;
-            backdrop-filter: blur(4px);
         }
         
         #touch-instruction {
@@ -130,7 +145,6 @@
             z-index: 10;
             white-space: nowrap;
             backdrop-filter: blur(4px);
-            font-weight: bold;
             transition: opacity 1s;
         }
         
@@ -147,70 +161,27 @@
         }
         
         @keyframes ripple {
-            0% {
-                width: 0px;
-                height: 0px;
-                opacity: 0.8;
-            }
-            100% {
-                width: 80px;
-                height: 80px;
-                opacity: 0;
-            }
+            0% { width: 0px; height: 0px; opacity: 0.8; }
+            100% { width: 80px; height: 80px; opacity: 0; }
         }
         
         @media (max-width: 600px) {
-            button {
-                padding: 6px 12px;
-                font-size: 11px;
-                min-width: 60px;
-            }
-            
-            #turn-indicator {
-                font-size: 11px;
-                padding: 6px 12px;
-                top: 8px;
-                right: 8px;
-            }
-            
-            #info {
-                font-size: 8px;
-                top: 8px;
-                left: 8px;
-                padding: 4px 10px;
-            }
-            
-            #controls {
-                gap: 8px;
-                padding: 6px 10px;
-                bottom: 10px;
-            }
-            
-            #status {
-                font-size: 8px;
-                bottom: 10px;
-                right: 8px;
-            }
+            button { padding: 6px 12px; font-size: 11px; min-width: 55px; }
+            #turn-indicator { font-size: 11px; padding: 6px 12px; top: 8px; right: 8px; }
+            #info { font-size: 8px; top: 8px; left: 8px; padding: 4px 10px; }
+            #controls { gap: 8px; padding: 6px 10px; bottom: 10px; }
+            #status { font-size: 8px; bottom: 10px; right: 8px; }
         }
         
         @media (max-width: 900px) and (orientation: landscape) {
-            #controls {
-                bottom: 8px;
-            }
-            #turn-indicator {
-                top: 5px;
-                right: 5px;
-                font-size: 10px;
-            }
-            #info {
-                font-size: 7px;
-            }
+            #controls { bottom: 5px; }
+            #turn-indicator { top: 5px; right: 5px; font-size: 10px; }
         }
     </style>
 </head>
 <body>
     <div id="info">
-        ♜ AJEREX BETA v1.2 - AlexanderGH PROJECTS 2026 🪐 | <span id="mode-label">vs IA</span>
+        ♜ AJEREX v1.2 | <span id="mode-label">vs IA</span> | <span id="player-color-label">Juegas Blancas</span>
     </div>
     <div id="turn-indicator">
         Turno: <span id="turn-text">♔ Blancas</span>
@@ -219,6 +190,11 @@
         <button id="btn-vsai">🤖 vs IA</button>
         <button id="btn-vs2">👥 2 Jug</button>
         <button id="btn-reset">🔄 Reiniciar</button>
+        <button id="color-selector">🎨 Elegir Color</button>
+        <div id="color-options" style="display:none;" class="color-option">
+            <button id="play-white">♔ Blancas</button>
+            <button id="play-black">♚ Negras</button>
+        </div>
     </div>
     <div id="status">
         📱 <span id="game-status">En juego</span>
@@ -244,13 +220,13 @@
         let boardState = Array(8).fill().map(() => Array(8).fill(null));
         let currentTurn = 'white';
         let gameMode = 'vsAI';
+        let playerColor = 'white';
         let gameOver = false;
         let selectedPiece = null;
         
         let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
         let piecesMeshes = new Map();
         let highlightMeshes = [];
-        let touchStartTime = 0;
         
         class Piece {
             constructor(type, color, row, col) {
@@ -283,6 +259,10 @@
                 const instr = document.getElementById('touch-instruction');
                 if(instr) instr.style.opacity = '0';
             }, 4000);
+            
+            if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white' && !gameOver) {
+                setTimeout(() => aiMove(), 300);
+            }
         }
         
         function isValidMove(piece, toRow, toCol, board) {
@@ -395,18 +375,24 @@
             if(!blackKingExists) { gameOver=true; document.getElementById('game-status').innerText = '🏆 Ganan Blancas!'; }
             if(gameOver) return;
             
-            if (gameMode === 'vsAI' && currentTurn === 'black' && !gameOver) {
-                setTimeout(() => aiMove(), 150);
+            if (gameMode === 'vsAI') {
+                const isPlayerTurn = (playerColor === currentTurn);
+                if (!isPlayerTurn && !gameOver) {
+                    setTimeout(() => aiMove(), 150);
+                }
             }
         }
         
         function aiMove() {
-            if (gameOver || currentTurn !== 'black') return;
+            if (gameOver) return;
+            const aiColor = playerColor === 'white' ? 'black' : 'white';
+            if (currentTurn !== aiColor) return;
+            
             let moves = [];
             for (let i=0;i<8;i++) {
                 for(let j=0;j<8;j++) {
                     const piece = boardState[i][j];
-                    if(piece && piece.color === 'black') {
+                    if(piece && piece.color === aiColor) {
                         for(let ti=0;ti<8;ti++) {
                             for(let tj=0;tj<8;tj++) {
                                 if(isValidMove(piece, ti, tj, boardState)) {
@@ -419,7 +405,7 @@
             }
             if (moves.length === 0) {
                 gameOver = true;
-                document.getElementById('game-status').innerText = '🏆 Blancas ganan';
+                document.getElementById('game-status').innerText = '🏆 ' + (aiColor === 'black' ? 'Blancas ganan' : 'Negras ganan');
                 return;
             }
             const randomMove = moves[Math.floor(Math.random() * moves.length)];
@@ -602,7 +588,6 @@
             orbitControls = new OrbitControls(camera, renderer.domElement);
             orbitControls.enableDamping = true;
             orbitControls.dampingFactor = 0.06;
-            orbitControls.autoRotate = false;
             orbitControls.enableZoom = true;
             orbitControls.zoomSpeed = 0.8;
             orbitControls.rotateSpeed = 0.8;
@@ -656,19 +641,123 @@
             
             createAllPieces();
             
-            window.addEventListener('click', onClick, false);
-            window.addEventListener('touchstart', onTouchStart, false);
+            renderer.domElement.addEventListener('click', onClick, false);
+            renderer.domElement.addEventListener('touchstart', onTouchStart, false);
+            renderer.domElement.addEventListener('touchend', onTouchEnd, false);
         }
         
+        let touchTarget = null;
+        
         function onTouchStart(event) {
-            if (event.touches.length === 1) {
-                const touch = event.touches[0];
-                const feedback = document.createElement('div');
-                feedback.className = 'touch-feedback';
-                feedback.style.left = touch.clientX + 'px';
-                feedback.style.top = touch.clientY + 'px';
-                document.body.appendChild(feedback);
-                setTimeout(() => feedback.remove(), 400);
+            event.preventDefault();
+            const touch = event.touches[0];
+            const feedback = document.createElement('div');
+            feedback.className = 'touch-feedback';
+            feedback.style.left = touch.clientX + 'px';
+            feedback.style.top = touch.clientY + 'px';
+            document.body.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 400);
+            touchTarget = { x: touch.clientX, y: touch.clientY };
+        }
+        
+        function onTouchEnd(event) {
+            event.preventDefault();
+            if (touchTarget) {
+                const rect = renderer.domElement.getBoundingClientRect();
+                const x = touchTarget.x - rect.left;
+                const y = touchTarget.y - rect.top;
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    handleInteraction(x, y);
+                }
+                touchTarget = null;
+            }
+        }
+        
+        function onClick(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            handleInteraction(x, y);
+        }
+        
+        function handleInteraction(x, y) {
+            if(gameOver) return;
+            
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouseX = (x / rect.width) * 2 - 1;
+            const mouseY = -(y / rect.height) * 2 + 1;
+            
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
+            
+            const intersects = raycaster.intersectObjects(piecesGroup.children, true);
+            let clickedPiece = null;
+            
+            for(let intersect of intersects) {
+                let obj = intersect.object;
+                while(obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
+                if(obj.userData && obj.userData.piece) {
+                    clickedPiece = obj;
+                    break;
+                }
+            }
+            
+            const planeIntersects = raycaster.intersectObjects(piecesGroup.children, false);
+            let targetRowCol = null;
+            for(let intersect of planeIntersects) {
+                const point = intersect.point;
+                const col = Math.round(point.x + 3.5);
+                const row = Math.round(point.z + 3.5);
+                if(row >= 0 && row < 8 && col >= 0 && col < 8) {
+                    targetRowCol = { row, col };
+                    break;
+                }
+            }
+            
+            if(selectedPiece) {
+                if(targetRowCol) {
+                    if(movePiece(selectedPiece.piece, targetRowCol.row, targetRowCol.col)) {
+                        clearHighlights();
+                        selectedPiece = null;
+                        switchTurn();
+                    } else {
+                        clearHighlights();
+                        selectedPiece = null;
+                    }
+                } else {
+                    clearHighlights();
+                    selectedPiece = null;
+                }
+            }
+            else if(clickedPiece && clickedPiece.userData.piece) {
+                const piece = clickedPiece.userData.piece;
+                if(gameMode === 'vsAI') {
+                    if(piece.color === playerColor && piece.color === currentTurn) {
+                        selectedPiece = { piece: piece };
+                        clearHighlights();
+                        highlightSquare(piece.row, piece.col, 0xffaa44);
+                        for(let i = 0; i < 8; i++) {
+                            for(let j = 0; j < 8; j++) {
+                                if(isValidMove(piece, i, j, boardState)) {
+                                    highlightSquare(i, j, 0x44ff44);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if(piece.color === currentTurn) {
+                        selectedPiece = { piece: piece };
+                        clearHighlights();
+                        highlightSquare(piece.row, piece.col, 0xffaa44);
+                        for(let i = 0; i < 8; i++) {
+                            for(let j = 0; j < 8; j++) {
+                                if(isValidMove(piece, i, j, boardState)) {
+                                    highlightSquare(i, j, 0x44ff44);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         
@@ -737,81 +826,12 @@
             highlightMeshes.push(square);
         }
         
-        function getCoordinatesFromPoint(x, y) {
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-            mouse.x = (x / renderer.domElement.clientWidth) * 2 - 1;
-            mouse.y = -(y / renderer.domElement.clientHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            
-            const intersects = raycaster.intersectObjects(piecesGroup.children, true);
-            let clickedPiece = null;
-            
-            for(let intersect of intersects) {
-                let obj = intersect.object;
-                while(obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
-                if(obj.userData && obj.userData.piece) {
-                    clickedPiece = obj;
-                    break;
-                }
-            }
-            
-            const planeIntersects = raycaster.intersectObjects(piecesGroup.children, false);
-            let targetRowCol = null;
-            for(let intersect of planeIntersects) {
-                const point = intersect.point;
-                const col = Math.round(point.x + 3.5);
-                const row = Math.round(point.z + 3.5);
-                if(row >= 0 && row < 8 && col >= 0 && col < 8) {
-                    targetRowCol = { row, col };
-                    break;
-                }
-            }
-            
-            return { clickedPiece, targetRowCol };
-        }
-        
-        function onClick(event) {
-            if(gameOver) return;
-            
-            const { clickedPiece, targetRowCol } = getCoordinatesFromPoint(event.clientX, event.clientY);
-            
-            if(selectedPiece) {
-                if(targetRowCol) {
-                    if(movePiece(selectedPiece.piece, targetRowCol.row, targetRowCol.col)) {
-                        clearHighlights();
-                        selectedPiece = null;
-                        switchTurn();
-                    } else {
-                        clearHighlights();
-                        selectedPiece = null;
-                    }
-                } else {
-                    clearHighlights();
-                    selectedPiece = null;
-                }
-            }
-            else if(clickedPiece && clickedPiece.userData.piece) {
-                const piece = clickedPiece.userData.piece;
-                if(piece.color === currentTurn) {
-                    selectedPiece = { piece: piece };
-                    clearHighlights();
-                    highlightSquare(piece.row, piece.col, 0xffaa44);
-                    for(let i = 0; i < 8; i++) {
-                        for(let j = 0; j < 8; j++) {
-                            if(isValidMove(piece, i, j, boardState)) {
-                                highlightSquare(i, j, 0x44ff44);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
         function updateTurnDisplay() {
             const turnSymbol = currentTurn === 'white' ? '♔ Blancas' : '♚ Negras';
             document.getElementById('turn-text').innerHTML = turnSymbol;
             document.getElementById('mode-label').innerHTML = gameMode === 'vsAI' ? 'vs IA' : '2 Jugadores';
+            const playerText = playerColor === 'white' ? 'Juegas Blancas' : 'Juegas Negras';
+            document.getElementById('player-color-label').innerHTML = gameMode === 'vsAI' ? playerText : '';
         }
         
         function resetGame() {
@@ -822,12 +842,21 @@
             gameOver = false;
             updateTurnDisplay();
             document.getElementById('game-status').innerText = 'En juego';
-            if(gameMode === 'vsAI' && currentTurn === 'black') setTimeout(() => aiMove(), 200);
+            if(gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') {
+                setTimeout(() => aiMove(), 200);
+            }
         }
         
         function setMode(mode) {
             gameMode = mode;
             resetGame();
+        }
+        
+        function setPlayerColor(color) {
+            playerColor = color;
+            updateTurnDisplay();
+            resetGame();
+            document.getElementById('color-options').style.display = 'none';
         }
         
         function animate() {
@@ -841,11 +870,22 @@
         document.getElementById('btn-vs2').addEventListener('click', () => setMode('vs2'));
         document.getElementById('btn-reset').addEventListener('click', () => resetGame());
         
-        document.body.addEventListener('touchmove', (e) => {
-            if (e.target === renderer.domElement) {
-                e.preventDefault();
+        const colorBtn = document.getElementById('color-selector');
+        const colorOptions = document.getElementById('color-options');
+        colorBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = colorOptions.style.display === 'flex';
+            colorOptions.style.display = isVisible ? 'none' : 'flex';
+        });
+        
+        document.getElementById('play-white').addEventListener('click', () => setPlayerColor('white'));
+        document.getElementById('play-black').addEventListener('click', () => setPlayerColor('black'));
+        
+        document.addEventListener('click', (e) => {
+            if (!colorBtn.contains(e.target) && !colorOptions.contains(e.target)) {
+                colorOptions.style.display = 'none';
             }
-        }, { passive: false });
+        });
         
         initBoard();
         init3D();
