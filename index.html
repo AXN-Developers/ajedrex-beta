@@ -3,310 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AJEREX ULTIMATE - 2D/3D + IA + PROMOCION + COLORES + ANIMACIONES | AlexanderGH</title>
+    <title>AJEDREZ TOTAL 3D/2D - IA + MULTIJUGADOR + REGLAS COMPLETAS</title>
     <style>
         * {
-            -webkit-tap-highlight-color: transparent;
             user-select: none;
+            touch-action: manipulation;
             box-sizing: border-box;
         }
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
-            background: #0a0a2a;
-            touch-action: none;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: #0a0f1e;
         }
-        #start-modal {
+        /* MODAL INICIO */
+        .modal-full {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.98);
+            background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(16px);
             z-index: 10000;
             display: flex;
-            justify-content: center;
             align-items: center;
-            backdrop-filter: blur(16px);
+            justify-content: center;
             transition: all 0.3s;
         }
-        .start-panel {
-            background: linear-gradient(145deg, #1a1a2f, #0f0f1f);
+        .modal-card {
+            background: linear-gradient(145deg, #1e1f2c, #13141f);
             border-radius: 60px;
-            padding: 30px 25px;
+            padding: 30px 28px;
+            width: 90%;
+            max-width: 520px;
+            border: 2px solid rgba(255,215,0,0.5);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
             text-align: center;
-            max-width: 95%;
-            width: 500px;
-            border: 2px solid rgba(255, 215, 0, 0.6);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.3);
-            animation: slideUpFancy 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            animation: fadeUp 0.4s ease;
         }
-        @keyframes slideUpFancy {
-            0% { opacity: 0; transform: scale(0.9) translateY(60px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: scale(0.96) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .start-panel h1 {
-            font-size: 2.4rem;
-            background: linear-gradient(135deg, #ffd700, #ffaa44);
+        .modal-card h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #FFD966, #FFB347);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0 0 8px 0;
-            text-shadow: 0 0 15px rgba(255,215,0,0.5);
+            margin: 0 0 8px;
         }
-        .beta-badge {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        .badge {
+            background: #ff6b4a;
             display: inline-block;
-            padding: 6px 18px;
+            padding: 5px 16px;
             border-radius: 40px;
-            font-weight: bold;
             font-size: 12px;
+            font-weight: bold;
             color: white;
             margin-bottom: 20px;
-            box-shadow: 0 0 12px rgba(255,75,43,0.5);
         }
-        .mode-buttons, .dimension-buttons {
+        .btn-group {
             display: flex;
-            gap: 15px;
+            gap: 14px;
             justify-content: center;
-            margin: 15px 0;
             flex-wrap: wrap;
+            margin: 20px 0 15px;
         }
-        .mode-btn {
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
+        .btn-mode {
+            background: linear-gradient(135deg, #2c3e50, #1a2632);
             border: none;
-            border-radius: 60px;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
-            min-width: 120px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
-        .mode-btn:active { transform: scale(0.96); }
-        .mode-ai { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; }
-        .mode-2p { background: linear-gradient(135deg, #f12711, #f5af19); color: white; }
-        .mode-auto { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; }
-        .mode-3d { background: linear-gradient(135deg, #2193b0, #6dd5ed); color: white; }
-        .mode-2d { background: linear-gradient(135deg, #606c88, #3f4c6b); color: white; }
+        .btn-mode:active { transform: scale(0.96); }
+        .btn-mode.ai { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .btn-mode.pvp { background: linear-gradient(135deg, #f12711, #f5af19); }
+        .btn-mode.auto { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+        .btn-dim { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .btn-dim.d2d { background: linear-gradient(135deg, #4b6cb7, #182848); }
         .color-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 14px;
             margin: 20px 0;
-            max-height: 220px;
+            max-height: 200px;
             overflow-y: auto;
-            padding: 5px;
+            padding: 4px;
         }
-        .color-swatch {
-            width: 65px;
-            height: 65px;
+        .swatch {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             cursor: pointer;
             border: 3px solid transparent;
-            transition: 0.2s;
+            transition: 0.1s;
             margin: 0 auto;
-            box-shadow: 0 4px 12px black;
+            box-shadow: 0 4px 10px black;
         }
-        .color-swatch.selected { border-color: gold; transform: scale(1.1); box-shadow: 0 0 20px gold; }
-        .color-preview-box {
-            width: 80px;
-            height: 80px;
+        .swatch.selected { border-color: gold; transform: scale(1.05); box-shadow: 0 0 18px gold; }
+        .preview-circle {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            margin: 15px auto;
-            border: 3px solid gold;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            margin: 12px auto;
+            border: 3px solid #ffd966;
         }
         .start-btn {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white;
+            background: linear-gradient(135deg, #00b4db, #0083b0);
+            width: 100%;
             padding: 14px;
             font-size: 1.2rem;
             font-weight: bold;
             border: none;
-            border-radius: 50px;
-            width: 100%;
+            border-radius: 60px;
+            color: white;
             cursor: pointer;
-            transition: 0.2s;
             margin-top: 15px;
         }
-        #promotion-modal {
+        /* UI flotante */
+        .ui-top-left, .ui-top-right, .ui-bottom {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(10,10,30,0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 25px;
-            text-align: center;
-            z-index: 20000;
-            border: 2px solid #ffd700;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 320px;
-            box-shadow: 0 0 60px rgba(0,0,0,0.8);
-        }
-        .promotion-pieces {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .promo-piece {
-            width: 80px;
-            height: 80px;
-            background: #2a2a3e;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 2px solid #ffaa44;
-        }
-        .promo-piece:hover { transform: scale(1.1); background: #3a3a5e; border-color: gold; }
-        #info, #turn-indicator, #controls, #status, #dimension-toggle {
-            position: absolute;
-            z-index: 100;
-        }
-        #info {
-            top: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            padding: 10px 18px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
+            z-index: 1000;
             pointer-events: none;
         }
-        #turn-indicator {
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            padding: 12px 24px;
+        .ui-top-left {
+            top: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            padding: 8px 18px;
+            border-radius: 50px;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .ui-top-right {
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            padding: 10px 24px;
             border-radius: 60px;
-            color: #ffd700;
+            color: #ffd966;
             font-weight: bold;
             font-size: 1.2rem;
-            border: 1px solid gold;
+            border: 1px solid rgba(255,215,0,0.5);
             font-family: monospace;
-            pointer-events: none;
         }
-        #controls {
+        .ui-bottom {
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.8);
             backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            border-radius: 80px;
+            padding: 8px 20px;
+            border-radius: 60px;
             display: flex;
-            gap: 15px;
+            gap: 16px;
             pointer-events: auto;
-            z-index: 200;
         }
-        button {
-            padding: 10px 20px;
-            font-weight: bold;
+        button.action {
+            background: #e63946;
             border: none;
+            padding: 8px 20px;
             border-radius: 40px;
+            font-weight: bold;
+            color: white;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: 0.1s;
         }
-        button:active { transform: scale(0.96); }
-        #btn-reset { background: #e63946; color: white; }
-        #btn-recolor { background: #9b59b6; color: white; }
-        #toggle-dim { background: #f39c12; color: white; }
-        #status {
+        button.action.purple { background: #9b59b6; }
+        button.action.orange { background: #f39c12; }
+        .status-text {
+            position: fixed;
             bottom: 20px;
-            right: 15px;
+            right: 20px;
             background: rgba(0,0,0,0.6);
-            padding: 6px 15px;
+            padding: 5px 16px;
             border-radius: 30px;
             font-size: 11px;
             color: #ccc;
             pointer-events: none;
+            z-index: 1000;
         }
         #canvas2d {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             display: none;
-            background: #1a1a2a;
+            background: #1a1f2a;
             z-index: 5;
         }
-        .touch-feedback {
+        .promo-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10,15,30,0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            padding: 25px;
+            z-index: 20000;
+            border: 2px solid gold;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            gap: 18px;
+            min-width: 280px;
+        }
+        .promo-pieces {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .promo-item {
+            width: 75px;
+            height: 75px;
+            background: #2a2a3e;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 2px solid #ffaa44;
+        }
+        .promo-item:active { transform: scale(0.94); }
+        .ripple {
             position: absolute;
-            width: 60px;
-            height: 60px;
             border-radius: 50%;
             background: radial-gradient(circle, rgba(255,215,0,0.7), transparent);
-            pointer-events: none;
             transform: translate(-50%, -50%);
-            animation: rippleBlast 0.6s ease-out forwards;
-            z-index: 1000;
+            pointer-events: none;
+            animation: rippleAnim 0.5s ease-out forwards;
+            z-index: 10000;
         }
-        @keyframes rippleBlast {
-            0% { width: 0; height: 0; opacity: 0.9; }
-            100% { width: 140px; height: 140px; opacity: 0; }
+        @keyframes rippleAnim {
+            0% { width: 0; height: 0; opacity: 0.8; }
+            100% { width: 120px; height: 120px; opacity: 0; }
         }
-        @media (max-width: 700px) {
-            .color-swatch { width: 50px; height: 50px; }
-            .mode-btn { padding: 8px 16px; font-size: 12px; min-width: 90px; }
-            .start-panel { width: 95%; padding: 20px; }
-            .promo-piece { width: 65px; height: 65px; font-size: 45px; }
+        @media (max-width: 650px) {
+            .swatch { width: 48px; height: 48px; }
+            .btn-mode { padding: 6px 16px; font-size: 13px; }
+            .promo-item { width: 60px; height: 60px; font-size: 40px; }
         }
     </style>
 </head>
 <body>
 
-<div id="start-modal">
-    <div class="start-panel">
-        <h1>♜ AJEREX ULTIMATE</h1>
-        <div class="beta-badge">✨ 2D | 3D | IA PROMOCION | COLORES EXTREME ✨</div>
-        <h3 style="color:#ffd7a0;">🎮 MODO DE JUEGO</h3>
-        <div class="mode-buttons">
-            <button class="mode-btn mode-ai" id="select-vsai">🤖 VS IA</button>
-            <button class="mode-btn mode-2p" id="select-vs2">👥 2 JUGADORES</button>
-            <button class="mode-btn mode-auto" id="select-auto">⚡ IA vs IA</button>
+<div id="startModal" class="modal-full">
+    <div class="modal-card">
+        <h1>♞ AJEDREZ TOTAL</h1>
+        <div class="badge">✨ REGLAS COMPLETAS | 2D/3D | IA ✨</div>
+        <h3 style="color:#ddd;">🎮 MODO</h3>
+        <div class="btn-group">
+            <button class="btn-mode ai" id="modeVsAI">🤖 VS IA</button>
+            <button class="btn-mode pvp" id="mode2P">👥 2 JUGADORES</button>
+            <button class="btn-mode auto" id="modeAIAI">⚡ IA vs IA</button>
         </div>
-        <h3 style="color:#ffd7a0;">🖥️ DIMENSIÓN</h3>
-        <div class="dimension-buttons">
-            <button class="mode-btn mode-3d" id="select-3d">🎮 3D REALISTA</button>
-            <button class="mode-btn mode-2d" id="select-2d">🖼️ 2D CLÁSICO</button>
+        <h3 style="color:#ddd;">🖥️ DIMENSIÓN</h3>
+        <div class="btn-group">
+            <button class="btn-mode btn-dim" id="dim3d">🎮 3D REALISTA</button>
+            <button class="btn-mode btn-dim d2d" id="dim2d">🖼️ 2D CLÁSICO</button>
         </div>
-        <h3 id="color-prompt" style="color:#ffd7a0;">🎨 ELIGE TUS PIEZAS BLANCAS:</h3>
-        <div class="color-grid" id="color-grid"></div>
-        <div class="color-preview-box" id="color-preview"></div>
-        <button class="start-btn" id="confirm-start">🚀 INICIAR AVENTURA</button>
-        <p style="font-size: 10px; margin-top: 12px; color: #aaa;">Toca pieza → Toca destino | Promoción al llegar al final</p>
+        <h3 id="colorPrompt" style="color:#ffd966;">🎨 COLOR DE TUS PIEZAS (BLANCAS):</h3>
+        <div id="colorGrid" class="color-grid"></div>
+        <div id="previewCircle" class="preview-circle"></div>
+        <button class="start-btn" id="startGameBtn">🚀 COMENZAR PARTIDA</button>
     </div>
 </div>
 
-<div id="promotion-modal">
+<div id="promotionBox" class="promo-modal">
     <h3 style="color:#ffd966;">🌟 ¡PROMOCIÓN ÉPICA! 🌟</h3>
-    <p style="color:white">Elige una nueva forma para tu peón:</p>
-    <div class="promotion-pieces" id="promotion-pieces"></div>
+    <p style="color:white;">Elige nueva pieza para tu peón:</p>
+    <div class="promo-pieces" id="promoOptions"></div>
 </div>
 
-<div id="info">♜ AJEREX ULTIMATE | <span id="mode-label">SELECCIONA MODO</span></div>
-<div id="turn-indicator">⚔️ TURNO: <span id="turn-text">BLANCAS</span></div>
-<div id="controls">
-    <button id="btn-reset">🔄 REINICIAR</button>
-    <button id="btn-recolor">🎨 COLORES</button>
-    <button id="toggle-dim">🔄 CAMBIAR 2D/3D</button>
+<div class="ui-top-left">♜ AJEDREZ TOTAL | <span id="modeLabel">MODO</span></div>
+<div class="ui-top-right">⚔️ TURNO: <span id="turnText">BLANCAS</span></div>
+<div class="ui-bottom">
+    <button class="action" id="resetBtn">🔄 REINICIAR</button>
+    <button class="action purple" id="colorBtn">🎨 COLORES</button>
+    <button class="action orange" id="toggleDimBtn">🔄 CAMBIAR 2D/3D</button>
 </div>
-<div id="status">🎮 <span id="game-status">LISTO</span></div>
+<div class="status-text" id="statusMsg">⚡ LISTO</div>
 <canvas id="canvas2d"></canvas>
 
 <script type="importmap">
@@ -323,125 +315,148 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-let boardState = Array(8).fill().map(() => Array(8).fill(null));
-let currentTurn = 'white';
-let gameMode = 'vsAI';
+// ---------- ESTADO GLOBAL ----------
+let board = Array(8).fill().map(() => Array(8).fill(null));
+let turn = 'white';        // white / black
+let gameMode = 'vsAI';     // vsAI, vs2, auto
 let playerColor = 'white';
 let gameOver = false;
-let selectedPiece = null;
+let selectedPiece = null;   // { piece, row, col }
 let is3D = true;
-let autoPlayInterval = null;
-let pendingPromotion = null;
 
-let scene, camera, renderer, labelRenderer, orbitControls, piecesGroup;
-let piecesMeshes = new Map();
+// 3D vars
+let scene, camera, renderer, labelRenderer, controls3D, piecesGroup;
+let piecesMap = new Map();
 let highlightMeshes = [];
 
-let ctx, canvas, boardSize2D = 500;
-let selectedRowCol = null;
-let highlightCells = [];
+// 2D vars
+let ctx2d, canvas2d;
+let selected2D = null;
+let highlight2D = [];
 
-let whiteCustomColor = 0xeeeeff;
-let blackCustomColor = 0x222222;
+// Colores personalizados
+let whiteColorCode = 0xeeeeff;
+let blackColorCode = 0x222222;
 
-const colorOptions = [
-    { name: 'Blanco Real', value: 0xeeeeff, preview: '#eeeeff' },
-    { name: 'Dorado Legend', value: 0xffcc44, preview: '#ffcc44' },
-    { name: 'Plateado Místico', value: 0xc0c0c0, preview: '#c0c0c0' },
-    { name: 'Rubí Fuego', value: 0xff4444, preview: '#ff4444' },
-    { name: 'Zafiro Alfa', value: 0x4488ff, preview: '#4488ff' },
-    { name: 'Esmeralda Dragón', value: 0x44ff88, preview: '#44ff88' },
-    { name: 'Amatista Arcano', value: 0xaa66ff, preview: '#aa66ff' },
-    { name: 'Topacio Solar', value: 0xffaa44, preview: '#ffaa44' }
+const colorPalette = [
+    { name: 'Blanco Real', val: 0xeeeeff, preview: '#eeeeff' },
+    { name: 'Dorado', val: 0xffcc44, preview: '#ffcc44' },
+    { name: 'Plateado', val: 0xc0c0c0, preview: '#c0c0c0' },
+    { name: 'Rubí', val: 0xff5555, preview: '#ff5555' },
+    { name: 'Zafiro', val: 0x5588ff, preview: '#5588ff' },
+    { name: 'Esmeralda', val: 0x55ff88, preview: '#55ff88' },
+    { name: 'Amatista', val: 0xaa66ff, preview: '#aa66ff' }
 ];
-
-const darkOptions = [
-    { name: 'Obsidiana', value: 0x111111, preview: '#111111' },
-    { name: 'Grafito Élite', value: 0x333344, preview: '#333344' },
-    { name: 'Caoba Ancestral', value: 0x4a2511, preview: '#4a2511' },
-    { name: 'Ébano Oscuro', value: 0x2c1810, preview: '#2c1810' },
-    { name: 'Violeta Nocturno', value: 0x331155, preview: '#331155' },
-    { name: 'Carbón Voraz', value: 0x222222, preview: '#222222' }
+const darkPalette = [
+    { name: 'Obsidiana', val: 0x111111, preview: '#111111' },
+    { name: 'Grafito', val: 0x333344, preview: '#333344' },
+    { name: 'Caoba', val: 0x4a2511, preview: '#4a2511' },
+    { name: 'Ébano', val: 0x2c1810, preview: '#2c1810' },
+    { name: 'Violeta', val: 0x331155, preview: '#331155' }
 ];
+let selectedWhiteIdx = 0;
+let selectedBlackIdx = 0;
+let pendingMode = 'vsAI';
+let pendingDimension = '3d';
+let isSelectingBlackFor2P = false;
+let autoInterval = null;
 
-let selectedWhiteIdx = 0, selectedBlackIdx = 0, pendingMode = 'vsAI', isSelectingBlack = false, pendingDimension = '3d';
-
+// ---------- CLASE PIEZA ----------
 class Piece {
     constructor(type, color, row, col) {
-        this.type = type;
-        this.color = color;
+        this.type = type;   // king, queen, rook, bishop, knight, pawn
+        this.color = color; // white / black
         this.row = row;
         this.col = col;
         this.hasMoved = false;
     }
 }
 
+// ---------- INICIALIZAR TABLERO ----------
 function initBoard() {
-    boardState = Array(8).fill().map(() => Array(8).fill(null));
+    board = Array(8).fill().map(() => Array(8).fill(null));
+    // peones
     for (let i = 0; i < 8; i++) {
-        boardState[1][i] = new Piece('pawn', 'black', 1, i);
-        boardState[6][i] = new Piece('pawn', 'white', 6, i);
+        board[1][i] = new Piece('pawn', 'black', 1, i);
+        board[6][i] = new Piece('pawn', 'white', 6, i);
     }
-    const piecesOrder = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+    const backRow = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
     for (let i = 0; i < 8; i++) {
-        boardState[0][i] = new Piece(piecesOrder[i], 'black', 0, i);
-        boardState[7][i] = new Piece(piecesOrder[i], 'white', 7, i);
+        board[0][i] = new Piece(backRow[i], 'black', 0, i);
+        board[7][i] = new Piece(backRow[i], 'white', 7, i);
     }
-    currentTurn = 'white';
+    turn = 'white';
     gameOver = false;
     selectedPiece = null;
-    selectedRowCol = null;
-    updateUIDisplay();
-    document.getElementById('game-status').innerText = '⚔️ EN JUEGO ⚔️';
+    selected2D = null;
+    highlight2D = [];
+    updateUI();
+    document.getElementById('statusMsg').innerText = '⚔️ EN JUEGO';
     if (gameMode === 'auto') startAutoPlay();
-    else if (gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 400);
+    else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 400);
 }
 
-function isValidMove(piece, toRow, toCol, board) {
-    const fromRow = piece.row, fromCol = piece.col;
-    const target = board[toRow][toCol];
+// ---------- REGLAS DE MOVIMIENTO (COMPLETAS) ----------
+function isSquareAttacked(boardState, row, col, colorAttacking) {
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            const p = boardState[i][j];
+            if (p && p.color === colorAttacking) {
+                if (isValidMoveWithoutSelfCheck(p, row, col, boardState, true)) return true;
+            }
+        }
+    }
+    return false;
+}
+
+function isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, ignoreSelfCheck = false) {
+    if (!piece) return false;
+    const target = boardState[toRow][toCol];
     if (target && target.color === piece.color) return false;
+    const fromRow = piece.row, fromCol = piece.col;
     const deltaRow = toRow - fromRow, deltaCol = toCol - fromCol;
-    const absDeltaRow = Math.abs(deltaRow), absDeltaCol = Math.abs(deltaCol);
-    switch(piece.type) {
+    const absRow = Math.abs(deltaRow), absCol = Math.abs(deltaCol);
+    
+    switch (piece.type) {
         case 'pawn':
             const dir = piece.color === 'white' ? -1 : 1;
             const startRow = piece.color === 'white' ? 6 : 1;
             if (deltaCol === 0 && !target) {
                 if (deltaRow === dir) return true;
-                if (deltaRow === 2*dir && fromRow === startRow && !board[fromRow+dir][fromCol]) return true;
-            } else if (absDeltaCol === 1 && deltaRow === dir && target) return true;
+                if (deltaRow === 2 * dir && fromRow === startRow && !boardState[fromRow+dir][fromCol]) return true;
+            } else if (absCol === 1 && deltaRow === dir && target) return true;
             return false;
-        case 'knight': return (absDeltaRow === 2 && absDeltaCol === 1) || (absDeltaRow === 1 && absDeltaCol === 2);
+        case 'knight': return (absRow === 2 && absCol === 1) || (absRow === 1 && absCol === 2);
         case 'bishop':
-            if (absDeltaRow !== absDeltaCol) return false;
-            let stepRow = deltaRow > 0 ? 1 : -1, stepCol = deltaCol > 0 ? 1 : -1;
-            let r = fromRow + stepRow, c = fromCol + stepCol;
+            if (absRow !== absCol) return false;
+            let rStep = deltaRow > 0 ? 1 : -1, cStep = deltaCol > 0 ? 1 : -1;
+            let r = fromRow + rStep, c = fromCol + cStep;
             while (r !== toRow || c !== toCol) {
-                if (board[r][c]) return false;
-                r += stepRow; c += stepCol;
+                if (boardState[r][c]) return false;
+                r += rStep; c += cStep;
             }
             return true;
         case 'rook':
             if (fromRow !== toRow && fromCol !== toCol) return false;
             if (fromRow === toRow) {
                 let step = deltaCol > 0 ? 1 : -1;
-                for (let c = fromCol + step; c !== toCol; c += step) if (board[toRow][c]) return false;
+                for (let c = fromCol + step; c !== toCol; c += step) if (boardState[toRow][c]) return false;
             } else {
                 let step = deltaRow > 0 ? 1 : -1;
-                for (let r = fromRow + step; r !== toRow; r += step) if (board[r][toCol]) return false;
+                for (let r = fromRow + step; r !== toRow; r += step) if (boardState[r][toCol]) return false;
             }
             return true;
         case 'queen':
-            return (isValidMove(new Piece('rook', piece.color, fromRow, fromCol), toRow, toCol, board) ||
-                    isValidMove(new Piece('bishop', piece.color, fromRow, fromCol), toRow, toCol, board));
+            return isValidMoveWithoutSelfCheck(new Piece('rook', piece.color, fromRow, fromCol), toRow, toCol, boardState, true) ||
+                   isValidMoveWithoutSelfCheck(new Piece('bishop', piece.color, fromRow, fromCol), toRow, toCol, boardState, true);
         case 'king':
-            if (absDeltaRow <= 1 && absDeltaCol <= 1) return true;
-            if (absDeltaCol === 2 && deltaRow === 0 && !piece.hasMoved) {
+            if (absRow <= 1 && absCol <= 1) return true;
+            if (absCol === 2 && deltaRow === 0 && !piece.hasMoved) {
                 const rookCol = deltaCol === 2 ? 7 : 0;
-                const rook = board[fromRow][rookCol];
+                const rook = boardState[fromRow][rookCol];
                 if (rook && rook.type === 'rook' && !rook.hasMoved) {
-                    for (let c of (deltaCol === 2 ? [5,6] : [1,2,3])) if (board[fromRow][c]) return false;
+                    const between = deltaCol === 2 ? [5,6] : [1,2,3];
+                    for (let c of between) if (boardState[fromRow][c]) return false;
                     return true;
                 }
             }
@@ -450,25 +465,51 @@ function isValidMove(piece, toRow, toCol, board) {
     }
 }
 
+function isValidMove(piece, toRow, toCol, boardState) {
+    if (!isValidMoveWithoutSelfCheck(piece, toRow, toCol, boardState, false)) return false;
+    // simulación para evitar auto-jaque
+    const backup = boardState[toRow][toCol];
+    const fromRow = piece.row, fromCol = piece.col;
+    boardState[toRow][toCol] = piece;
+    boardState[fromRow][fromCol] = null;
+    const oldRow = piece.row, oldCol = piece.col;
+    piece.row = toRow; piece.col = toCol;
+    let kingPos = findKing(piece.color, boardState);
+    let inCheck = false;
+    if (kingPos) inCheck = isSquareAttacked(boardState, kingPos.row, kingPos.col, piece.color === 'white' ? 'black' : 'white');
+    boardState[fromRow][fromCol] = piece;
+    boardState[toRow][toCol] = backup;
+    piece.row = oldRow; piece.col = oldCol;
+    return !inCheck;
+}
+
+function findKing(color, boardState) {
+    for (let i = 0; i < 8; i++)
+        for (let j = 0; j < 8; j++)
+            if (boardState[i][j] && boardState[i][j].type === 'king' && boardState[i][j].color === color)
+                return { row: i, col: j };
+    return null;
+}
+
+// ---------- EJECUTAR MOVIMIENTO + PROMOCIÓN ----------
 function showPromotionDialog() {
     return new Promise((resolve) => {
-        const modal = document.getElementById('promotion-modal');
-        const container = document.getElementById('promotion-pieces');
+        const modal = document.getElementById('promotionBox');
+        const container = document.getElementById('promoOptions');
         container.innerHTML = '';
         const types = [
-            { type: 'queen', symbol: '♕', name: 'REINA' },
-            { type: 'rook', symbol: '♖', name: 'TORRE' },
-            { type: 'bishop', symbol: '♗', name: 'ALFIL' },
-            { type: 'knight', symbol: '♘', name: 'CABALLO' }
+            { type: 'queen', sym: '♕', name: 'REINA' },
+            { type: 'rook', sym: '♖', name: 'TORRE' },
+            { type: 'bishop', sym: '♗', name: 'ALFIL' },
+            { type: 'knight', sym: '♘', name: 'CABALLO' }
         ];
-        types.forEach(p => {
+        types.forEach(t => {
             const div = document.createElement('div');
-            div.className = 'promo-piece';
-            div.innerHTML = p.symbol;
-            div.title = p.name;
+            div.className = 'promo-item';
+            div.innerHTML = t.sym;
             div.onclick = () => {
                 modal.style.display = 'none';
-                resolve(p.type);
+                resolve(t.type);
             };
             container.appendChild(div);
         });
@@ -478,25 +519,26 @@ function showPromotionDialog() {
 
 async function executeMove(piece, toRow, toCol) {
     const fromRow = piece.row, fromCol = piece.col;
-    const target = boardState[toRow][toCol];
-    boardState[toRow][toCol] = piece;
-    boardState[fromRow][fromCol] = null;
-    piece.row = toRow;
-    piece.col = toCol;
+    const target = board[toRow][toCol];
+    board[toRow][toCol] = piece;
+    board[fromRow][fromCol] = null;
+    piece.row = toRow; piece.col = toCol;
     piece.hasMoved = true;
+    
     if (piece.type === 'pawn' && (toRow === 0 || toRow === 7)) {
         const newType = await showPromotionDialog();
         piece.type = newType;
     }
+    // Enroque
     if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
-        const rookFromCol = toCol === 6 ? 7 : 0;
-        const rookToCol = toCol === 6 ? 5 : 3;
-        const rook = boardState[fromRow][rookFromCol];
+        const rookFrom = toCol === 6 ? 7 : 0;
+        const rookTo = toCol === 6 ? 5 : 3;
+        const rook = board[fromRow][rookFrom];
         if (rook && rook.type === 'rook') {
-            boardState[fromRow][rookToCol] = rook;
-            boardState[fromRow][rookFromCol] = null;
+            board[fromRow][rookTo] = rook;
+            board[fromRow][rookFrom] = null;
             rook.row = fromRow;
-            rook.col = rookToCol;
+            rook.col = rookTo;
             rook.hasMoved = true;
             if (is3D) update3DPiece(rook);
         }
@@ -508,35 +550,36 @@ async function executeMove(piece, toRow, toCol) {
     return true;
 }
 
+// ---------- IA (aleatoria pero legal) ----------
 function getAllMoves(color) {
     let moves = [];
     for (let i = 0; i < 8; i++)
         for (let j = 0; j < 8; j++) {
-            const piece = boardState[i][j];
-            if (piece && piece.color === color)
+            const p = board[i][j];
+            if (p && p.color === color)
                 for (let ti = 0; ti < 8; ti++)
                     for (let tj = 0; tj < 8; tj++)
-                        if (isValidMove(piece, ti, tj, boardState))
-                            moves.push({ piece, toRow: ti, toCol: tj });
+                        if (isValidMove(p, ti, tj, board))
+                            moves.push({ piece: p, toRow: ti, toCol: tj });
         }
     return moves;
 }
 
 async function makeAIMove() {
     if (gameOver) return false;
-    const aiColor = gameMode === 'vsAI' ? (playerColor === 'white' ? 'black' : 'white') : currentTurn;
-    if (currentTurn !== aiColor) return false;
+    const aiColor = gameMode === 'vsAI' ? (playerColor === 'white' ? 'black' : 'white') : turn;
+    if (turn !== aiColor) return false;
     const moves = getAllMoves(aiColor);
     if (moves.length === 0) {
         gameOver = true;
-        document.getElementById('game-status').innerHTML = `🏆 VICTORIA ${aiColor === 'white' ? 'NEGRAS' : 'BLANCAS'} 🏆`;
-        if (autoPlayInterval) clearInterval(autoPlayInterval);
+        document.getElementById('statusMsg').innerHTML = `🏆 JAQUE MATE - Ganan ${aiColor === 'white' ? 'NEGRAS' : 'BLANCAS'}`;
+        if (autoInterval) clearInterval(autoInterval);
         return false;
     }
     const randomMove = moves[Math.floor(Math.random() * moves.length)];
     if (await executeMove(randomMove.piece, randomMove.toRow, randomMove.toCol)) {
         if (is3D) { clearHighlights3D(); selectedPiece = null; }
-        else { selectedRowCol = null; highlightCells = []; if (canvas) draw2DBoard(); }
+        else { selected2D = null; highlight2D = []; draw2DBoard(); }
         switchTurn();
         return true;
     }
@@ -544,112 +587,109 @@ async function makeAIMove() {
 }
 
 function startAutoPlay() {
-    if (autoPlayInterval) clearInterval(autoPlayInterval);
-    autoPlayInterval = setInterval(() => { if (!gameOver && currentTurn) makeAIMove(); else if (gameOver) clearInterval(autoPlayInterval); }, 520);
+    if (autoInterval) clearInterval(autoInterval);
+    autoInterval = setInterval(() => { if (!gameOver && turn) makeAIMove(); else if (gameOver) clearInterval(autoInterval); }, 520);
 }
-
-function stopAutoPlay() { if (autoPlayInterval) { clearInterval(autoPlayInterval); autoPlayInterval = null; } }
+function stopAutoPlay() { if (autoInterval) { clearInterval(autoInterval); autoInterval = null; } }
 
 function switchTurn() {
-    currentTurn = currentTurn === 'white' ? 'black' : 'white';
-    updateUIDisplay();
-    let whiteKing = false, blackKing = false;
-    for (let i = 0; i < 8; i++)
-        for (let j = 0; j < 8; j++) {
-            const p = boardState[i][j];
-            if (p && p.type === 'king') { if (p.color === 'white') whiteKing = true; else blackKing = true; }
-        }
-    if (!whiteKing) { gameOver = true; document.getElementById('game-status').innerHTML = '🏆 NEGRAS GANAN 🏆'; if (autoPlayInterval) clearInterval(autoPlayInterval); }
-    if (!blackKing) { gameOver = true; document.getElementById('game-status').innerHTML = '🏆 BLANCAS GANAN 🏆'; if (autoPlayInterval) clearInterval(autoPlayInterval); }
     if (gameOver) return;
+    turn = turn === 'white' ? 'black' : 'white';
+    updateUI();
+    const whiteKing = findKing('white', board);
+    const blackKing = findKing('black', board);
+    if (!whiteKing) { gameOver = true; document.getElementById('statusMsg').innerHTML = '🏆 NEGRAS GANAN (REY CAPTURADO)'; if (autoInterval) clearInterval(autoInterval); }
+    if (!blackKing) { gameOver = true; document.getElementById('statusMsg').innerHTML = '🏆 BLANCAS GANAN (REY CAPTURADO)'; if (autoInterval) clearInterval(autoInterval); }
+    if (gameOver) return;
+    
     if (gameMode === 'vsAI') {
-        const isPlayerTurn = (playerColor === currentTurn);
+        const isPlayerTurn = (playerColor === turn);
         if (!isPlayerTurn && !gameOver) setTimeout(() => makeAIMove(), 200);
+    } else if (gameMode === 'auto' && !gameOver) {
+        if (autoInterval) clearInterval(autoInterval);
+        startAutoPlay();
     }
-    if (is3D && !gameOver && gameMode !== 'auto') draw3DHighlights();
-    if (!is3D && !gameOver) draw2DBoard();
+    if (is3D && gameMode !== 'auto') draw3DHighlights();
+    if (!is3D) draw2DBoard();
 }
 
-function createPiece3D(piece) {
+// ---------- 3D GRÁFICOS ----------
+function createPieceMesh(piece) {
     const group = new THREE.Group();
-    const mainColor = piece.color === 'white' ? whiteCustomColor : blackCustomColor;
-    const goldColor = 0xffcc44;
-    const baseMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.9, roughness: 0.2, emissive: piece.color === 'white' ? 0x442200 : 0x000000, emissiveIntensity: 0.1 });
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.13, 32), baseMat);
+    const mainColor = piece.color === 'white' ? whiteColorCode : blackColorCode;
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xffcc44, metalness: 0.95 });
+    const bodyMat = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.85, roughness: 0.25 });
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.12, 32), bodyMat);
     base.position.y = 0.06;
     group.add(base);
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.35, 0.28, 32), baseMat);
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.35, 0.28, 32), bodyMat);
     body.position.y = 0.25;
     group.add(body);
-    const goldMat = new THREE.MeshStandardMaterial({ color: goldColor, metalness: 0.98 });
-    switch(piece.type) {
+    switch (piece.type) {
         case 'king':
-            const top = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.3, 0.36, 32), baseMat);
+            const top = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.3, 0.35, 32), bodyMat);
             top.position.y = 0.52;
             group.add(top);
-            const barH = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.09, 0.09), goldMat);
-            const barV = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.3, 0.09), goldMat);
-            barH.position.y = 0.79; barV.position.y = 0.79;
-            group.add(barH); group.add(barV);
-            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24), goldMat);
-            ball.position.y = 0.94;
+            const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 0.08), goldMat);
+            const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.08), goldMat);
+            crossH.position.y = 0.78; crossV.position.y = 0.78;
+            group.add(crossH, crossV);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.1, 24), goldMat);
+            ball.position.y = 0.93;
             group.add(ball);
             break;
         case 'queen':
-            const qb = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.44, 32), baseMat);
+            const qb = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.42, 32), bodyMat);
             qb.position.y = 0.52;
             group.add(qb);
-            for(let i=0;i<8;i++) {
+            for (let i=0;i<8;i++) {
                 const ang = (i/8)*Math.PI*2;
-                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.22, 8), goldMat);
-                spike.position.set(Math.cos(ang)*0.29, 0.8, Math.sin(ang)*0.29);
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 6), goldMat);
+                spike.position.set(Math.cos(ang)*0.28, 0.79, Math.sin(ang)*0.28);
                 group.add(spike);
             }
-            const gem = new THREE.Mesh(new THREE.SphereGeometry(0.12, 24), new THREE.MeshStandardMaterial({ color: 0xff44aa, metalness: 0.9 }));
+            const gem = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24), new THREE.MeshStandardMaterial({ color: 0xff66cc, metalness: 0.9 }));
             gem.position.y = 0.9;
             group.add(gem);
             break;
         case 'knight':
-            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.26,0.4,12), baseMat);
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.26,0.38,12), bodyMat);
             neck.position.set(0.15,0.48,0); neck.rotation.z=-0.35;
             group.add(neck);
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.32,0.32,0.26), baseMat);
-            head.position.set(0.36,0.69,0); head.rotation.z=-0.15;
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.3,0.3,0.24), bodyMat);
+            head.position.set(0.36,0.68,0); head.rotation.z=-0.15;
             group.add(head);
-            const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1,0.18,6), baseMat);
-            ear.position.set(0.44,0.86,0.12);
+            const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09,0.16,6), bodyMat);
+            ear.position.set(0.44,0.84,0.1);
             group.add(ear);
-            const mane = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.12,0.24,6), new THREE.MeshStandardMaterial({ color: 0xaa8866 }));
-            mane.position.set(0.22,0.73,-0.15); mane.rotation.x=0.4;
-            group.add(mane);
             break;
         case 'bishop':
-            const mitre = new THREE.Mesh(new THREE.ConeGeometry(0.31,0.52,12), baseMat);
-            mitre.position.y = 0.63;
+            const mitre = new THREE.Mesh(new THREE.ConeGeometry(0.3,0.48,12), bodyMat);
+            mitre.position.y = 0.62;
             group.add(mitre);
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(0.29,0.05,20,48), goldMat);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28,0.045,20,48), goldMat);
             ring.rotation.x = Math.PI/2;
-            ring.position.y = 0.43;
+            ring.position.y = 0.42;
             group.add(ring);
             break;
         case 'rook':
-            const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.33,0.37,0.55,8), baseMat);
-            tower.position.y = 0.43;
+            const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.36,0.52,8), bodyMat);
+            tower.position.y = 0.42;
             group.add(tower);
-            for(let i=0;i<4;i++) {
+            for (let i=0;i<4;i++) {
                 const ang = (i/4)*Math.PI*2;
-                const batt = new THREE.Mesh(new THREE.BoxGeometry(0.15,0.18,0.15), baseMat);
-                batt.position.set(Math.cos(ang)*0.36,0.75,Math.sin(ang)*0.36);
+                const batt = new THREE.Mesh(new THREE.BoxGeometry(0.14,0.16,0.14), bodyMat);
+                batt.position.set(Math.cos(ang)*0.35,0.73,Math.sin(ang)*0.35);
                 group.add(batt);
             }
             break;
         case 'pawn':
-            const pneck = new THREE.Mesh(new THREE.CylinderGeometry(0.23,0.29,0.24,20), baseMat);
-            pneck.position.y = 0.43;
-            group.add(pneck);
-            const phead = new THREE.Mesh(new THREE.SphereGeometry(0.21,32), baseMat);
-            phead.position.y = 0.66;
-            group.add(phead);
+            const pn = new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.28,0.22,16), bodyMat);
+            pn.position.y = 0.42;
+            group.add(pn);
+            const ph = new THREE.Mesh(new THREE.SphereGeometry(0.2,32), bodyMat);
+            ph.position.y = 0.65;
+            group.add(ph);
             break;
     }
     return group;
@@ -658,10 +698,9 @@ function createPiece3D(piece) {
 function init3D() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050b1a);
-    scene.fog = new THREE.FogExp2(0x050b1a, 0.008);
     camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(5.8, 7.8, 7.8);
-    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    camera.position.set(5.8, 7.5, 7.8);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
@@ -672,22 +711,22 @@ function init3D() {
     labelRenderer.domElement.style.left = '0px';
     labelRenderer.domElement.style.pointerEvents = 'none';
     document.body.appendChild(labelRenderer.domElement);
-    orbitControls = new OrbitControls(camera, renderer.domElement);
-    orbitControls.enableDamping = true;
-    orbitControls.target.set(0,0.5,0);
+    controls3D = new OrbitControls(camera, renderer.domElement);
+    controls3D.enableDamping = true;
+    controls3D.target.set(0,0.5,0);
     const ambient = new THREE.AmbientLight(0x404060);
     scene.add(ambient);
-    const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.4);
-    mainLight.position.set(5,12,7);
+    const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.3);
+    mainLight.position.set(5,12,6);
     mainLight.castShadow = true;
     scene.add(mainLight);
     const fill = new THREE.PointLight(0xccaa88,0.6);
     fill.position.set(-3,5,4);
     scene.add(fill);
     const boardGroup = new THREE.Group();
-    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
+    for (let i=0;i<8;i++) for (let j=0;j<8;j++) {
         const col = (i+j)%2===0 ? 0xf0d9b5 : 0xb58863;
-        const sq = new THREE.Mesh(new THREE.BoxGeometry(0.96,0.13,0.96), new THREE.MeshStandardMaterial({ color:col, roughness:0.3 }));
+        const sq = new THREE.Mesh(new THREE.BoxGeometry(0.96,0.12,0.96), new THREE.MeshStandardMaterial({ color:col, roughness:0.3 }));
         sq.position.set(j-3.5, -0.07, i-3.5);
         sq.receiveShadow = true;
         boardGroup.add(sq);
@@ -695,305 +734,272 @@ function init3D() {
     scene.add(boardGroup);
     piecesGroup = new THREE.Group();
     scene.add(piecesGroup);
-    createAllPieces3D();
+    rebuild3DPieces();
     renderer.domElement.addEventListener('click', onClick3D);
-    renderer.domElement.addEventListener('touchstart', onTouch3D);
-    renderer.domElement.addEventListener('touchend', onTouchEnd3D);
+    renderer.domElement.addEventListener('touchstart', onTouch3DStart);
+    renderer.domElement.addEventListener('touchend', onTouch3DEnd);
 }
 
-function createAllPieces3D() {
+function rebuild3DPieces() {
     while(piecesGroup.children.length) piecesGroup.remove(piecesGroup.children[0]);
-    piecesMeshes.clear();
-    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
-        const piece = boardState[i][j];
-        if(piece) {
-            const mesh = createPiece3D(piece);
-            mesh.userData = { row:i, col:j, piece };
+    piecesMap.clear();
+    for (let i=0;i<8;i++) for (let j=0;j<8;j++) {
+        const p = board[i][j];
+        if (p) {
+            const mesh = createPieceMesh(p);
+            mesh.userData = { row:i, col:j, piece:p };
             mesh.position.set(j-3.5, 0.09, i-3.5);
             piecesGroup.add(mesh);
-            piecesMeshes.set(`${i},${j}`, mesh);
+            piecesMap.set(`${i},${j}`, mesh);
         }
     }
 }
-
 function update3DPiece(piece) {
     const key = `${piece.row},${piece.col}`;
-    if(piecesMeshes.has(key)) { piecesGroup.remove(piecesMeshes.get(key)); piecesMeshes.delete(key); }
-    const newMesh = createPiece3D(piece);
+    if (piecesMap.has(key)) { piecesGroup.remove(piecesMap.get(key)); piecesMap.delete(key); }
+    const newMesh = createPieceMesh(piece);
     newMesh.userData = { row:piece.row, col:piece.col, piece };
     newMesh.position.set(piece.col-3.5, 0.09, piece.row-3.5);
     piecesGroup.add(newMesh);
-    piecesMeshes.set(key, newMesh);
+    piecesMap.set(key, newMesh);
 }
-
-function remove3DPiece(piece) { const key = `${piece.row},${piece.col}`; if(piecesMeshes.has(key)) { piecesGroup.remove(piecesMeshes.get(key)); piecesMeshes.delete(key); } }
-
+function remove3DPiece(piece) { const key = `${piece.row},${piece.col}`; if(piecesMap.has(key)) { piecesGroup.remove(piecesMap.get(key)); piecesMap.delete(key); } }
 function clearHighlights3D() { highlightMeshes.forEach(h => piecesGroup.remove(h)); highlightMeshes = []; }
-
-function highlightSquare3D(row,col,color) {
-    const sq = new THREE.Mesh(new THREE.BoxGeometry(0.94,0.06,0.94), new THREE.MeshStandardMaterial({ color, transparent:true, opacity:0.75, emissive:color, emissiveIntensity:0.3 }));
+function highlight3D(row,col,color) {
+    const sq = new THREE.Mesh(new THREE.BoxGeometry(0.94,0.06,0.94), new THREE.MeshStandardMaterial({ color, transparent:true, opacity:0.7, emissive:color, emissiveIntensity:0.3 }));
     sq.position.set(col-3.5, -0.02, row-3.5);
     piecesGroup.add(sq);
     highlightMeshes.push(sq);
 }
-
 function draw3DHighlights() {
-    if(selectedPiece) {
+    if (selectedPiece) {
         clearHighlights3D();
-        highlightSquare3D(selectedPiece.piece.row, selectedPiece.piece.col, 0xffaa44);
-        for(let i=0;i<8;i++) for(let j=0;j<8;j++) if(isValidMove(selectedPiece.piece, i, j, boardState)) highlightSquare3D(i,j,0x44ff44);
+        highlight3D(selectedPiece.row, selectedPiece.col, 0xffaa44);
+        for (let i=0;i<8;i++) for (let j=0;j<8;j++) if (isValidMove(selectedPiece.piece, i, j, board)) highlight3D(i,j,0x44ff44);
     }
 }
-
 let touchCache = null;
-function onTouch3D(e) { e.preventDefault(); const t=e.touches[0]; touchCache={x:t.clientX, y:t.clientY}; }
-function onTouchEnd3D(e) { e.preventDefault(); if(touchCache) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(touchCache.x-rect.left, touchCache.y-rect.top); touchCache=null; } }
+function onTouch3DStart(e) { e.preventDefault(); const t=e.touches[0]; touchCache={x:t.clientX, y:t.clientY}; }
+function onTouch3DEnd(e) { e.preventDefault(); if(touchCache) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(touchCache.x-rect.left, touchCache.y-rect.top); touchCache=null; } }
 function onClick3D(e) { const rect=renderer.domElement.getBoundingClientRect(); handleClick3D(e.clientX-rect.left, e.clientY-rect.top); }
-
 async function handleClick3D(x,y) {
-    if(gameOver || gameMode==='auto') return;
+    if (gameOver || gameMode === 'auto') return;
     const mouse = new THREE.Vector2((x/renderer.domElement.clientWidth)*2-1, -(y/renderer.domElement.clientHeight)*2+1);
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
-    let clickedPiece = null;
+    let clicked = null;
     const hits = raycaster.intersectObjects(piecesGroup.children, true);
-    for(let hit of hits) {
+    for (let hit of hits) {
         let obj = hit.object;
-        while(obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
-        if(obj.userData?.piece) { clickedPiece = obj; break; }
+        while (obj.parent !== piecesGroup && obj.parent !== null) obj = obj.parent;
+        if (obj.userData?.piece) { clicked = obj; break; }
     }
-    let target = null;
+    let targetCell = null;
     const planeHits = raycaster.intersectObjects(piecesGroup.children, false);
-    for(let hit of planeHits) {
+    for (let hit of planeHits) {
         const col = Math.round(hit.point.x + 3.5);
         const row = Math.round(hit.point.z + 3.5);
-        if(row>=0 && row<8 && col>=0 && col<8) { target={row,col}; break; }
+        if (row>=0 && row<8 && col>=0 && col<8) { targetCell = { row, col }; break; }
     }
-    if(selectedPiece) {
-        if(target && await executeMove(selectedPiece.piece, target.row, target.col)) {
+    if (selectedPiece) {
+        if (targetCell && await executeMove(selectedPiece.piece, targetCell.row, targetCell.col)) {
             clearHighlights3D();
             selectedPiece = null;
             switchTurn();
         } else { clearHighlights3D(); selectedPiece = null; }
-    } else if(clickedPiece?.userData.piece) {
-        const p = clickedPiece.userData.piece;
-        const can = (gameMode==='vsAI' && p.color===playerColor && p.color===currentTurn) || (gameMode==='vs2' && p.color===currentTurn);
-        if(can) { selectedPiece = { piece:p }; draw3DHighlights(); }
+    } else if (clicked?.userData.piece) {
+        const p = clicked.userData.piece;
+        const can = (gameMode==='vsAI' && p.color===playerColor && p.color===turn) || (gameMode==='vs2' && p.color===turn);
+        if (can) { selectedPiece = { piece:p, row:p.row, col:p.col }; draw3DHighlights(); }
     }
 }
 
+// ---------- MODO 2D ----------
 function init2D() {
-    canvas = document.getElementById('canvas2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx = canvas.getContext('2d');
-    canvas.style.display = 'block';
-    if(renderer) renderer.domElement.style.display = 'none';
-    if(labelRenderer) labelRenderer.domElement.style.display = 'none';
-    canvas.addEventListener('click', onClick2D);
-    canvas.addEventListener('touchstart', onTouch2DStart);
-    canvas.addEventListener('touchend', onTouch2DEnd);
+    canvas2d = document.getElementById('canvas2d');
+    canvas2d.width = window.innerWidth;
+    canvas2d.height = window.innerHeight;
+    ctx2d = canvas2d.getContext('2d');
+    canvas2d.style.display = 'block';
+    if (renderer) renderer.domElement.style.display = 'none';
+    if (labelRenderer) labelRenderer.domElement.style.display = 'none';
+    canvas2d.addEventListener('click', onClick2D);
+    canvas2d.addEventListener('touchstart', onTouch2DStart);
+    canvas2d.addEventListener('touchend', onTouch2DEnd);
     draw2DBoard();
 }
-
-function getSquare2D(x,y) {
-    const size = Math.min(canvas.width, canvas.height)*0.72;
-    const offX = (canvas.width-size)/2;
-    const offY = (canvas.height-size)/2;
+function getSquare2D(px, py) {
+    const size = Math.min(canvas2d.width, canvas2d.height) * 0.72;
+    const offX = (canvas2d.width - size)/2;
+    const offY = (canvas2d.height - size)/2;
     const sq = size/8;
-    const col = Math.floor((x-offX)/sq);
-    const row = Math.floor((y-offY)/sq);
-    if(row>=0 && row<8 && col>=0 && col<8) return {row,col};
+    const col = Math.floor((px - offX)/sq);
+    const row = Math.floor((py - offY)/sq);
+    if (row>=0 && row<8 && col>=0 && col<8) return { row, col };
     return null;
 }
-
 function draw2DBoard() {
-    if(!ctx) return;
-    const size = Math.min(canvas.width, canvas.height)*0.72;
-    const offX = (canvas.width-size)/2;
-    const offY = (canvas.height-size)/2;
+    if (!ctx2d) return;
+    const size = Math.min(canvas2d.width, canvas2d.height) * 0.72;
+    const offX = (canvas2d.width - size)/2;
+    const offY = (canvas2d.height - size)/2;
     const sq = size/8;
-    for(let i=0;i<8;i++) for(let j=0;j<8;j++) {
-        const isLight = (i+j)%2===0;
-        ctx.fillStyle = isLight ? '#eed9bb' : '#b58863';
-        ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
-        if(selectedRowCol && selectedRowCol.row===i && selectedRowCol.col===j) {
-            ctx.fillStyle = 'rgba(255,170,68,0.7)';
-            ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
+    for (let i=0;i<8;i++) for (let j=0;j<8;j++) {
+        ctx2d.fillStyle = (i+j)%2===0 ? '#eed9bb' : '#b58863';
+        ctx2d.fillRect(offX+j*sq, offY+i*sq, sq, sq);
+        if (selected2D && selected2D.row===i && selected2D.col===j) {
+            ctx2d.fillStyle = 'rgba(255,170,68,0.7)';
+            ctx2d.fillRect(offX+j*sq, offY+i*sq, sq, sq);
         }
-        for(let h of highlightCells) {
-            if(h.row===i && h.col===j) {
-                ctx.fillStyle = 'rgba(68,255,68,0.55)';
-                ctx.fillRect(offX+j*sq, offY+i*sq, sq, sq);
-            }
+        for (let h of highlight2D) if (h.row===i && h.col===j) {
+            ctx2d.fillStyle = 'rgba(68,255,68,0.6)';
+            ctx2d.fillRect(offX+j*sq, offY+i*sq, sq, sq);
         }
-        const piece = boardState[i][j];
-        if(piece) {
+        const p = board[i][j];
+        if (p) {
             let sym = '';
-            switch(piece.type) {
-                case 'king': sym='♔'; break;
-                case 'queen': sym='♕'; break;
-                case 'rook': sym='♖'; break;
-                case 'bishop': sym='♗'; break;
-                case 'knight': sym='♘'; break;
-                case 'pawn': sym='♙'; break;
+            switch(p.type) {
+                case 'king': sym='♔'; break; case 'queen': sym='♕'; break;
+                case 'rook': sym='♖'; break; case 'bishop': sym='♗'; break;
+                case 'knight': sym='♘'; break; case 'pawn': sym='♙'; break;
             }
-            ctx.font = `${sq*0.58}px 'Segoe UI', 'Arial'`;
-            ctx.fillStyle = piece.color === 'white' ? '#fff7e8' : '#111';
-            ctx.shadowBlur = 0;
-            ctx.fillText(sym, offX+j*sq+sq*0.28, offY+i*sq+sq*0.78);
+            ctx2d.font = `${sq*0.58}px 'Segoe UI'`;
+            ctx2d.fillStyle = p.color === 'white' ? '#fff8f0' : '#111';
+            ctx2d.fillText(sym, offX+j*sq+sq*0.28, offY+i*sq+sq*0.78);
         }
     }
 }
-
 let touch2D = null;
 function onTouch2DStart(e) { e.preventDefault(); const t=e.touches[0]; touch2D={x:t.clientX, y:t.clientY}; }
 function onTouch2DEnd(e) { e.preventDefault(); if(touch2D) { handleClick2D(touch2D.x, touch2D.y); touch2D=null; } }
 function onClick2D(e) { handleClick2D(e.clientX, e.clientY); }
-
 async function handleClick2D(x,y) {
-    if(gameOver || gameMode==='auto') return;
+    if (gameOver || gameMode==='auto') return;
     const coord = getSquare2D(x,y);
-    if(!coord) { selectedRowCol=null; highlightCells=[]; draw2DBoard(); return; }
-    if(selectedRowCol) {
-        const piece = boardState[selectedRowCol.row][selectedRowCol.col];
-        if(piece && await executeMove(piece, coord.row, coord.col)) {
-            selectedRowCol = null;
-            highlightCells = [];
+    if (!coord) { selected2D=null; highlight2D=[]; draw2DBoard(); return; }
+    if (selected2D) {
+        const piece = board[selected2D.row][selected2D.col];
+        if (piece && await executeMove(piece, coord.row, coord.col)) {
+            selected2D = null; highlight2D = [];
             switchTurn();
-        } else { selectedRowCol = null; highlightCells = []; }
+        } else { selected2D = null; highlight2D = []; }
         draw2DBoard();
     } else {
-        const piece = boardState[coord.row][coord.col];
-        if(piece) {
-            const can = (gameMode==='vsAI' && piece.color===playerColor && piece.color===currentTurn) || (gameMode==='vs2' && piece.color===currentTurn);
-            if(can) {
-                selectedRowCol = coord;
-                highlightCells = [];
-                for(let i=0;i<8;i++) for(let j=0;j<8;j++) if(isValidMove(piece,i,j,boardState)) highlightCells.push({row:i,col:j});
+        const piece = board[coord.row][coord.col];
+        if (piece) {
+            const can = (gameMode==='vsAI' && piece.color===playerColor && piece.color===turn) || (gameMode==='vs2' && piece.color===turn);
+            if (can) {
+                selected2D = coord;
+                highlight2D = [];
+                for (let i=0;i<8;i++) for (let j=0;j<8;j++) if (isValidMove(piece, i, j, board)) highlight2D.push({row:i, col:j});
                 draw2DBoard();
             }
         }
     }
 }
 
+// ---------- UI y control ----------
+function updateUI() {
+    document.getElementById('turnText').innerHTML = turn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
+    let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
+    document.getElementById('modeLabel').innerHTML = modeStr;
+}
+function resetGame() {
+    if (gameMode === 'auto') stopAutoPlay();
+    initBoard();
+    if (is3D) { rebuild3DPieces(); clearHighlights3D(); selectedPiece = null; }
+    else { selected2D = null; highlight2D = []; draw2DBoard(); }
+    if (gameMode === 'auto') startAutoPlay();
+    else if (gameMode === 'vsAI' && playerColor === 'black' && turn === 'white') setTimeout(() => makeAIMove(), 300);
+}
 function switchDimension() {
-    if(is3D) {
+    if (is3D) {
         is3D = false;
         init2D();
-        document.getElementById('toggle-dim').innerHTML = '🔄 CAMBIAR A 3D';
-        if(renderer) renderer.domElement.style.display = 'none';
-        if(labelRenderer) labelRenderer.domElement.style.display = 'none';
+        document.getElementById('toggleDimBtn').innerHTML = '🔄 CAMBIAR A 3D';
     } else {
         is3D = true;
         document.getElementById('canvas2d').style.display = 'none';
-        if(renderer) renderer.domElement.style.display = 'block';
-        if(labelRenderer) labelRenderer.domElement.style.display = 'block';
-        createAllPieces3D();
+        if (renderer) renderer.domElement.style.display = 'block';
+        if (labelRenderer) labelRenderer.domElement.style.display = 'block';
+        rebuild3DPieces();
         draw3DHighlights();
-        document.getElementById('toggle-dim').innerHTML = '🔄 CAMBIAR A 2D';
+        document.getElementById('toggleDimBtn').innerHTML = '🔄 CAMBIAR A 2D';
     }
 }
-
-function updateUIDisplay() {
-    document.getElementById('turn-text').innerHTML = currentTurn === 'white' ? '⚪ BLANCAS' : '⚫ NEGRAS';
-    let modeStr = gameMode === 'vsAI' ? '🤖 VS IA' : (gameMode === 'vs2' ? '👥 2 JUGADORES' : '⚡ IA vs IA');
-    document.getElementById('mode-label').innerHTML = modeStr;
-}
-
-function resetGame() {
-    if(gameMode === 'auto') stopAutoPlay();
-    initBoard();
-    if(is3D) { createAllPieces3D(); clearHighlights3D(); selectedPiece = null; }
-    else { selectedRowCol = null; highlightCells = []; draw2DBoard(); }
-    if(gameMode === 'auto') startAutoPlay();
-    else if(gameMode === 'vsAI' && playerColor === 'black' && currentTurn === 'white') setTimeout(() => makeAIMove(), 300);
-}
-
 function startGame(mode, whiteVal, blackVal, dim) {
     gameMode = mode;
-    whiteCustomColor = whiteVal;
-    blackCustomColor = blackVal;
+    whiteColorCode = whiteVal;
+    blackColorCode = blackVal;
     playerColor = 'white';
     is3D = (dim === '3d');
-    if(gameMode === 'auto') stopAutoPlay();
+    if (gameMode === 'auto') stopAutoPlay();
     initBoard();
-    if(is3D) {
-        if(!scene) init3D();
-        else { createAllPieces3D(); if(renderer) renderer.domElement.style.display = 'block'; if(labelRenderer) labelRenderer.domElement.style.display = 'block'; document.getElementById('canvas2d').style.display = 'none'; }
+    if (is3D) {
+        if (!scene) init3D();
+        else { rebuild3DPieces(); if(renderer) renderer.domElement.style.display='block'; if(labelRenderer) labelRenderer.domElement.style.display='block'; document.getElementById('canvas2d').style.display='none'; }
     } else {
         init2D();
     }
-    document.getElementById('start-modal').style.display = 'none';
-    if(gameMode === 'auto') startAutoPlay();
-    else if(gameMode === 'vsAI' && currentTurn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
+    document.getElementById('startModal').style.display = 'none';
+    if (gameMode === 'auto') startAutoPlay();
+    else if (gameMode === 'vsAI' && turn === 'white' && playerColor === 'black') setTimeout(() => makeAIMove(), 500);
 }
-
 function renderColorSelector() {
-    const grid = document.getElementById('color-grid');
+    const grid = document.getElementById('colorGrid');
     grid.innerHTML = '';
-    const colors = isSelectingBlack ? darkOptions : colorOptions;
+    const colors = isSelectingBlackFor2P ? darkPalette : colorPalette;
     colors.forEach((c, idx) => {
-        const swatch = document.createElement('div');
-        swatch.className = 'color-swatch';
-        swatch.style.background = c.preview;
-        swatch.onclick = () => {
-            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-            swatch.classList.add('selected');
-            if(isSelectingBlack) selectedBlackIdx = idx;
+        const sw = document.createElement('div');
+        sw.className = 'swatch';
+        sw.style.backgroundColor = c.preview;
+        sw.onclick = () => {
+            document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+            sw.classList.add('selected');
+            if (isSelectingBlackFor2P) selectedBlackIdx = idx;
             else selectedWhiteIdx = idx;
-            document.getElementById('color-preview').style.background = c.preview;
+            document.getElementById('previewCircle').style.backgroundColor = c.preview;
         };
-        grid.appendChild(swatch);
+        grid.appendChild(sw);
     });
-    document.getElementById('color-preview').style.background = isSelectingBlack ? darkOptions[selectedBlackIdx].preview : colorOptions[selectedWhiteIdx].preview;
+    document.getElementById('previewCircle').style.backgroundColor = isSelectingBlackFor2P ? darkPalette[selectedBlackIdx].preview : colorPalette[selectedWhiteIdx].preview;
 }
-
-let selectedDimension = '3d';
-document.getElementById('select-3d').onclick = () => { selectedDimension = '3d'; };
-document.getElementById('select-2d').onclick = () => { selectedDimension = '2d'; };
-document.getElementById('select-vsai').onclick = () => { pendingMode = 'vsAI'; isSelectingBlack = false; document.getElementById('color-prompt').innerHTML = '🎨 COLOR TUS PIEZAS BLANCAS:'; renderColorSelector(); };
-document.getElementById('select-vs2').onclick = () => { pendingMode = 'vs2'; isSelectingBlack = false; document.getElementById('color-prompt').innerHTML = '🎨 BLANCAS:'; renderColorSelector(); };
-document.getElementById('select-auto').onclick = () => { pendingMode = 'auto'; document.getElementById('color-prompt').innerHTML = '🌈 IA vs IA (colores aleatorios)'; document.getElementById('color-grid').innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ffd966;">✨ COLORES ALEATORIOS ✨</div>'; };
-
-document.getElementById('confirm-start').onclick = () => {
-    if(pendingMode === 'auto') {
-        const randW = colorOptions[Math.floor(Math.random()*colorOptions.length)].value;
-        const randB = darkOptions[Math.floor(Math.random()*darkOptions.length)].value;
-        startGame('auto', randW, randB, selectedDimension);
-    } else if(pendingMode === 'vs2') {
-        if(isSelectingBlack) startGame('vs2', colorOptions[selectedWhiteIdx].value, darkOptions[selectedBlackIdx].value, selectedDimension);
-        else { isSelectingBlack = true; document.getElementById('color-prompt').innerHTML = '🎨 AHORA ELIGE NEGRAS:'; renderColorSelector(); document.getElementById('confirm-start').innerHTML = '✅ CONFIRMAR COLORES'; }
+let chosenDimension = '3d';
+document.getElementById('dim3d').onclick = () => chosenDimension = '3d';
+document.getElementById('dim2d').onclick = () => chosenDimension = '2d';
+document.getElementById('modeVsAI').onclick = () => { pendingMode='vsAI'; isSelectingBlackFor2P=false; document.getElementById('colorPrompt').innerHTML='🎨 COLOR TUS PIEZAS BLANCAS:'; renderColorSelector(); };
+document.getElementById('mode2P').onclick = () => { pendingMode='vs2'; isSelectingBlackFor2P=false; document.getElementById('colorPrompt').innerHTML='🎨 COLOR BLANCAS:'; renderColorSelector(); };
+document.getElementById('modeAIAI').onclick = () => { pendingMode='auto'; document.getElementById('colorPrompt').innerHTML='🌈 IA vs IA (colores aleatorios)'; document.getElementById('colorGrid').innerHTML='<div style="grid-column:1/-1; text-align:center; color:#ffd966;">✨ COLORES ALEATORIOS ✨</div>'; };
+document.getElementById('startGameBtn').onclick = () => {
+    if (pendingMode === 'auto') {
+        const randW = colorPalette[Math.floor(Math.random()*colorPalette.length)].val;
+        const randB = darkPalette[Math.floor(Math.random()*darkPalette.length)].val;
+        startGame('auto', randW, randB, chosenDimension);
+    } else if (pendingMode === 'vs2') {
+        if (isSelectingBlackFor2P) startGame('vs2', colorPalette[selectedWhiteIdx].val, darkPalette[selectedBlackIdx].val, chosenDimension);
+        else { isSelectingBlackFor2P = true; document.getElementById('colorPrompt').innerHTML='🎨 AHORA COLOR NEGRAS:'; renderColorSelector(); document.getElementById('startGameBtn').innerHTML = '✅ CONFIRMAR COLORES'; }
     } else {
-        startGame('vsAI', colorOptions[selectedWhiteIdx].value, darkOptions[0].value, selectedDimension);
+        startGame('vsAI', colorPalette[selectedWhiteIdx].val, darkPalette[0].val, chosenDimension);
     }
 };
-
-document.getElementById('btn-reset').onclick = () => resetGame();
-document.getElementById('btn-recolor').onclick = () => { if(gameMode !== 'auto') document.getElementById('start-modal').style.display = 'flex'; };
-document.getElementById('toggle-dim').onclick = () => switchDimension();
-
+document.getElementById('resetBtn').onclick = () => resetGame();
+document.getElementById('colorBtn').onclick = () => { if(gameMode !== 'auto') document.getElementById('startModal').style.display = 'flex'; };
+document.getElementById('toggleDimBtn').onclick = () => switchDimension();
 renderColorSelector();
-
-function animate() {
-    requestAnimationFrame(animate);
-    if(is3D && scene && renderer) {
-        orbitControls.update();
-        renderer.render(scene, camera);
-        if(labelRenderer) labelRenderer.render(scene, camera);
-    }
+function animateLoop() {
+    requestAnimationFrame(animateLoop);
+    if (is3D && scene && renderer) { controls3D.update(); renderer.render(scene, camera); if(labelRenderer) labelRenderer.render(scene, camera); }
 }
-animate();
-
+animateLoop();
 window.addEventListener('resize', () => {
-    if(is3D && camera) {
+    if (is3D && camera) {
         camera.aspect = window.innerWidth/window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         if(labelRenderer) labelRenderer.setSize(window.innerWidth, window.innerHeight);
-    } else if(!is3D && canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    } else if (!is3D && canvas2d) {
+        canvas2d.width = window.innerWidth;
+        canvas2d.height = window.innerHeight;
         draw2DBoard();
     }
 });
